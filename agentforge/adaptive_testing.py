@@ -5,7 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 from .contracts import ExecutionError
 from .custom_tools import CustomTool, validate_tool_arguments
 from .resources import fingerprint
-from .testing import csv_oracle, equivalent, evaluate, OracleError
+from .testing import csv_oracle, equivalent, evaluate, OracleError, document_answer_issues
 from .adaptive_contracts import parameter_schema
 from .codex_client import validate_json, SchemaValidationError, json_type
 from .evaluation_progress import EvaluationProgress
@@ -233,10 +233,7 @@ def evaluate_adaptive(agent, req, resources, suite, partition, artifact_hash, wo
                     issues.append("缺少证据的目标应拒答。")
             else:
                 expected = {"source_id": case["source_id"], "facts": case["facts"]}
-                if output.get("error") or output.get("abstained") or any(f not in output.get("answer", "") for f in case["facts"]):
-                    issues.append("目标回答缺少来源事实。")
-                if not any(s["id"] == case["source_id"] for s in output.get("sources", [])):
-                    issues.append("目标回答缺少预期来源。")
+                issues.extend(document_answer_issues(output, resources, [case["source_id"]], case["facts"]))
             results.append({**case, "passed": not issues, "issues": issues, "expected": expected, "actual": output, "kind": "agent_goal"})
         behavior_skipped = False
     passed = sum(r["passed"] for r in results)

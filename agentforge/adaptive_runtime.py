@@ -6,7 +6,7 @@ import time
 
 from .adaptive_contracts import decision_schema, parse_json
 from .codex_client import CodexError, CodexClient, DeadlineExceeded, ModelTimeout, validate_json
-from .contracts import ExecutionError, error_response
+from .contracts import ExecutionError, error_response, canonical_csv_parameters
 from .custom_tools import CustomTool
 from .resources import catalog, fingerprint
 from .tool_registry import TOOLS, execute_tool, validate_filters
@@ -26,7 +26,12 @@ Successful observations already prove their computations: do not replay tests or
 Use completion_requirements to finish as soon as the user's goal and mandatory work are satisfied.
 Verification feedback identifies specific defects; fix those fields instead of submitting the same invalid finish.
 For CSV structured inputs, call csv.query with the effective input parameters; final result_ref must reference that query.
-CSV sources MUST be [] (they are document citations only); csv.query count counts filtered rows even when column is specified.
+input_contract distinguishes explicit_parameters supplied by the user/human from default_parameters.
+For natural-language goals, defaults are fallbacks, not user constraints: infer filters, sort, limit and aggregation
+from the goal when not explicitly supplied. Preserve explicit empty arrays, false and null as user choices.
+For structured input use all effective parameters. For natural goals preserve explicit parameters in the primary query.
+CSV sources MUST be [] (they are document citations only); csv.query count counts all filtered rows, including blank cells,
+and always returns column=null. A supplied valid column is accepted for compatibility but has no count semantics.
 result_ref is an observation ID, not a tool ID or resource ID. Choose an allowed_result_ref shown by the host.
 For natural-language goals, plan multiple queries/computations if needed and report only observed findings.
 For document QA, documents.read exposes original documents for semantic reasoning. Read likely relevant documents;
@@ -48,7 +53,7 @@ def builtin_catalog():
         {"id": "documents.search", "description": "Lexical retrieval; use documents.read if wording differs.", "parameters": {"question": "string", "min_score": "optional number (0,1]", "top_k": "optional integer 1..10"}},
         {"id": "csv.preview", "description": "Inspect a dataset, columns and sample rows.", "parameters": {"dataset_id": "string", "limit": "optional integer 1..50"}},
         {"id": "csv.query", "description": "Compute independently verifiable filtering/grouping/aggregation/sort/limit; returns analysis data.",
-         "parameters": {"dataset_id": "optional authorized ID", "operation": "sum/mean/count/min/max", "column": "string or null", "group_by": "string or null",
+         "parameters": {"dataset_id": "optional authorized ID", "operation": "sum/mean/count/min/max; count is filtered row count with column=null", "column": "string or null; ignored for count after validation", "group_by": "string or null",
                         "filters": "array of column/operator/value; eq/ne/contains/gt/gte/lt/lte", "sort_by": "group/value/count", "descending": "boolean", "limit": "null or integer 1..1000"}}
     ]
 
@@ -106,6 +111,13 @@ class RuntimeTools:
             if set(arguments) - {"dataset_id", "operation", "column", "group_by", "filters", "sort_by", "descending", "limit"}:
                 raise ExecutionError("INVALID_ARGUMENTS", "CSV 查询参数不支持。")
             params = {**self.req.defaults, **arguments}
+            dataset = next((d for d in self.resources["datasets"] if d["id"] == params.get("dataset_id")), None)
+            column = params.get("column")
+            if column is not None and not isinstance(column, str):
+                raise ExecutionError("INVALID_ARGUMENTS", "列名必须是文本或 null。")
+            if dataset and column and column not in dataset["columns"]:
+                raise ExecutionError("UNKNOWN_COLUMN", "分析列不存在。")
+            params = canonical_csv_parameters(params)
             context = {"input": params, "result": None}
             for name, fields in (("csv.load", ("dataset_id",)), ("csv.filter", ("filters",)),
                                  ("csv.aggregate", ("operation", "column", "group_by")),
@@ -150,7 +162,15 @@ class AdaptiveAgent:
             params = inputs.get("parameters", {})
             if not isinstance(params, dict):
                 raise ExecutionError("INVALID_INPUT", "parameters 必须是对象。")
-            return inputs["goal"], {**self.req.defaults, **params}, False
+            if self.req.task_type == "csv_analysis":
+                if set(params) - {"operation", "column", "group_by", "filters", "sort_by", "descending", "limit"}:
+                    raise ExecutionError("INVALID_INPUT", "CSV 输入字段不受支持。")
+                _, effective, _ = self.prepare(params)
+            elif params:
+                raise ExecutionError("INVALID_INPUT", "文档目标不接受 CSV 参数。")
+            else:
+                effective = copy.deepcopy(self.req.defaults)
+            return inputs["goal"], effective, False
         if self.req.task_type == "document_qa":
             if set(inputs) != {"question"} or not isinstance(inputs["question"], str) or not inputs["question"].strip() or len(inputs["question"]) > 6000:
                 raise ExecutionError("INVALID_INPUT", "请提供非空问题。")
@@ -158,7 +178,7 @@ class AdaptiveAgent:
         allowed = {"operation", "column", "group_by", "filters", "sort_by", "descending", "limit"}
         if set(inputs) - allowed:
             raise ExecutionError("INVALID_INPUT", "CSV 输入字段不支持。")
-        params = {**self.req.defaults, **inputs}
+        params = {**copy.deepcopy(self.req.defaults), **copy.deepcopy(inputs)}
         if not isinstance(params.get("operation"), str) or params["operation"] not in ("sum", "mean", "count", "min", "max"):
             raise ExecutionError("INVALID_INPUT", "聚合类型不支持。")
         dataset = next(d for d in self.resources["datasets"] if d["id"] == self.req.defaults["dataset_id"])
@@ -173,9 +193,25 @@ class AdaptiveAgent:
         if (params.get("sort_by", "group") not in ("group", "value", "count") or type(params.get("descending", False)) is not bool
                 or limit is not None and (type(limit) is not int or not 1 <= limit <= 1000)):
             raise ExecutionError("INVALID_INPUT", "排序或数量参数无效。")
+        params = canonical_csv_parameters(params)
         return self.req.request + "；本次参数：" + json.dumps(params, ensure_ascii=False), params, True
 
-    def finish(self, decision, observations, params, structured):
+    def input_contract(self, inputs, replies, params):
+        if isinstance(inputs, dict):
+            explicit = copy.deepcopy(inputs.get("parameters", {}) if "goal" in inputs else inputs)
+        else:
+            explicit = {"question": inputs} if self.req.task_type == "document_qa" else {}
+        sources = {key: "user" if key in explicit else "default" for key in params}
+        for supplement in replies:
+            for key, value in supplement.get("parameters", {}).items():
+                explicit[key] = copy.deepcopy(value)
+                sources[key] = "human_reply"
+        if self.req.task_type == "csv_analysis" and params.get("operation") == "count":
+            sources["column"] = "derived_row_count"
+        return {"explicit_parameters": explicit, "default_parameters": copy.deepcopy(self.req.defaults),
+                "parameter_sources": sources}
+
+    def finish(self, decision, observations, params, structured, explicit=None):
         if self.req.task_type == "csv_analysis" and decision["sources"]:
             raise ExecutionError("PROVENANCE", "CSV 证据通过观察提供；sources 只接受文档引用，CSV 必须为空。")
         succeeded = [o for o in observations if o["status"] == "ok"]
@@ -192,13 +228,17 @@ class AdaptiveAgent:
         if chosen and chosen["status"] == "error":
             return {**error_response(chosen["error"]["code"], chosen["error"]["message"]),
                     "failure": copy.deepcopy(chosen["error"])}
-        if self.req.task_type == "csv_analysis" and structured:
-            if not chosen or chosen["tool"] != "csv.query":
+        if self.req.task_type == "csv_analysis":
+            if structured and (not chosen or chosen["tool"] != "csv.query"):
                 raise ExecutionError("RESULT_REFERENCE", "CSV 最终数据必须引用 csv.query 的观察结果。")
-            actual_params = {**self.req.defaults, **chosen["arguments"]}
-            for key in ("dataset_id", "operation", "column", "group_by", "filters", "sort_by", "descending", "limit"):
-                if actual_params.get(key) != params.get(key):
-                    raise ExecutionError("RESULT_PARAMETERS", "最终查询参数与用户输入不一致：" + key)
+            if chosen and chosen["tool"] == "csv.query":
+                actual_params = canonical_csv_parameters({**self.req.defaults, **chosen["arguments"]})
+                keys = ("dataset_id", "operation", "column", "group_by", "filters", "sort_by", "descending", "limit") if structured else (explicit or {}).keys()
+                for key in keys:
+                    if key == "column" and actual_params.get("operation") == "count":
+                        continue
+                    if actual_params.get(key) != params.get(key):
+                        raise ExecutionError("RESULT_PARAMETERS", "最终查询参数与用户输入不一致：" + key)
         sources = []
         seen_docs = set()
         observed_text = {}
@@ -224,12 +264,17 @@ class AdaptiveAgent:
         validate_response(output, self.resources)
         return apply_output_hook(self.source, output, params, self.resources)
 
-    def completion_requirements(self, observations, params, structured):
+    def completion_requirements(self, observations, params, structured, explicit=None):
         succeeded = [o for o in observations if o["status"] == "ok"]
         refs = [o["id"] for o in succeeded]
-        primary = [o["id"] for o in succeeded if o["tool"] == "csv.query" and
-                   (not structured or all(({**self.req.defaults, **o["arguments"]}).get(k) == params.get(k)
-                       for k in ("dataset_id", "operation", "column", "group_by", "filters", "sort_by", "descending", "limit")))]
+        keys = ("dataset_id", "operation", "column", "group_by", "filters", "sort_by", "descending", "limit") if structured else (explicit or {}).keys()
+        primary = []
+        for observation in succeeded:
+            if observation["tool"] != "csv.query":
+                continue
+            actual = canonical_csv_parameters({**self.req.defaults, **observation["arguments"]})
+            if all(actual.get(k) == params.get(k) for k in keys if k != "column" or actual.get("operation") != "count"):
+                primary.append(observation["id"])
         return {"missing_required_tools": [t["id"] for t in self.spec.custom_tools if t["required"]
                                             and t["id"] not in {o["tool"] for o in succeeded}],
                 "primary_query_refs": primary, "allowed_result_refs": primary if self.req.task_type == "csv_analysis" and structured else refs,
@@ -300,23 +345,21 @@ class AdaptiveAgent:
                 if reply.get("parameters"):
                     if self.req.task_type != "csv_analysis":
                         raise ValueError("文档问答仅接受文字补充。")
-                    candidate = {k: v for k, v in params.items() if k != "dataset_id"}
-                    for old in state["replies"]:
-                        candidate.update(old.get("parameters", {}))
+                    candidate = self.input_contract(inputs, state["replies"], params)["explicit_parameters"]
                     try:
-                        self.prepare(candidate | reply["parameters"])
+                        self.prepare({"goal": "Validate CSV parameters", "parameters": candidate | reply["parameters"]})
                     except ExecutionError as exc:
                         raise ValueError("人工补充参数无效：" + str(exc)) from exc
                 state["replies"].append(copy.deepcopy(reply))
                 state["pending"] = None
                 emit({"type": "human_reply", "text": reply["text"], "parameters": reply.get("parameters", {})})
                 save("ready")
-            for supplement in state["replies"]:
-                if supplement.get("parameters"):
-                    if self.req.task_type != "csv_analysis":
-                        raise ValueError("文档问答仅接受文字补充。")
-                    # Reuse normal host input validation; replies cannot rebind a dataset or add arbitrary fields.
-                    _, params, _ = self.prepare({k: v for k, v in params.items() if k != "dataset_id"} | supplement["parameters"])
+            if self.req.task_type == "csv_analysis" and any(s.get("parameters") for s in state["replies"]):
+                # Rebuild from supplied fields, so derived count.column=None does not become a user override.
+                explicit = self.input_contract(inputs, state["replies"], params)["explicit_parameters"]
+                _, params, _ = self.prepare({"goal": "Validate CSV parameters", "parameters": explicit})
+            input_contract = self.input_contract(inputs, state["replies"], params)
+            state["input_contract"] = copy.deepcopy(input_contract)
             if state["phase"] == "model_inflight":
                 emit({"type": "recovery", "message": "上次模型调用未提交结果；已计入预算，继续请求新的决策。"})
                 save("ready")
@@ -355,7 +398,7 @@ class AdaptiveAgent:
                     else:
                         break
                 if state["pending"] is None:
-                    completion = self.completion_requirements(observations, params, structured)
+                    completion = self.completion_requirements(observations, params, structured, input_contract["explicit_parameters"])
                     valid_refs = completion["allowed_result_refs"]
                     schema = decision_schema(self.spec.tools, self.req.task_type, valid_refs)
                     state["calls"] += 1
@@ -363,6 +406,7 @@ class AdaptiveAgent:
                     save("model_inflight")
                     decision = client.complete(RUNTIME_TASK, {
                         "agent_instructions": self.spec.instructions, "goal": goal, "effective_input": params, "task_type": self.req.task_type,
+                        "input_contract": copy.deepcopy(input_contract),
                         "allowed_result_refs": valid_refs, "source_contract": "sources=[] for CSV; documents require literal read quotes",
                         "completion_requirements": completion,
                         "human_replies": state["replies"], "structured_input": structured, "planning_hints": self.spec.planning_hints,
@@ -392,7 +436,7 @@ class AdaptiveAgent:
                         decision, changes = self.normalize_finish(decision, observations, params, structured)
                         if changes:
                             emit({"step": step, "type": "normalization", "changes": changes})
-                        output = self.finish(decision, observations, params, structured)
+                        output = self.finish(decision, observations, params, structured, input_contract["explicit_parameters"])
                         emit({"step": step, "type": "verification", "status": "ok"})
                         state["pending"] = None
                         save("completed")

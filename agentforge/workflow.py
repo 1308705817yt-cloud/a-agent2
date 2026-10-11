@@ -106,6 +106,9 @@ def validate_response(output, resources):
         raise ExecutionError("OUTPUT_CONTRACT", "回答或拒答标记无效。")
     if not isinstance(output["sources"], list):
         raise ExecutionError("OUTPUT_CONTRACT", "来源必须是列表。")
+    if (isinstance(output["data"], dict) and output["data"].get("operation") == "count"
+            and ("column" not in output["data"] or output["data"]["column"] is not None)):
+        raise ExecutionError("OUTPUT_CONTRACT", "count 按筛选后的完整行计数，结果 column 必须为 null。")
     docs = {d["id"]: d for d in resources["documents"]}
     for source in output["sources"]:
         if (not isinstance(source, dict) or set(source) != {"id", "title", "quote"}
@@ -144,7 +147,13 @@ class WorkflowAgent:
                     or any(v is not None and not isinstance(v, str) for v in (values.get("column"), values.get("group_by")))
                     or not isinstance(values.get("sort_by", "group"), str)):
                 return {**error_response("INVALID_INPUT", "操作、列名和排序字段必须是文本。"), "trace": trace}
-        context = {"input": {**copy.deepcopy(self.requirements.defaults), **copy.deepcopy(inputs)}, "result": None}
+        effective = {**copy.deepcopy(self.requirements.defaults), **copy.deepcopy(inputs)}
+        if self.spec.task_type == "csv_analysis" and effective.get("operation") == "count":
+            dataset = next(d for d in self.resources["datasets"] if d["id"] == self.requirements.defaults["dataset_id"])
+            if effective.get("column") and effective["column"] not in dataset["columns"]:
+                return {**error_response("UNKNOWN_COLUMN", "分析列不存在。"), "trace": trace}
+            effective["column"] = None
+        context = {"input": effective, "result": None}
         nodes = {n["id"]: n for n in self.spec.nodes}
         nid = self.spec.entry
         try:

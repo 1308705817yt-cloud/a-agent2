@@ -9,14 +9,29 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from .resources import read_json, write_json, fingerprint, prepare_resources
-from .contracts import ExecutionError, error_response
+from .contracts import ExecutionError, error_response, canonical_csv_parameters
 from .codex_client import CodexError
+from .testing import document_answer_issues
+
+
+SCORING_CONTRACT = "v0.12-row-count-clause-evidence"
 
 
 def load_suite(suite_path=None):
     suite = read_json(Path(suite_path) if suite_path else Path(__file__).parent / "benchmarks" / "unseen_v1.json")
     if not re.fullmatch(r"unseen-v\d+(?:\.\d+)?", str(suite.get("version", ""))) or not suite.get("tasks"):
         raise ValueError("独立评测集无效。")
+    # Migrate representation in memory; frozen files and numeric gold never change.
+    if "source_suite_hash" not in suite:
+        suite["source_suite_hash"] = fingerprint(suite)
+    suite.setdefault("contract_migrations", [])
+    for task in suite["tasks"]:
+        for case in task["cases"]:
+            if task["domain"] == "csv_analysis" and case["gold"].get("operation") == "count" and case["gold"].get("column") is not None:
+                suite["contract_migrations"].append({"task_id": task["id"], "case_id": case["id"],
+                    "field": "gold.column", "before": case["gold"]["column"], "after": None, "reason": "count counts filtered rows"})
+                case["gold"] = canonical_csv_parameters(case["gold"])
+    suite["scoring_contract"] = SCORING_CONTRACT
     return suite
 
 
@@ -44,33 +59,14 @@ def score_case(task, case, output, resources, asked=False):
         issues.append("含糊目标未先询问用户。")
     if task["domain"] == "csv_analysis":
         actual = output.get("data")
-        expected = {"dataset_id": resources["datasets"][0]["id"], **gold}
+        expected = {"dataset_id": resources["datasets"][0]["id"], **canonical_csv_parameters(gold)}
         if output.get("abstained") or not same_value(actual, expected):
             issues.append("结果不符合人工核对的账本答案（检查筛选、空值、退款和完整行数）。")
     elif gold.get("refusal"):
         if not output.get("abstained") or output.get("sources"):
             issues.append("制度未载明的罚款应拒答且不附答案引用。")
     else:
-        answer = output.get("answer", "")
-        sources = output.get("sources", [])
-        if output.get("abstained") or any(fact not in answer for fact in gold["facts"]):
-            issues.append("缺少人工核对的现行事实短句。")
-        def unsupported_claim(text):
-            # A prohibited policy claim can be quoted to refute it or discuss a superseded rule.
-            # This deterministic check covers these contexts; it is not a semantic proof.
-            sentences = re.split(r"[。！？；\n]", answer)
-            return any(text in sentence and not re.search(r"不|非|否|留言|声称|所谓|已废止|旧规|旧制度", sentence) for sentence in sentences)
-        if any(unsupported_claim(text) for text in gold.get("forbidden", [])):
-            issues.append("答案包含废止规则或不可信留言的结论。")
-        if not set(gold["sources"]) <= {s.get("id") for s in sources}:
-            issues.append("缺少对应制度来源。")
-        docs = {d["id"]: d["content"] for d in resources["documents"]}
-        for citation in sources:
-            if not citation.get("quote") or citation.get("quote") not in docs.get(citation.get("id"), ""):
-                issues.append("引用无法在原始资料中核对。")
-        quotes = "\n".join(s.get("quote", "") for s in sources if s.get("id") in gold["sources"])
-        if any(fact not in quotes for fact in gold["facts"]):
-            issues.append("引用片段没有覆盖答案要求的全部事实。")
+        issues.extend(document_answer_issues(output, resources, gold["sources"], gold["facts"], gold.get("forbidden", [])))
     if not gold.get("refusal") and not any(o.get("status") == "ok" and str(o.get("tool", "")).startswith("custom.") for o in output.get("observations", [])):
         issues.append("未执行生成的业务工具。")
     return {"id": case["id"], "input": case["input"], "gold": gold, "asked_user": asked,
@@ -121,6 +117,8 @@ def run_benchmark(factory, task_ids=None, run_id=None, max_repairs=1, evaluate_g
     path = factory.root / "evaluations" / eid / "report.json"
     measured = run_id is None and not evaluate_generated
     report = {"evaluation_id": eid, "suite_version": suite["version"], "suite_hash": fingerprint(suite),
+              "source_suite_hash": suite["source_suite_hash"], "scoring_contract": SCORING_CONTRACT,
+              "contract_migrations": copy.deepcopy(suite["contract_migrations"]),
               "cohort": cohort,
               "authorship": suite["authorship"], "started_at": time.time(), "status": "running",
               "tasks": [{"task_id": tid, "status": "planned"} for tid in selected], "evaluate_generated": evaluate_generated,
@@ -240,6 +238,8 @@ def rescore_benchmark(factory, evaluation_id):
     eid = uuid.uuid4().hex[:12]
     path = factory.root / "evaluations" / eid / "report.json"
     report = {"evaluation_id": eid, "suite_version": suite["version"], "suite_hash": fingerprint(suite),
+              "source_suite_hash": suite["source_suite_hash"], "scoring_contract": SCORING_CONTRACT,
+              "contract_migrations": copy.deepcopy(suite["contract_migrations"]), "original_suite_hash": original["suite_hash"],
               "authorship": suite["authorship"], "status": "completed", "started_at": time.time(),
               "rescored_from": evaluation_id, "mode": "replay_scoring", "model_calls": 0, "tasks": [], "fresh_builds": False,
               "metrics": {"first_delivery_rate": None, "first_delivery_successes": None, "first_candidate_successes": None, "model_calls": 0},

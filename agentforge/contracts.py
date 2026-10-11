@@ -7,6 +7,15 @@ TASK_TYPES = ("document_qa", "csv_analysis")
 OPERATIONS = ("sum", "mean", "count", "min", "max")
 
 
+def canonical_csv_parameters(parameters):
+    """After validation, row count has no value column; never mutate caller data."""
+    from copy import deepcopy
+    result = deepcopy(parameters)
+    if result.get("operation") == "count":
+        result["column"] = None
+    return result
+
+
 @dataclass(frozen=True)
 class Requirements:
     request: str

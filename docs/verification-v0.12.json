@@ -1,0 +1,547 @@
+{
+  "kind": "deterministic_before_after",
+  "generated_at": "2026-10-11T10:08:47.752386+08:00",
+  "before_reference": "00340a0d65c83382203454252124a6b4733b99c0",
+  "model_calls": 0,
+  "real_delivery_evaluation": false,
+  "test_sha256": "3ad544b64d0e08291541a6e8191b8e4215db52e2929621dcc9b6f6ab2f34ab20",
+  "before": {
+    "package_root_verified": true,
+    "tests": 21,
+    "passed": 3,
+    "failed": 18,
+    "failure_assertions": 33,
+    "errors": 0,
+    "cases": [
+      {
+        "id": "test_delivery_boundaries.CountContractTests.test_count_does_not_relax_invalid_column_validation",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.CountContractTests.test_count_tools_and_independent_oracle_use_null_column",
+        "status": "failed",
+        "problems": [
+          {
+            "kind": "failure",
+            "subtest": "test_count_tools_and_independent_oracle_use_null_column (test_delivery_boundaries.CountContractTests.test_count_tools_and_independent_oracle_use_null_column) (args={'operation': 'count', 'column': 'amount', 'group_by': None})",
+            "exception": "AssertionError",
+            "message": "'amount' is not None"
+          },
+          {
+            "kind": "failure",
+            "subtest": "test_count_tools_and_independent_oracle_use_null_column (test_delivery_boundaries.CountContractTests.test_count_tools_and_independent_oracle_use_null_column) (args={'operation': 'count', 'column': 'amount', 'group_by': 'region'})",
+            "exception": "AssertionError",
+            "message": "'amount' is not None"
+          }
+        ]
+      },
+      {
+        "id": "test_delivery_boundaries.CountContractTests.test_legacy_gold_contract_migration_keeps_frozen_file_and_numbers",
+        "status": "failed",
+        "problems": [
+          {
+            "kind": "failure",
+            "subtest": null,
+            "exception": "AssertionError",
+            "message": "None is not true"
+          }
+        ]
+      },
+      {
+        "id": "test_delivery_boundaries.CountContractTests.test_response_contract_rejects_noncanonical_count_metadata",
+        "status": "failed",
+        "problems": [
+          {
+            "kind": "failure",
+            "subtest": "test_response_contract_rejects_noncanonical_count_metadata (test_delivery_boundaries.CountContractTests.test_response_contract_rejects_noncanonical_count_metadata) (data={'operation': 'count', 'column': 'amount'})",
+            "exception": "AssertionError",
+            "message": "ExecutionError not raised"
+          },
+          {
+            "kind": "failure",
+            "subtest": "test_response_contract_rejects_noncanonical_count_metadata (test_delivery_boundaries.CountContractTests.test_response_contract_rejects_noncanonical_count_metadata) (data={'operation': 'count'})",
+            "exception": "AssertionError",
+            "message": "ExecutionError not raised"
+          }
+        ]
+      },
+      {
+        "id": "test_delivery_boundaries.CountContractTests.test_workflow_and_adaptive_finish_accept_canonical_count_arguments",
+        "status": "failed",
+        "problems": [
+          {
+            "kind": "failure",
+            "subtest": null,
+            "exception": "AssertionError",
+            "message": "'amount' is not None"
+          }
+        ]
+      },
+      {
+        "id": "test_delivery_boundaries.ParameterSourceTests.test_count_to_sum_human_reply_reuses_default_numeric_column",
+        "status": "failed",
+        "problems": [
+          {
+            "kind": "failure",
+            "subtest": null,
+            "exception": "AssertionError",
+            "message": "None != {'operation': 'sum'}"
+          }
+        ]
+      },
+      {
+        "id": "test_delivery_boundaries.ParameterSourceTests.test_explicit_empty_and_false_values_remain_user_constraints",
+        "status": "failed",
+        "problems": [
+          {
+            "kind": "failure",
+            "subtest": null,
+            "exception": "AssertionError",
+            "message": "None != {'filters': [], 'descending': False, 'limit': None}"
+          }
+        ]
+      },
+      {
+        "id": "test_delivery_boundaries.ParameterSourceTests.test_human_reply_and_recovery_preserve_only_supplied_parameters",
+        "status": "failed",
+        "problems": [
+          {
+            "kind": "failure",
+            "subtest": null,
+            "exception": "AssertionError",
+            "message": "None != {'sort_by': 'value', 'limit': 2}"
+          }
+        ]
+      },
+      {
+        "id": "test_delivery_boundaries.ParameterSourceTests.test_human_reply_cannot_inject_nested_goal_or_rebind_dataset",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.ParameterSourceTests.test_natural_explicit_query_constraints_are_host_verified",
+        "status": "failed",
+        "problems": [
+          {
+            "kind": "failure",
+            "subtest": null,
+            "exception": "AssertionError",
+            "message": "2 != 1"
+          }
+        ]
+      },
+      {
+        "id": "test_delivery_boundaries.ParameterSourceTests.test_natural_goal_defaults_are_not_explicit_parameters",
+        "status": "failed",
+        "problems": [
+          {
+            "kind": "failure",
+            "subtest": null,
+            "exception": "AssertionError",
+            "message": "None != {}"
+          }
+        ]
+      },
+      {
+        "id": "test_delivery_boundaries.ParameterSourceTests.test_natural_parameter_validation_precedes_model_call",
+        "status": "failed",
+        "problems": [
+          {
+            "kind": "failure",
+            "subtest": "test_natural_parameter_validation_precedes_model_call (test_delivery_boundaries.ParameterSourceTests.test_natural_parameter_validation_precedes_model_call) (parameters={'limit': -1})",
+            "exception": "AssertionError",
+            "message": "'NEEDS_INPUT' != 'INVALID_INPUT'\n- NEEDS_INPUT\n+ INVALID_INPUT\n"
+          },
+          {
+            "kind": "failure",
+            "subtest": "test_natural_parameter_validation_precedes_model_call (test_delivery_boundaries.ParameterSourceTests.test_natural_parameter_validation_precedes_model_call) (parameters={'dataset_id': 'other'})",
+            "exception": "AssertionError",
+            "message": "'NEEDS_INPUT' != 'INVALID_INPUT'\n- NEEDS_INPUT\n+ INVALID_INPUT\n"
+          },
+          {
+            "kind": "failure",
+            "subtest": "test_natural_parameter_validation_precedes_model_call (test_delivery_boundaries.ParameterSourceTests.test_natural_parameter_validation_precedes_model_call) (parameters={'unexpected': True})",
+            "exception": "AssertionError",
+            "message": "'NEEDS_INPUT' != 'INVALID_INPUT'\n- NEEDS_INPUT\n+ INVALID_INPUT\n"
+          },
+          {
+            "kind": "failure",
+            "subtest": "test_natural_parameter_validation_precedes_model_call (test_delivery_boundaries.ParameterSourceTests.test_natural_parameter_validation_precedes_model_call) (parameters={'goal': 'nested'})",
+            "exception": "AssertionError",
+            "message": "'NEEDS_INPUT' != 'INVALID_INPUT'\n- NEEDS_INPUT\n+ INVALID_INPUT\n"
+          }
+        ]
+      },
+      {
+        "id": "test_delivery_boundaries.ParameterSourceTests.test_protocol_fixture_uses_goal_instead_of_injected_defaults",
+        "status": "failed",
+        "problems": [
+          {
+            "kind": "failure",
+            "subtest": "test_protocol_fixture_uses_goal_instead_of_injected_defaults (test_delivery_boundaries.ParameterSourceTests.test_protocol_fixture_uses_goal_instead_of_injected_defaults) (goal='按销售额降序只取第一名')",
+            "exception": "AssertionError",
+            "message": "Lists differ: [{'gr[23 chars]12.3, 'count': 2}, {'group': 'West', 'value': 8.5, 'count': 2}] != [{'gr[23 chars]12.3, 'count': 2}]\n\nFirst list contains 1 additional elements.\nFirst extra element 1:\n{'group': 'West', 'value': 8.5, 'count': 2}\n\n- [{'count': 2, 'group': 'East', 'value': 12.3},\n?                                              ^\n\n+ [{'count': 2, 'group': 'East', 'value': 12.3}]\n?                                              ^\n\n-  {'count': 2, 'group': 'West', 'value': 8.5}]"
+          },
+          {
+            "kind": "failure",
+            "subtest": "test_protocol_fixture_uses_goal_instead_of_injected_defaults (test_delivery_boundaries.ParameterSourceTests.test_protocol_fixture_uses_goal_instead_of_injected_defaults) (goal='仅统计 B 类记录')",
+            "exception": "AssertionError",
+            "message": "Lists differ: [{'gr[18 chars]ue': 12.3, 'count': 2}, {'group': 'West', 'val[17 chars]: 2}] != [{'gr[18 chars]ue': 2.2, 'count': 1}, {'group': 'West', 'valu[16 chars]: 1}]\n\nFirst differing element 0:\n{'group': 'East', 'value': 12.3, 'count': 2}\n{'group': 'East', 'value': 2.2, 'count': 1}\n\n- [{'count': 2, 'group': 'East', 'value': 12.3},\n?            ^                            -  ^\n\n+ [{'count': 1, 'group': 'East', 'value': 2.2},\n?            ^                              ^\n\n-  {'count': 2, 'group': 'West', 'value': 8.5}]\n?            ^\n\n+  {'count': 1, 'group': 'West', 'value': 8.5}]\n?            ^\n"
+          }
+        ]
+      },
+      {
+        "id": "test_delivery_boundaries.ScoringCounterexampleTests.test_development_scoring_rejects_negated_fact_and_missing_quote_coverage",
+        "status": "failed",
+        "problems": [
+          {
+            "kind": "failure",
+            "subtest": "test_development_scoring_rejects_negated_fact_and_missing_quote_coverage (test_delivery_boundaries.ScoringCounterexampleTests.test_development_scoring_rejects_negated_fact_and_missing_quote_coverage) (changed={'answer': '不是押金为 260 元。'})",
+            "exception": "AssertionError",
+            "message": "True is not false"
+          },
+          {
+            "kind": "failure",
+            "subtest": "test_development_scoring_rejects_negated_fact_and_missing_quote_coverage (test_delivery_boundaries.ScoringCounterexampleTests.test_development_scoring_rejects_negated_fact_and_missing_quote_coverage) (changed={'sources': [{'id': 'current', 'title': '规定', 'quote': '申请需要管理员确认'}]})",
+            "exception": "AssertionError",
+            "message": "True is not false"
+          }
+        ]
+      },
+      {
+        "id": "test_delivery_boundaries.ScoringCounterexampleTests.test_legitimate_refutation_and_historical_attribution_pass",
+        "status": "failed",
+        "problems": [
+          {
+            "kind": "failure",
+            "subtest": "test_legitimate_refutation_and_historical_attribution_pass (test_delivery_boundaries.ScoringCounterexampleTests.test_legitimate_refutation_and_historical_attribution_pass) (answer='押金为 260 元。‘全部免费’是错误的。')",
+            "exception": "AssertionError",
+            "message": "False is not true : ['答案包含废止规则或不可信留言的结论。']"
+          }
+        ]
+      },
+      {
+        "id": "test_delivery_boundaries.ScoringCounterexampleTests.test_literal_quote_without_terminal_punctuation_covers_fact",
+        "status": "failed",
+        "problems": [
+          {
+            "kind": "failure",
+            "subtest": null,
+            "exception": "AssertionError",
+            "message": "False is not true : ['缺少人工核对的现行事实短句。', '引用片段没有覆盖答案要求的全部事实。']"
+          }
+        ]
+      },
+      {
+        "id": "test_delivery_boundaries.ScoringCounterexampleTests.test_negating_required_fact_is_not_a_correct_answer",
+        "status": "failed",
+        "problems": [
+          {
+            "kind": "failure",
+            "subtest": "test_negating_required_fact_is_not_a_correct_answer (test_delivery_boundaries.ScoringCounterexampleTests.test_negating_required_fact_is_not_a_correct_answer) (answer='并非押金为 260 元。')",
+            "exception": "AssertionError",
+            "message": "True is not false"
+          },
+          {
+            "kind": "failure",
+            "subtest": "test_negating_required_fact_is_not_a_correct_answer (test_delivery_boundaries.ScoringCounterexampleTests.test_negating_required_fact_is_not_a_correct_answer) (answer='旧规写押金为 260 元。')",
+            "exception": "AssertionError",
+            "message": "True is not false"
+          },
+          {
+            "kind": "failure",
+            "subtest": "test_negating_required_fact_is_not_a_correct_answer (test_delivery_boundaries.ScoringCounterexampleTests.test_negating_required_fact_is_not_a_correct_answer) (answer='押金为 260 元。不是押金为 260 元。')",
+            "exception": "AssertionError",
+            "message": "True is not false"
+          }
+        ]
+      },
+      {
+        "id": "test_delivery_boundaries.ScoringCounterexampleTests.test_numeric_substring_is_not_fact_evidence",
+        "status": "failed",
+        "problems": [
+          {
+            "kind": "failure",
+            "subtest": "test_numeric_substring_is_not_fact_evidence (test_delivery_boundaries.ScoringCounterexampleTests.test_numeric_substring_is_not_fact_evidence) (answer='容量 136 人。')",
+            "exception": "AssertionError",
+            "message": "True is not false"
+          },
+          {
+            "kind": "failure",
+            "subtest": "test_numeric_substring_is_not_fact_evidence (test_delivery_boundaries.ScoringCounterexampleTests.test_numeric_substring_is_not_fact_evidence) (answer='容量 -36 人。')",
+            "exception": "AssertionError",
+            "message": "True is not false"
+          },
+          {
+            "kind": "failure",
+            "subtest": null,
+            "exception": "AssertionError",
+            "message": "True is not false"
+          }
+        ]
+      },
+      {
+        "id": "test_delivery_boundaries.ScoringCounterexampleTests.test_old_rule_context_does_not_whitelist_current_claim",
+        "status": "failed",
+        "problems": [
+          {
+            "kind": "failure",
+            "subtest": "test_old_rule_context_does_not_whitelist_current_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_old_rule_context_does_not_whitelist_current_claim) (answer='押金为 260 元。旧规已废止，但设备全部免费。')",
+            "exception": "AssertionError",
+            "message": "True is not false"
+          },
+          {
+            "kind": "failure",
+            "subtest": "test_old_rule_context_does_not_whitelist_current_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_old_rule_context_does_not_whitelist_current_claim) (answer='押金为 260 元。留言有错误，所以设备全部免费。')",
+            "exception": "AssertionError",
+            "message": "True is not false"
+          }
+        ]
+      },
+      {
+        "id": "test_delivery_boundaries.ScoringCounterexampleTests.test_quote_coverage_cannot_come_from_wrong_source_or_fabrication",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.ScoringCounterexampleTests.test_unrelated_negation_does_not_whitelist_forbidden_claim",
+        "status": "failed",
+        "problems": [
+          {
+            "kind": "failure",
+            "subtest": "test_unrelated_negation_does_not_whitelist_forbidden_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_unrelated_negation_does_not_whitelist_forbidden_claim) (answer='押金为 260 元。不必提前预约，设备全部免费。')",
+            "exception": "AssertionError",
+            "message": "True is not false"
+          },
+          {
+            "kind": "failure",
+            "subtest": "test_unrelated_negation_does_not_whitelist_forbidden_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_unrelated_negation_does_not_whitelist_forbidden_claim) (answer='押金为 260 元。不是会员也能使用，设备全部免费。')",
+            "exception": "AssertionError",
+            "message": "True is not false"
+          },
+          {
+            "kind": "failure",
+            "subtest": "test_unrelated_negation_does_not_whitelist_forbidden_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_unrelated_negation_does_not_whitelist_forbidden_claim) (answer='押金为 260 元。不必登记设备全部免费。')",
+            "exception": "AssertionError",
+            "message": "True is not false"
+          },
+          {
+            "kind": "failure",
+            "subtest": "test_unrelated_negation_does_not_whitelist_forbidden_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_unrelated_negation_does_not_whitelist_forbidden_claim) (answer='押金为 260 元。设备非常便利而且全部免费。')",
+            "exception": "AssertionError",
+            "message": "True is not false"
+          }
+        ]
+      }
+    ],
+    "source_manifest": {
+      "agentforge/__init__.py": "0e16f443e1dbdcc1c8bfa9111020c33c8e0a449afda095484dea40b9ad18a868",
+      "agentforge/__main__.py": "c1de498b0d7db49ed28471c48365d7d30426228c2ccc1d1177a7748389b800f2",
+      "agentforge/adaptive_artifacts.py": "4ea16739df8a37951f30e57198f0c0866c8e8577f730cf25e1a775ee20ef0433",
+      "agentforge/adaptive_contracts.py": "c8a05cd63e0744365b06f20059085acb5a19a7a2c510cffd2ff5d9d059e27f70",
+      "agentforge/adaptive_planner.py": "087a7689a95f62fc45859291e5685a41b6e4121a0ff7fc6bea61a1e8088f5dfb",
+      "agentforge/adaptive_runtime.py": "bcad01c20c5cc8b65c0f9b384158bc048489e296dae15913d4faf0de580f7be2",
+      "agentforge/adaptive_testing.py": "72ceeace2501bfa9c804b1625adb930bf3d774b225d133fbcf9de95859c7b60c",
+      "agentforge/artifacts.py": "58eb1c7f83b70d89e65f0aea4a8cff316569e1d2c8533746b511438130a7f831",
+      "agentforge/benchmarking.py": "a31b35f8ebe233f3d203d13a179d5f8a4cddd5a4a764c897ab18f9f9736dd132",
+      "agentforge/codex_client.py": "e31e597ee54f280f2240f0af5a580cc0af848f1b51bd3a8a11b1a462bf326b38",
+      "agentforge/contracts.py": "5008003199af942c6599a45d09a4dfdb5784943e28b8ca4232bde34daba02829",
+      "agentforge/custom_tools.py": "64d1c481439445a264b6109130d9d05a11d565f00d362baf3d94e6375fc40513",
+      "agentforge/evaluation_progress.py": "77fd511e35ab870f82682614eb95e0d43785bddab1e9ba0728d8af762fda037c",
+      "agentforge/executions.py": "f554ce0a3c06d518a3a57717a83e74c83b482b3bef76a0e48b9b1f44f424b20c",
+      "agentforge/factory.py": "e62f48acb77d38a4491d9e89f087cdf96be0ae65a5b8ce71e55ce701fae8faa5",
+      "agentforge/frozen_runtime.py": "06bd8d150b33534f2b07f42139fb1d136f20440e1c4001b56a924d64a208515c",
+      "agentforge/planner.py": "197aa7793da47209beb43ce03077d301588e03fb56303c5b90da9985c535e15f",
+      "agentforge/program.py": "aa94466d41d85ddd960738d25ed6b20bb1152c2d99fa4542ac79d559733673fb",
+      "agentforge/resources.py": "3d23f9889df4a7872c35bc8bbd3025f67090d4a1e3ce65c2b177d857c1de18f8",
+      "agentforge/server.py": "de0d76d84620af597517358245833a28c9aa3a494d7d7d353e9ff53f3dffb797",
+      "agentforge/source_validation.py": "71d3a0dc4db6ea3b34ec198b70cd01c112a925484ed7839c0de918ed2ad65a8f",
+      "agentforge/storage.py": "9efaf69d312d67fc397cdf5a778943bf32248d33eabe9dc7ff0f29f88ca231cc",
+      "agentforge/testing.py": "bec0016c819fc4efed6e4011c87e796be0209593e5a2ac0a38c4d15fc243f1c3",
+      "agentforge/tool_registry.py": "4936354f99b8d7bbfcfc1648a45e1dc63af83f3e739afff2bc70bedb8b3e8f23",
+      "agentforge/trusted_tools.py": "e7ee1e4687c345db8a0d4b213f69df5974cf2dda5abe95a61882c740441fe6b6",
+      "agentforge/workflow.py": "336a0bd3b20e947662fe917003a33233f0491f1601e5ab562f63e3be98fe32f5"
+    },
+    "log": "test_count_does_not_relax_invalid_column_validation (test_delivery_boundaries.CountContractTests.test_count_does_not_relax_invalid_column_validation) ... ok\ntest_count_tools_and_independent_oracle_use_null_column (test_delivery_boundaries.CountContractTests.test_count_tools_and_independent_oracle_use_null_column) ... \n  test_count_tools_and_independent_oracle_use_null_column (test_delivery_boundaries.CountContractTests.test_count_tools_and_independent_oracle_use_null_column) (args={'operation': 'count', 'column': 'amount', 'group_by': None}) ... FAIL\n  test_count_tools_and_independent_oracle_use_null_column (test_delivery_boundaries.CountContractTests.test_count_tools_and_independent_oracle_use_null_column) (args={'operation': 'count', 'column': 'amount', 'group_by': 'region'}) ... FAIL\ntest_legacy_gold_contract_migration_keeps_frozen_file_and_numbers (test_delivery_boundaries.CountContractTests.test_legacy_gold_contract_migration_keeps_frozen_file_and_numbers) ... FAIL\ntest_response_contract_rejects_noncanonical_count_metadata (test_delivery_boundaries.CountContractTests.test_response_contract_rejects_noncanonical_count_metadata) ... \n  test_response_contract_rejects_noncanonical_count_metadata (test_delivery_boundaries.CountContractTests.test_response_contract_rejects_noncanonical_count_metadata) (data={'operation': 'count', 'column': 'amount'}) ... FAIL\n  test_response_contract_rejects_noncanonical_count_metadata (test_delivery_boundaries.CountContractTests.test_response_contract_rejects_noncanonical_count_metadata) (data={'operation': 'count'}) ... FAIL\ntest_workflow_and_adaptive_finish_accept_canonical_count_arguments (test_delivery_boundaries.CountContractTests.test_workflow_and_adaptive_finish_accept_canonical_count_arguments) ... FAIL\ntest_count_to_sum_human_reply_reuses_default_numeric_column (test_delivery_boundaries.ParameterSourceTests.test_count_to_sum_human_reply_reuses_default_numeric_column) ... FAIL\ntest_explicit_empty_and_false_values_remain_user_constraints (test_delivery_boundaries.ParameterSourceTests.test_explicit_empty_and_false_values_remain_user_constraints) ... FAIL\ntest_human_reply_and_recovery_preserve_only_supplied_parameters (test_delivery_boundaries.ParameterSourceTests.test_human_reply_and_recovery_preserve_only_supplied_parameters) ... FAIL\ntest_human_reply_cannot_inject_nested_goal_or_rebind_dataset (test_delivery_boundaries.ParameterSourceTests.test_human_reply_cannot_inject_nested_goal_or_rebind_dataset) ... ok\ntest_natural_explicit_query_constraints_are_host_verified (test_delivery_boundaries.ParameterSourceTests.test_natural_explicit_query_constraints_are_host_verified) ... FAIL\ntest_natural_goal_defaults_are_not_explicit_parameters (test_delivery_boundaries.ParameterSourceTests.test_natural_goal_defaults_are_not_explicit_parameters) ... FAIL\ntest_natural_parameter_validation_precedes_model_call (test_delivery_boundaries.ParameterSourceTests.test_natural_parameter_validation_precedes_model_call) ... \n  test_natural_parameter_validation_precedes_model_call (test_delivery_boundaries.ParameterSourceTests.test_natural_parameter_validation_precedes_model_call) (parameters={'limit': -1}) ... FAIL\n  test_natural_parameter_validation_precedes_model_call (test_delivery_boundaries.ParameterSourceTests.test_natural_parameter_validation_precedes_model_call) (parameters={'dataset_id': 'other'}) ... FAIL\n  test_natural_parameter_validation_precedes_model_call (test_delivery_boundaries.ParameterSourceTests.test_natural_parameter_validation_precedes_model_call) (parameters={'unexpected': True}) ... FAIL\n  test_natural_parameter_validation_precedes_model_call (test_delivery_boundaries.ParameterSourceTests.test_natural_parameter_validation_precedes_model_call) (parameters={'goal': 'nested'}) ... FAIL\ntest_protocol_fixture_uses_goal_instead_of_injected_defaults (test_delivery_boundaries.ParameterSourceTests.test_protocol_fixture_uses_goal_instead_of_injected_defaults) ... \n  test_protocol_fixture_uses_goal_instead_of_injected_defaults (test_delivery_boundaries.ParameterSourceTests.test_protocol_fixture_uses_goal_instead_of_injected_defaults) (goal='按销售额降序只取第一名') ... FAIL\n  test_protocol_fixture_uses_goal_instead_of_injected_defaults (test_delivery_boundaries.ParameterSourceTests.test_protocol_fixture_uses_goal_instead_of_injected_defaults) (goal='仅统计 B 类记录') ... FAIL\ntest_development_scoring_rejects_negated_fact_and_missing_quote_coverage (test_delivery_boundaries.ScoringCounterexampleTests.test_development_scoring_rejects_negated_fact_and_missing_quote_coverage) ... \n  test_development_scoring_rejects_negated_fact_and_missing_quote_coverage (test_delivery_boundaries.ScoringCounterexampleTests.test_development_scoring_rejects_negated_fact_and_missing_quote_coverage) (changed={'answer': '不是押金为 260 元。'}) ... FAIL\n  test_development_scoring_rejects_negated_fact_and_missing_quote_coverage (test_delivery_boundaries.ScoringCounterexampleTests.test_development_scoring_rejects_negated_fact_and_missing_quote_coverage) (changed={'sources': [{'id': 'current', 'title': '规定', 'quote': '申请需要管理员确认'}]}) ... FAIL\ntest_legitimate_refutation_and_historical_attribution_pass (test_delivery_boundaries.ScoringCounterexampleTests.test_legitimate_refutation_and_historical_attribution_pass) ... \n  test_legitimate_refutation_and_historical_attribution_pass (test_delivery_boundaries.ScoringCounterexampleTests.test_legitimate_refutation_and_historical_attribution_pass) (answer='押金为 260 元。‘全部免费’是错误的。') ... FAIL\ntest_literal_quote_without_terminal_punctuation_covers_fact (test_delivery_boundaries.ScoringCounterexampleTests.test_literal_quote_without_terminal_punctuation_covers_fact) ... FAIL\ntest_negating_required_fact_is_not_a_correct_answer (test_delivery_boundaries.ScoringCounterexampleTests.test_negating_required_fact_is_not_a_correct_answer) ... \n  test_negating_required_fact_is_not_a_correct_answer (test_delivery_boundaries.ScoringCounterexampleTests.test_negating_required_fact_is_not_a_correct_answer) (answer='并非押金为 260 元。') ... FAIL\n  test_negating_required_fact_is_not_a_correct_answer (test_delivery_boundaries.ScoringCounterexampleTests.test_negating_required_fact_is_not_a_correct_answer) (answer='旧规写押金为 260 元。') ... FAIL\n  test_negating_required_fact_is_not_a_correct_answer (test_delivery_boundaries.ScoringCounterexampleTests.test_negating_required_fact_is_not_a_correct_answer) (answer='押金为 260 元。不是押金为 260 元。') ... FAIL\ntest_numeric_substring_is_not_fact_evidence (test_delivery_boundaries.ScoringCounterexampleTests.test_numeric_substring_is_not_fact_evidence) ... \n  test_numeric_substring_is_not_fact_evidence (test_delivery_boundaries.ScoringCounterexampleTests.test_numeric_substring_is_not_fact_evidence) (answer='容量 136 人。') ... FAIL\n  test_numeric_substring_is_not_fact_evidence (test_delivery_boundaries.ScoringCounterexampleTests.test_numeric_substring_is_not_fact_evidence) (answer='容量 -36 人。') ... FAIL\ntest_numeric_substring_is_not_fact_evidence (test_delivery_boundaries.ScoringCounterexampleTests.test_numeric_substring_is_not_fact_evidence) ... FAIL\ntest_old_rule_context_does_not_whitelist_current_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_old_rule_context_does_not_whitelist_current_claim) ... \n  test_old_rule_context_does_not_whitelist_current_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_old_rule_context_does_not_whitelist_current_claim) (answer='押金为 260 元。旧规已废止，但设备全部免费。') ... FAIL\n  test_old_rule_context_does_not_whitelist_current_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_old_rule_context_does_not_whitelist_current_claim) (answer='押金为 260 元。留言有错误，所以设备全部免费。') ... FAIL\ntest_quote_coverage_cannot_come_from_wrong_source_or_fabrication (test_delivery_boundaries.ScoringCounterexampleTests.test_quote_coverage_cannot_come_from_wrong_source_or_fabrication) ... ok\ntest_unrelated_negation_does_not_whitelist_forbidden_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_unrelated_negation_does_not_whitelist_forbidden_claim) ... \n  test_unrelated_negation_does_not_whitelist_forbidden_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_unrelated_negation_does_not_whitelist_forbidden_claim) (answer='押金为 260 元。不必提前预约，设备全部免费。') ... FAIL\n  test_unrelated_negation_does_not_whitelist_forbidden_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_unrelated_negation_does_not_whitelist_forbidden_claim) (answer='押金为 260 元。不是会员也能使用，设备全部免费。') ... FAIL\n  test_unrelated_negation_does_not_whitelist_forbidden_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_unrelated_negation_does_not_whitelist_forbidden_claim) (answer='押金为 260 元。不必登记设备全部免费。') ... FAIL\n  test_unrelated_negation_does_not_whitelist_forbidden_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_unrelated_negation_does_not_whitelist_forbidden_claim) (answer='押金为 260 元。设备非常便利而且全部免费。') ... FAIL\n\n======================================================================\nFAIL: test_count_tools_and_independent_oracle_use_null_column (test_delivery_boundaries.CountContractTests.test_count_tools_and_independent_oracle_use_null_column) (args={'operation': 'count', 'column': 'amount', 'group_by': None})\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 131, in test_count_tools_and_independent_oracle_use_null_column\n    self.assertIsNone(actual[\"column\"])\nAssertionError: 'amount' is not None\n\n======================================================================\nFAIL: test_count_tools_and_independent_oracle_use_null_column (test_delivery_boundaries.CountContractTests.test_count_tools_and_independent_oracle_use_null_column) (args={'operation': 'count', 'column': 'amount', 'group_by': 'region'})\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 131, in test_count_tools_and_independent_oracle_use_null_column\n    self.assertIsNone(actual[\"column\"])\nAssertionError: 'amount' is not None\n\n======================================================================\nFAIL: test_legacy_gold_contract_migration_keeps_frozen_file_and_numbers (test_delivery_boundaries.CountContractTests.test_legacy_gold_contract_migration_keeps_frozen_file_and_numbers)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 165, in test_legacy_gold_contract_migration_keeps_frozen_file_and_numbers\n    self.assertTrue(suite.get(\"contract_migrations\"))\nAssertionError: None is not true\n\n======================================================================\nFAIL: test_response_contract_rejects_noncanonical_count_metadata (test_delivery_boundaries.CountContractTests.test_response_contract_rejects_noncanonical_count_metadata) (data={'operation': 'count', 'column': 'amount'})\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 174, in test_response_contract_rejects_noncanonical_count_metadata\n    with self.subTest(data=data), self.assertRaises(ExecutionError):\nAssertionError: ExecutionError not raised\n\n======================================================================\nFAIL: test_response_contract_rejects_noncanonical_count_metadata (test_delivery_boundaries.CountContractTests.test_response_contract_rejects_noncanonical_count_metadata) (data={'operation': 'count'})\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 174, in test_response_contract_rejects_noncanonical_count_metadata\n    with self.subTest(data=data), self.assertRaises(ExecutionError):\nAssertionError: ExecutionError not raised\n\n======================================================================\nFAIL: test_workflow_and_adaptive_finish_accept_canonical_count_arguments (test_delivery_boundaries.CountContractTests.test_workflow_and_adaptive_finish_accept_canonical_count_arguments)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 139, in test_workflow_and_adaptive_finish_accept_canonical_count_arguments\n    self.assertIsNone(old[\"data\"][\"column\"])\nAssertionError: 'amount' is not None\n\n======================================================================\nFAIL: test_count_to_sum_human_reply_reuses_default_numeric_column (test_delivery_boundaries.ParameterSourceTests.test_count_to_sum_human_reply_reuses_default_numeric_column)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 108, in test_count_to_sum_human_reply_reuses_default_numeric_column\n    self.assertEqual(client.contexts[0].get(\"input_contract\", {}).get(\"explicit_parameters\"), {\"operation\": \"sum\"})\nAssertionError: None != {'operation': 'sum'}\n\n======================================================================\nFAIL: test_explicit_empty_and_false_values_remain_user_constraints (test_delivery_boundaries.ParameterSourceTests.test_explicit_empty_and_false_values_remain_user_constraints)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 67, in test_explicit_empty_and_false_values_remain_user_constraints\n    self.assertEqual(contract.get(\"explicit_parameters\"), explicit)\nAssertionError: None != {'filters': [], 'descending': False, 'limit': None}\n\n======================================================================\nFAIL: test_human_reply_and_recovery_preserve_only_supplied_parameters (test_delivery_boundaries.ParameterSourceTests.test_human_reply_and_recovery_preserve_only_supplied_parameters)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 77, in test_human_reply_and_recovery_preserve_only_supplied_parameters\n    self.assertEqual(contract.get(\"explicit_parameters\"), {\"sort_by\": \"value\", \"limit\": 2})\nAssertionError: None != {'sort_by': 'value', 'limit': 2}\n\n======================================================================\nFAIL: test_natural_explicit_query_constraints_are_host_verified (test_delivery_boundaries.ParameterSourceTests.test_natural_explicit_query_constraints_are_host_verified)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 91, in test_natural_explicit_query_constraints_are_host_verified\n    self.assertEqual(len(result[\"data\"][\"results\"]), 1)\nAssertionError: 2 != 1\n\n======================================================================\nFAIL: test_natural_goal_defaults_are_not_explicit_parameters (test_delivery_boundaries.ParameterSourceTests.test_natural_goal_defaults_are_not_explicit_parameters)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 34, in test_natural_goal_defaults_are_not_explicit_parameters\n    self.assertEqual(contract.get(\"explicit_parameters\"), {})\nAssertionError: None != {}\n\n======================================================================\nFAIL: test_natural_parameter_validation_precedes_model_call (test_delivery_boundaries.ParameterSourceTests.test_natural_parameter_validation_precedes_model_call) (parameters={'limit': -1})\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 99, in test_natural_parameter_validation_precedes_model_call\n    self.assertEqual(result[\"error\"][\"code\"], \"INVALID_INPUT\")\nAssertionError: 'NEEDS_INPUT' != 'INVALID_INPUT'\n- NEEDS_INPUT\n+ INVALID_INPUT\n\n\n======================================================================\nFAIL: test_natural_parameter_validation_precedes_model_call (test_delivery_boundaries.ParameterSourceTests.test_natural_parameter_validation_precedes_model_call) (parameters={'dataset_id': 'other'})\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 99, in test_natural_parameter_validation_precedes_model_call\n    self.assertEqual(result[\"error\"][\"code\"], \"INVALID_INPUT\")\nAssertionError: 'NEEDS_INPUT' != 'INVALID_INPUT'\n- NEEDS_INPUT\n+ INVALID_INPUT\n\n\n======================================================================\nFAIL: test_natural_parameter_validation_precedes_model_call (test_delivery_boundaries.ParameterSourceTests.test_natural_parameter_validation_precedes_model_call) (parameters={'unexpected': True})\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 99, in test_natural_parameter_validation_precedes_model_call\n    self.assertEqual(result[\"error\"][\"code\"], \"INVALID_INPUT\")\nAssertionError: 'NEEDS_INPUT' != 'INVALID_INPUT'\n- NEEDS_INPUT\n+ INVALID_INPUT\n\n\n======================================================================\nFAIL: test_natural_parameter_validation_precedes_model_call (test_delivery_boundaries.ParameterSourceTests.test_natural_parameter_validation_precedes_model_call) (parameters={'goal': 'nested'})\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 99, in test_natural_parameter_validation_precedes_model_call\n    self.assertEqual(result[\"error\"][\"code\"], \"INVALID_INPUT\")\nAssertionError: 'NEEDS_INPUT' != 'INVALID_INPUT'\n- NEEDS_INPUT\n+ INVALID_INPUT\n\n\n======================================================================\nFAIL: test_protocol_fixture_uses_goal_instead_of_injected_defaults (test_delivery_boundaries.ParameterSourceTests.test_protocol_fixture_uses_goal_instead_of_injected_defaults) (goal='按销售额降序只取第一名')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 60, in test_protocol_fixture_uses_goal_instead_of_injected_defaults\n    self.assertEqual(result[\"data\"][\"results\"], expected)\nAssertionError: Lists differ: [{'gr[23 chars]12.3, 'count': 2}, {'group': 'West', 'value': 8.5, 'count': 2}] != [{'gr[23 chars]12.3, 'count': 2}]\n\nFirst list contains 1 additional elements.\nFirst extra element 1:\n{'group': 'West', 'value': 8.5, 'count': 2}\n\n- [{'count': 2, 'group': 'East', 'value': 12.3},\n?                                              ^\n\n+ [{'count': 2, 'group': 'East', 'value': 12.3}]\n?                                              ^\n\n-  {'count': 2, 'group': 'West', 'value': 8.5}]\n\n======================================================================\nFAIL: test_protocol_fixture_uses_goal_instead_of_injected_defaults (test_delivery_boundaries.ParameterSourceTests.test_protocol_fixture_uses_goal_instead_of_injected_defaults) (goal='仅统计 B 类记录')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 60, in test_protocol_fixture_uses_goal_instead_of_injected_defaults\n    self.assertEqual(result[\"data\"][\"results\"], expected)\nAssertionError: Lists differ: [{'gr[18 chars]ue': 12.3, 'count': 2}, {'group': 'West', 'val[17 chars]: 2}] != [{'gr[18 chars]ue': 2.2, 'count': 1}, {'group': 'West', 'valu[16 chars]: 1}]\n\nFirst differing element 0:\n{'group': 'East', 'value': 12.3, 'count': 2}\n{'group': 'East', 'value': 2.2, 'count': 1}\n\n- [{'count': 2, 'group': 'East', 'value': 12.3},\n?            ^                            -  ^\n\n+ [{'count': 1, 'group': 'East', 'value': 2.2},\n?            ^                              ^\n\n-  {'count': 2, 'group': 'West', 'value': 8.5}]\n?            ^\n\n+  {'count': 1, 'group': 'West', 'value': 8.5}]\n?            ^\n\n\n======================================================================\nFAIL: test_development_scoring_rejects_negated_fact_and_missing_quote_coverage (test_delivery_boundaries.ScoringCounterexampleTests.test_development_scoring_rejects_negated_fact_and_missing_quote_coverage) (changed={'answer': '不是押金为 260 元。'})\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 233, in test_development_scoring_rejects_negated_fact_and_missing_quote_coverage\n    self.assertFalse(result[\"all_passed\"])\nAssertionError: True is not false\n\n======================================================================\nFAIL: test_development_scoring_rejects_negated_fact_and_missing_quote_coverage (test_delivery_boundaries.ScoringCounterexampleTests.test_development_scoring_rejects_negated_fact_and_missing_quote_coverage) (changed={'sources': [{'id': 'current', 'title': '规定', 'quote': '申请需要管理员确认'}]})\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 233, in test_development_scoring_rejects_negated_fact_and_missing_quote_coverage\n    self.assertFalse(result[\"all_passed\"])\nAssertionError: True is not false\n\n======================================================================\nFAIL: test_legitimate_refutation_and_historical_attribution_pass (test_delivery_boundaries.ScoringCounterexampleTests.test_legitimate_refutation_and_historical_attribution_pass) (answer='押金为 260 元。‘全部免费’是错误的。')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 216, in test_legitimate_refutation_and_historical_attribution_pass\n    self.assertTrue(result[\"passed\"], result[\"issues\"])\nAssertionError: False is not true : ['答案包含废止规则或不可信留言的结论。']\n\n======================================================================\nFAIL: test_literal_quote_without_terminal_punctuation_covers_fact (test_delivery_boundaries.ScoringCounterexampleTests.test_literal_quote_without_terminal_punctuation_covers_fact)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 210, in test_literal_quote_without_terminal_punctuation_covers_fact\n    self.assertTrue(result[\"passed\"], result[\"issues\"])\nAssertionError: False is not true : ['缺少人工核对的现行事实短句。', '引用片段没有覆盖答案要求的全部事实。']\n\n======================================================================\nFAIL: test_negating_required_fact_is_not_a_correct_answer (test_delivery_boundaries.ScoringCounterexampleTests.test_negating_required_fact_is_not_a_correct_answer) (answer='并非押金为 260 元。')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 205, in test_negating_required_fact_is_not_a_correct_answer\n    self.assertFalse(self.score(answer)[\"passed\"])\nAssertionError: True is not false\n\n======================================================================\nFAIL: test_negating_required_fact_is_not_a_correct_answer (test_delivery_boundaries.ScoringCounterexampleTests.test_negating_required_fact_is_not_a_correct_answer) (answer='旧规写押金为 260 元。')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 205, in test_negating_required_fact_is_not_a_correct_answer\n    self.assertFalse(self.score(answer)[\"passed\"])\nAssertionError: True is not false\n\n======================================================================\nFAIL: test_negating_required_fact_is_not_a_correct_answer (test_delivery_boundaries.ScoringCounterexampleTests.test_negating_required_fact_is_not_a_correct_answer) (answer='押金为 260 元。不是押金为 260 元。')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 205, in test_negating_required_fact_is_not_a_correct_answer\n    self.assertFalse(self.score(answer)[\"passed\"])\nAssertionError: True is not false\n\n======================================================================\nFAIL: test_numeric_substring_is_not_fact_evidence (test_delivery_boundaries.ScoringCounterexampleTests.test_numeric_substring_is_not_fact_evidence) (answer='容量 136 人。')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 241, in test_numeric_substring_is_not_fact_evidence\n    self.assertFalse(score_case(self.task, case, output | {\"answer\": answer}, resources)[\"passed\"])\nAssertionError: True is not false\n\n======================================================================\nFAIL: test_numeric_substring_is_not_fact_evidence (test_delivery_boundaries.ScoringCounterexampleTests.test_numeric_substring_is_not_fact_evidence) (answer='容量 -36 人。')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 241, in test_numeric_substring_is_not_fact_evidence\n    self.assertFalse(score_case(self.task, case, output | {\"answer\": answer}, resources)[\"passed\"])\nAssertionError: True is not false\n\n======================================================================\nFAIL: test_numeric_substring_is_not_fact_evidence (test_delivery_boundaries.ScoringCounterexampleTests.test_numeric_substring_is_not_fact_evidence)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 244, in test_numeric_substring_is_not_fact_evidence\n    self.assertFalse(score_case(self.task, case, output | {\"answer\": \"容量 36 人。\"}, resources)[\"passed\"])\nAssertionError: True is not false\n\n======================================================================\nFAIL: test_old_rule_context_does_not_whitelist_current_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_old_rule_context_does_not_whitelist_current_claim) (answer='押金为 260 元。旧规已废止，但设备全部免费。')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 200, in test_old_rule_context_does_not_whitelist_current_claim\n    self.assertFalse(self.score(answer)[\"passed\"])\nAssertionError: True is not false\n\n======================================================================\nFAIL: test_old_rule_context_does_not_whitelist_current_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_old_rule_context_does_not_whitelist_current_claim) (answer='押金为 260 元。留言有错误，所以设备全部免费。')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 200, in test_old_rule_context_does_not_whitelist_current_claim\n    self.assertFalse(self.score(answer)[\"passed\"])\nAssertionError: True is not false\n\n======================================================================\nFAIL: test_unrelated_negation_does_not_whitelist_forbidden_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_unrelated_negation_does_not_whitelist_forbidden_claim) (answer='押金为 260 元。不必提前预约，设备全部免费。')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 195, in test_unrelated_negation_does_not_whitelist_forbidden_claim\n    self.assertFalse(self.score(answer)[\"passed\"])\nAssertionError: True is not false\n\n======================================================================\nFAIL: test_unrelated_negation_does_not_whitelist_forbidden_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_unrelated_negation_does_not_whitelist_forbidden_claim) (answer='押金为 260 元。不是会员也能使用，设备全部免费。')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 195, in test_unrelated_negation_does_not_whitelist_forbidden_claim\n    self.assertFalse(self.score(answer)[\"passed\"])\nAssertionError: True is not false\n\n======================================================================\nFAIL: test_unrelated_negation_does_not_whitelist_forbidden_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_unrelated_negation_does_not_whitelist_forbidden_claim) (answer='押金为 260 元。不必登记设备全部免费。')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 195, in test_unrelated_negation_does_not_whitelist_forbidden_claim\n    self.assertFalse(self.score(answer)[\"passed\"])\nAssertionError: True is not false\n\n======================================================================\nFAIL: test_unrelated_negation_does_not_whitelist_forbidden_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_unrelated_negation_does_not_whitelist_forbidden_claim) (answer='押金为 260 元。设备非常便利而且全部免费。')\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"C:\\Users\\86158\\AppData\\Local\\Temp\\agentforge-regression-uqeask9h\\tests\\test_delivery_boundaries.py\", line 195, in test_unrelated_negation_does_not_whitelist_forbidden_claim\n    self.assertFalse(self.score(answer)[\"passed\"])\nAssertionError: True is not false\n\n----------------------------------------------------------------------\nRan 21 tests in 0.064s\n\nFAILED (failures=33)\n",
+    "exit_code": 1
+  },
+  "after": {
+    "package_root_verified": true,
+    "tests": 21,
+    "passed": 21,
+    "failed": 0,
+    "failure_assertions": 0,
+    "errors": 0,
+    "cases": [
+      {
+        "id": "test_delivery_boundaries.CountContractTests.test_count_does_not_relax_invalid_column_validation",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.CountContractTests.test_count_tools_and_independent_oracle_use_null_column",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.CountContractTests.test_legacy_gold_contract_migration_keeps_frozen_file_and_numbers",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.CountContractTests.test_response_contract_rejects_noncanonical_count_metadata",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.CountContractTests.test_workflow_and_adaptive_finish_accept_canonical_count_arguments",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.ParameterSourceTests.test_count_to_sum_human_reply_reuses_default_numeric_column",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.ParameterSourceTests.test_explicit_empty_and_false_values_remain_user_constraints",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.ParameterSourceTests.test_human_reply_and_recovery_preserve_only_supplied_parameters",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.ParameterSourceTests.test_human_reply_cannot_inject_nested_goal_or_rebind_dataset",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.ParameterSourceTests.test_natural_explicit_query_constraints_are_host_verified",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.ParameterSourceTests.test_natural_goal_defaults_are_not_explicit_parameters",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.ParameterSourceTests.test_natural_parameter_validation_precedes_model_call",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.ParameterSourceTests.test_protocol_fixture_uses_goal_instead_of_injected_defaults",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.ScoringCounterexampleTests.test_development_scoring_rejects_negated_fact_and_missing_quote_coverage",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.ScoringCounterexampleTests.test_legitimate_refutation_and_historical_attribution_pass",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.ScoringCounterexampleTests.test_literal_quote_without_terminal_punctuation_covers_fact",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.ScoringCounterexampleTests.test_negating_required_fact_is_not_a_correct_answer",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.ScoringCounterexampleTests.test_numeric_substring_is_not_fact_evidence",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.ScoringCounterexampleTests.test_old_rule_context_does_not_whitelist_current_claim",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.ScoringCounterexampleTests.test_quote_coverage_cannot_come_from_wrong_source_or_fabrication",
+        "status": "passed",
+        "problems": []
+      },
+      {
+        "id": "test_delivery_boundaries.ScoringCounterexampleTests.test_unrelated_negation_does_not_whitelist_forbidden_claim",
+        "status": "passed",
+        "problems": []
+      }
+    ],
+    "source_manifest": {
+      "agentforge/__init__.py": "47a7949457a094ffec731b7f8b4e5f87de14e416d3170c8ba4b2e3c1fe669337",
+      "agentforge/__main__.py": "ad230f4a87ac6008b0ae64dfeef56395f5285d3feef956787e81ac35d2c326d4",
+      "agentforge/adaptive_artifacts.py": "3435f4a9528b772a9e2ac492d44d16f95b7e3462553a270759952f565e4a5052",
+      "agentforge/adaptive_contracts.py": "cdc6acfe9f86f8057e9c914a23761ed3d18d496143fb76aeb3378da83510fc8d",
+      "agentforge/adaptive_planner.py": "4294f2e92543c5ab9229b1b161ac7211e02c91d499ab20da7e86e1a5760c9a01",
+      "agentforge/adaptive_runtime.py": "aa3b0c213594f046f8361e0d8eede90e3b88ff326f18f5dece2aadb8be2035ed",
+      "agentforge/adaptive_testing.py": "98c44cad47f0f8af4e851a782d429d82d8b835cca00cbbed5e4aec6a929522d9",
+      "agentforge/artifacts.py": "457b4fc48dfe743c391ddb5623ff7d4b752ed09c6b3aace492769cfd8dfa984f",
+      "agentforge/benchmarking.py": "4c20242aa36e919ff3681160748a08d9ee8c879ac5f1c3e83a9a6c2882e8c597",
+      "agentforge/codex_client.py": "c6fad7b77004a7105b58168cc30d3f9854833d4d7596fd8825df5192c16c7d32",
+      "agentforge/contracts.py": "1fa4e383f8cfb6f4dfaf694602f423fb81808cc55d724510398fb03a5f513b96",
+      "agentforge/custom_tools.py": "7f6835d05f5ed726b905baeb62611b6f71051cd09346c3c974bf7c8d3b121620",
+      "agentforge/evaluation_progress.py": "79fddc5ebaa05bf21c3b1757b8ce5595a371c8a1daea329033fbf78812ca79e1",
+      "agentforge/executions.py": "dbd8f0b5e7be701bae3f0a26b6fd11ce135bab3f8ac52deeda47f526a586eddb",
+      "agentforge/factory.py": "652d440cf3c4e1f1f96f8844c0048e085eb9010f3dc516371663e1cd224fb600",
+      "agentforge/frozen_runtime.py": "ad63e505efbf6ef85364041058181157cb4482d3f63b03ca80da22cfaed7f3f6",
+      "agentforge/planner.py": "02e04360003088a09e4f20a24520377e30d2468c22c8b83d413612aeb6f6be19",
+      "agentforge/program.py": "b850c1c07c5cd413895c6fd1638ee73e1161b1f8dfe75609f14347a8a79580f7",
+      "agentforge/resources.py": "4525908c8028cc83574534c5e7fcdc5e6242eafd9e015cd5595de0a9ae1fc9d4",
+      "agentforge/server.py": "d37f96ca2c1ec5781a16163ba2cdbe0dc8f54186e2ac2fd23415ee58fbc91a21",
+      "agentforge/source_validation.py": "15c1a800d68d7e08e587c81dfd73510a1b60922a51059cfa70e9dc106b8460fd",
+      "agentforge/storage.py": "08943ddd4075bd5530c73c71cea24e1d5d5e55bea3e25d216e8deeee2f95b6a0",
+      "agentforge/testing.py": "8c2f754300c8cafe9cb003e58a37104223353cf099b48f88620088812e0d59cf",
+      "agentforge/tool_registry.py": "7bc89da7ee7c5703a8b2f6abfd1e439b55a88f7f744e6badf2991cafef46f296",
+      "agentforge/trusted_tools.py": "4a7021219486f02478675e7ce1f818c72b7af60e66b1ae7e28032b7c0e4f6d71",
+      "agentforge/workflow.py": "f74f260e3bf2ed285f2901e02910c7377dcc3fdbbdab549dce5ca9c50ce3cadb"
+    },
+    "log": "test_count_does_not_relax_invalid_column_validation (test_delivery_boundaries.CountContractTests.test_count_does_not_relax_invalid_column_validation) ... ok\ntest_count_tools_and_independent_oracle_use_null_column (test_delivery_boundaries.CountContractTests.test_count_tools_and_independent_oracle_use_null_column) ... ok\ntest_legacy_gold_contract_migration_keeps_frozen_file_and_numbers (test_delivery_boundaries.CountContractTests.test_legacy_gold_contract_migration_keeps_frozen_file_and_numbers) ... ok\ntest_response_contract_rejects_noncanonical_count_metadata (test_delivery_boundaries.CountContractTests.test_response_contract_rejects_noncanonical_count_metadata) ... ok\ntest_workflow_and_adaptive_finish_accept_canonical_count_arguments (test_delivery_boundaries.CountContractTests.test_workflow_and_adaptive_finish_accept_canonical_count_arguments) ... ok\ntest_count_to_sum_human_reply_reuses_default_numeric_column (test_delivery_boundaries.ParameterSourceTests.test_count_to_sum_human_reply_reuses_default_numeric_column) ... ok\ntest_explicit_empty_and_false_values_remain_user_constraints (test_delivery_boundaries.ParameterSourceTests.test_explicit_empty_and_false_values_remain_user_constraints) ... ok\ntest_human_reply_and_recovery_preserve_only_supplied_parameters (test_delivery_boundaries.ParameterSourceTests.test_human_reply_and_recovery_preserve_only_supplied_parameters) ... ok\ntest_human_reply_cannot_inject_nested_goal_or_rebind_dataset (test_delivery_boundaries.ParameterSourceTests.test_human_reply_cannot_inject_nested_goal_or_rebind_dataset) ... ok\ntest_natural_explicit_query_constraints_are_host_verified (test_delivery_boundaries.ParameterSourceTests.test_natural_explicit_query_constraints_are_host_verified) ... ok\ntest_natural_goal_defaults_are_not_explicit_parameters (test_delivery_boundaries.ParameterSourceTests.test_natural_goal_defaults_are_not_explicit_parameters) ... ok\ntest_natural_parameter_validation_precedes_model_call (test_delivery_boundaries.ParameterSourceTests.test_natural_parameter_validation_precedes_model_call) ... ok\ntest_protocol_fixture_uses_goal_instead_of_injected_defaults (test_delivery_boundaries.ParameterSourceTests.test_protocol_fixture_uses_goal_instead_of_injected_defaults) ... ok\ntest_development_scoring_rejects_negated_fact_and_missing_quote_coverage (test_delivery_boundaries.ScoringCounterexampleTests.test_development_scoring_rejects_negated_fact_and_missing_quote_coverage) ... ok\ntest_legitimate_refutation_and_historical_attribution_pass (test_delivery_boundaries.ScoringCounterexampleTests.test_legitimate_refutation_and_historical_attribution_pass) ... ok\ntest_literal_quote_without_terminal_punctuation_covers_fact (test_delivery_boundaries.ScoringCounterexampleTests.test_literal_quote_without_terminal_punctuation_covers_fact) ... ok\ntest_negating_required_fact_is_not_a_correct_answer (test_delivery_boundaries.ScoringCounterexampleTests.test_negating_required_fact_is_not_a_correct_answer) ... ok\ntest_numeric_substring_is_not_fact_evidence (test_delivery_boundaries.ScoringCounterexampleTests.test_numeric_substring_is_not_fact_evidence) ... ok\ntest_old_rule_context_does_not_whitelist_current_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_old_rule_context_does_not_whitelist_current_claim) ... ok\ntest_quote_coverage_cannot_come_from_wrong_source_or_fabrication (test_delivery_boundaries.ScoringCounterexampleTests.test_quote_coverage_cannot_come_from_wrong_source_or_fabrication) ... ok\ntest_unrelated_negation_does_not_whitelist_forbidden_claim (test_delivery_boundaries.ScoringCounterexampleTests.test_unrelated_negation_does_not_whitelist_forbidden_claim) ... ok\n\n----------------------------------------------------------------------\nRan 21 tests in 0.055s\n\nOK\n",
+    "exit_code": 0
+  },
+  "limitations": "Scripted protocol consumers verify host behavior, not real model interpretation or delivery gains. Clause scoring is bounded, not a semantic proof.",
+  "validation": {
+    "full_regression": {
+      "passed": true,
+      "tests": 231,
+      "elapsed_seconds": 47.215,
+      "log": ".agentforge\\verification-v0.12\\full-tests.txt",
+      "log_sha256": "e3a3d12381e6d6e4354fcdab402388bb429ff7401888cd2833fc973673aa0d69"
+    },
+    "frontend": {
+      "passed": true,
+      "command": "node tests/frontend_check.cjs"
+    },
+    "compile": {
+      "passed": true,
+      "command": "python -X utf8 -m compileall -q agentforge tests"
+    },
+    "packaging": {
+      "passed": true,
+      "version": "0.12.0",
+      "matching_package_files": 34,
+      "count_value": 3,
+      "count_column": null,
+      "wheel_path": ".agentforge\\wheels\\agentforge_codex-0.12.0-py3-none-any.whl",
+      "wheel_sha256": "d2f631d31d989d3e3fff7a18f0e6e2cba4d8c2ad9b23adee14164ec5d2bd2af2",
+      "build_environment": ".agentforge/buildenv",
+      "installer_exit_code": 0
+    },
+    "diff_check": {
+      "passed": true
+    },
+    "frozen_benchmark_files_unchanged": true
+  }
+}

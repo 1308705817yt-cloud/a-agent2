@@ -152,6 +152,8 @@ def execute_tool(tool_id, params, context, resources):
             raise ExecutionError("UNKNOWN_COLUMN", "该聚合需要数值列。")
         if any(field and field not in previous["columns"] for field in (column, group_by)):
             raise ExecutionError("UNKNOWN_COLUMN", "分析列或分组列不存在。")
+        if operation == "count":
+            column = None
         groups = {} if group_by else {None: []}
         for row in previous["rows"]:
             key = row[group_by] if group_by else None

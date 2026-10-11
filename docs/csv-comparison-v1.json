@@ -1,0 +1,2376 @@
+{
+  "comparison_id": "45f1144aa042",
+  "scenario": "仓库净出库账本分析",
+  "started_at": "2026-10-11T12:42:49.059131+08:00",
+  "finished_at": "2026-10-11T13:14:43.434469+08:00",
+  "suite_hash": "30b5183a6f77bd228fe1733fc46934a0a04d794d6bb97ad7fd2b3c93edcd52b1",
+  "runtime_hash": "aa0b54ce5c9ec4a2c1a8291eb75c979d4a1c7ecc6122a720ebadc14294da55bd",
+  "agentforge_version": "0.12.0",
+  "identity": {
+    "cli_version": "codex-cli 0.146.1",
+    "source_sha256": {
+      "experiments/run_csv_comparison.py": "615cd8d3d69f4888a7eab39f0ca74e16f3be54afcbd42b2a476556174e5f97ab",
+      "experiments/csv_comparison_v1.json": "a96f61f5319a0dc4317d3890e8de279daaa84838f72763aca2ec00d5dff215f0",
+      "tests/test_comparison.py": "74251a5c0ebf7178e7af5bcfa094f50d8c03a158dcde3232e9bc190b0a308a81"
+    },
+    "protocol_tests": {
+      "tests": 8,
+      "passed": 8
+    },
+    "excluded_calibration": "208bf72a3730",
+    "protocol_probe": "accepted_by_real_codex"
+  },
+  "configuration": {
+    "backend": "codex_cli",
+    "requested_model": "cli_default",
+    "resolved_model": null,
+    "request_timeout_seconds": 600,
+    "user_config": "isolated",
+    "binary_identity": {
+      "name": "codex.exe",
+      "bytes": 358937392,
+      "mtime_ns": 1786024563945396500
+    }
+  },
+  "limits": {
+    "build_seconds": 3600,
+    "case_seconds": 600,
+    "max_repairs": 3
+  },
+  "protocol": {
+    "direct": "One fresh Codex complete request per question; no tools, generated agent, repair or feedback.",
+    "full": "One fresh AgentForge build with generated tools, independent development/acceptance, automatic repairs and export; frozen agent then answers the same questions.",
+    "arm_scheduling": "Both arms overlap; cases within each arm execute sequentially. Internal factory test concurrency follows the project defaults.",
+    "scoring": "Both arms use identical frozen numeric and response assertions; custom-tool execution is diagnostic only, not a baseline scoring prerequisite.",
+    "startup": "Full build time/calls reported separately; no cold-start cost is hidden. No gold or future questions in generation/repair.",
+    "fresh_attempts": 1,
+    "external_retries": 0
+  },
+  "limitations": [
+    "One synthetic ledger and one fresh build, not a general success-rate estimate or a causal performance proof.",
+    "Same CLI/default model configuration; CLI does not expose resolved backend model identity.",
+    "Concurrent arms and network variation can affect latency; repeated independent runs are needed.",
+    "This baseline is a direct structured model response without computational tools, not all possible Codex CLI workflows.",
+    "Numeric data/contract assertions do not prove every sentence of the natural-language answer correct."
+  ],
+  "wall_elapsed_ms": 1914334.45,
+  "raw_report": ".agentforge\\comparisons\\45f1144aa042\\report.json",
+  "arms": {
+    "direct": {
+      "status": "completed",
+      "delivered_all_cases": true,
+      "blocked_by_model_service": null,
+      "exception": null,
+      "elapsed_ms": 311968.16,
+      "summary": {
+        "passed": 12,
+        "total": 12,
+        "executed": 12,
+        "computation_passed": 10,
+        "computation_total": 10,
+        "invalid_input_passed": 2,
+        "invalid_input_total": 2,
+        "median_case_ms": 26790.67,
+        "case_wall_sum_ms": 311931.86,
+        "runtime_calls": 12
+      },
+      "computation_median_ms": 26790.67,
+      "calls": {
+        "requests": 12,
+        "statuses": {
+          "completed": 12
+        },
+        "by_stage": [
+          {
+            "stage": "direct",
+            "phase": "questions",
+            "requests": 12
+          }
+        ],
+        "elapsed_known_requests": 12,
+        "model_elapsed_sum_ms": 311867.44,
+        "usage_known_requests": 12,
+        "usage": {
+          "input_tokens": 172233,
+          "cached_input_tokens": 43008,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 1959,
+          "reasoning_output_tokens": 534
+        },
+        "call_ids": [
+          "05ea4368c8f047ba99dd664e5df69e89",
+          "0fc1879096b74ffb9f4757894e7433df",
+          "258b3bf9cc7c452c8e7e426ad0bbdf74",
+          "38c4b0e368724e15a5fce1fdaecbeedf",
+          "504604e240264d76afa128528dd3b074",
+          "6a5ae4d250454c0fbc99a17ef72978ec",
+          "74d9857af8604e73ac7afce909c06338",
+          "986a345d0c3c412fa5466ab805837b6e",
+          "9dbbfb77241f4075b719e2ad12257bcb",
+          "b64c037b1b6d4c669998705150a78252",
+          "b872c1e23d7740819ab1c192bd03e32a",
+          "ef32fdc14206427cbe52d10642cddb6b"
+        ],
+        "failures": []
+      },
+      "cases": [
+        {
+          "id": "default-sum",
+          "category": "structured",
+          "status": "completed",
+          "passed": true,
+          "issues": [],
+          "elapsed_ms": 25567.14,
+          "new_model_calls": 1,
+          "custom_tool_executed": false,
+          "actual_data": {
+            "dataset_id": "dispatch_ledger-aa6d3e10",
+            "operation": "sum",
+            "column": "net_units",
+            "group_by": "warehouse",
+            "results": [
+              {
+                "group": "harbor",
+                "value": 50,
+                "count": 6
+              },
+              {
+                "group": "inland",
+                "value": 56,
+                "count": 6
+              },
+              {
+                "group": "metro",
+                "value": 65,
+                "count": 6
+              },
+              {
+                "group": "ridge",
+                "value": 34,
+                "count": 6
+              }
+            ]
+          },
+          "actual_error": null
+        },
+        {
+          "id": "top-two-goal",
+          "category": "natural_goal",
+          "status": "completed",
+          "passed": true,
+          "issues": [],
+          "elapsed_ms": 29082.27,
+          "new_model_calls": 1,
+          "custom_tool_executed": false,
+          "actual_data": {
+            "dataset_id": "dispatch_ledger-aa6d3e10",
+            "operation": "sum",
+            "column": "net_units",
+            "group_by": "warehouse",
+            "results": [
+              {
+                "group": "metro",
+                "value": 65,
+                "count": 6
+              },
+              {
+                "group": "inland",
+                "value": 56,
+                "count": 6
+              }
+            ]
+          },
+          "actual_error": null
+        },
+        {
+          "id": "adjustment-goal",
+          "category": "natural_goal",
+          "status": "completed",
+          "passed": true,
+          "issues": [],
+          "elapsed_ms": 22271.85,
+          "new_model_calls": 1,
+          "custom_tool_executed": false,
+          "actual_data": {
+            "dataset_id": "dispatch_ledger-aa6d3e10",
+            "operation": "sum",
+            "column": "net_units",
+            "group_by": "warehouse",
+            "results": [
+              {
+                "group": "harbor",
+                "value": -7,
+                "count": 1
+              },
+              {
+                "group": "inland",
+                "value": -4,
+                "count": 1
+              },
+              {
+                "group": "metro",
+                "value": -13,
+                "count": 2
+              },
+              {
+                "group": "ridge",
+                "value": -5,
+                "count": 1
+              }
+            ]
+          },
+          "actual_error": null
+        },
+        {
+          "id": "pending-count-goal",
+          "category": "natural_goal",
+          "status": "completed",
+          "passed": true,
+          "issues": [],
+          "elapsed_ms": 19996.67,
+          "new_model_calls": 1,
+          "custom_tool_executed": false,
+          "actual_data": {
+            "dataset_id": "dispatch_ledger-aa6d3e10",
+            "operation": "count",
+            "column": null,
+            "group_by": null,
+            "results": [
+              {
+                "group": null,
+                "value": 5,
+                "count": 5
+              }
+            ]
+          },
+          "actual_error": null
+        },
+        {
+          "id": "mean-with-blanks",
+          "category": "structured",
+          "status": "completed",
+          "passed": true,
+          "issues": [],
+          "elapsed_ms": 28014.2,
+          "new_model_calls": 1,
+          "custom_tool_executed": false,
+          "actual_data": {
+            "dataset_id": "dispatch_ledger-aa6d3e10",
+            "operation": "mean",
+            "column": "net_units",
+            "group_by": "warehouse",
+            "results": [
+              {
+                "group": "harbor",
+                "value": 10,
+                "count": 6
+              },
+              {
+                "group": "inland",
+                "value": 11.2,
+                "count": 6
+              },
+              {
+                "group": "metro",
+                "value": 13,
+                "count": 6
+              },
+              {
+                "group": "ridge",
+                "value": 6.8,
+                "count": 6
+              }
+            ]
+          },
+          "actual_error": null
+        },
+        {
+          "id": "minimum-adjustment",
+          "category": "structured",
+          "status": "completed",
+          "passed": true,
+          "issues": [],
+          "elapsed_ms": 23907.39,
+          "new_model_calls": 1,
+          "custom_tool_executed": false,
+          "actual_data": {
+            "dataset_id": "dispatch_ledger-aa6d3e10",
+            "operation": "min",
+            "column": "net_units",
+            "group_by": null,
+            "results": [
+              {
+                "group": null,
+                "value": -12,
+                "count": 24
+              }
+            ]
+          },
+          "actual_error": null
+        },
+        {
+          "id": "shipped-top-two",
+          "category": "natural_goal",
+          "status": "completed",
+          "passed": true,
+          "issues": [],
+          "elapsed_ms": 28786.87,
+          "new_model_calls": 1,
+          "custom_tool_executed": false,
+          "actual_data": {
+            "dataset_id": "dispatch_ledger-aa6d3e10",
+            "operation": "sum",
+            "column": "net_units",
+            "group_by": "warehouse",
+            "results": [
+              {
+                "group": "metro",
+                "value": 78,
+                "count": 3
+              },
+              {
+                "group": "inland",
+                "value": 60,
+                "count": 4
+              }
+            ]
+          },
+          "actual_error": null
+        },
+        {
+          "id": "explicit-over-goal",
+          "category": "explicit_conflict",
+          "status": "completed",
+          "passed": true,
+          "issues": [],
+          "elapsed_ms": 28600.76,
+          "new_model_calls": 1,
+          "custom_tool_executed": false,
+          "actual_data": {
+            "dataset_id": "dispatch_ledger-aa6d3e10",
+            "operation": "sum",
+            "column": "net_units",
+            "group_by": "warehouse",
+            "results": [
+              {
+                "group": "harbor",
+                "value": 50,
+                "count": 6
+              },
+              {
+                "group": "inland",
+                "value": 56,
+                "count": 6
+              },
+              {
+                "group": "metro",
+                "value": 65,
+                "count": 6
+              },
+              {
+                "group": "ridge",
+                "value": 34,
+                "count": 6
+              }
+            ]
+          },
+          "actual_error": null
+        },
+        {
+          "id": "empty-mean",
+          "category": "boundary",
+          "status": "completed",
+          "passed": true,
+          "issues": [],
+          "elapsed_ms": 23085.71,
+          "new_model_calls": 1,
+          "custom_tool_executed": false,
+          "actual_data": {
+            "dataset_id": "dispatch_ledger-aa6d3e10",
+            "operation": "mean",
+            "column": "net_units",
+            "group_by": null,
+            "results": [
+              {
+                "group": null,
+                "value": null,
+                "count": 0
+              }
+            ]
+          },
+          "actual_error": null
+        },
+        {
+          "id": "count-with-valid-column",
+          "category": "boundary",
+          "status": "completed",
+          "passed": true,
+          "issues": [],
+          "elapsed_ms": 29052.23,
+          "new_model_calls": 1,
+          "custom_tool_executed": false,
+          "actual_data": {
+            "dataset_id": "dispatch_ledger-aa6d3e10",
+            "operation": "count",
+            "column": null,
+            "group_by": "warehouse",
+            "results": [
+              {
+                "group": "harbor",
+                "value": 6,
+                "count": 6
+              },
+              {
+                "group": "inland",
+                "value": 6,
+                "count": 6
+              },
+              {
+                "group": "metro",
+                "value": 6,
+                "count": 6
+              },
+              {
+                "group": "ridge",
+                "value": 6,
+                "count": 6
+              }
+            ]
+          },
+          "actual_error": null
+        },
+        {
+          "id": "unknown-column",
+          "category": "invalid_input",
+          "status": "completed",
+          "passed": true,
+          "issues": [],
+          "elapsed_ms": 29341.52,
+          "new_model_calls": 1,
+          "custom_tool_executed": false,
+          "actual_data": null,
+          "actual_error": {
+            "code": "UNKNOWN_COLUMN",
+            "message": "Column '__missing__' does not exist in dataset 'dispatch_ledger-aa6d3e10'."
+          }
+        },
+        {
+          "id": "invalid-limit",
+          "category": "invalid_input",
+          "status": "completed",
+          "passed": true,
+          "issues": [],
+          "elapsed_ms": 24225.25,
+          "new_model_calls": 1,
+          "custom_tool_executed": false,
+          "actual_data": null,
+          "actual_error": {
+            "code": "INVALID_INPUT",
+            "message": "Invalid limit: expected an integer from 1 to 1000 or null, but received 0."
+          }
+        }
+      ]
+    },
+    "full": {
+      "status": "completed",
+      "delivered_all_cases": false,
+      "blocked_by_model_service": {
+        "category": "rate_limit",
+        "exit_code": 1,
+        "basis": {
+          "source": "stdout.json_event",
+          "event_type": "turn.failed",
+          "field_path": "error.message",
+          "signal": "quota_or_rate_message"
+        }
+      },
+      "exception": null,
+      "elapsed_ms": 1914268.54,
+      "summary": {
+        "passed": 3,
+        "total": 12,
+        "executed": 5,
+        "computation_passed": 3,
+        "computation_total": 10,
+        "invalid_input_passed": 0,
+        "invalid_input_total": 2,
+        "median_case_ms": 99327.69,
+        "case_wall_sum_ms": 942134.44,
+        "runtime_calls": 11
+      },
+      "computation_median_ms": 99327.69,
+      "calls": {
+        "requests": 71,
+        "statuses": {
+          "completed": 69,
+          "failed": 2
+        },
+        "by_stage": [
+          {
+            "stage": "comparison",
+            "phase": "completed",
+            "requests": 11
+          },
+          {
+            "stage": "factory",
+            "phase": "code",
+            "requests": 1
+          },
+          {
+            "stage": "factory",
+            "phase": "requirements",
+            "requests": 1
+          },
+          {
+            "stage": "factory",
+            "phase": "tests",
+            "requests": 2
+          },
+          {
+            "stage": "factory",
+            "phase": "workflow",
+            "requests": 3
+          },
+          {
+            "stage": "runtime",
+            "phase": "acceptance",
+            "requests": 28
+          },
+          {
+            "stage": "runtime",
+            "phase": "evaluate",
+            "requests": 25
+          }
+        ],
+        "elapsed_known_requests": 71,
+        "model_elapsed_sum_ms": 2965186.99,
+        "usage_known_requests": 69,
+        "usage": {
+          "input_tokens": 1179728,
+          "cached_input_tokens": 311936,
+          "cache_write_input_tokens": 0,
+          "output_tokens": 42433,
+          "reasoning_output_tokens": 7864
+        },
+        "call_ids": [
+          "027f33fe795549ce93feb0cd5e9e4998",
+          "05092e4294ef43e9bfb697ef3e9f7099",
+          "080025a7df744a329f78bd8d55147307",
+          "0a1d4306752c48238203b52ae40014f4",
+          "0ba819b6689b4b359c162df3f7366d27",
+          "2a511c48c8b14035abb91f7d14f22b66",
+          "3032ba8080cb4c7bb51058092dfbdb15",
+          "30632e8a6df04b9bb0055b1f3bdc9908",
+          "3423baaaf9544d3b88d35d02ab5743f5",
+          "381ec1dc307942bcad10f402dff1f1f8",
+          "38be9809132245479b7051822a7dd82e",
+          "3af6d75c4a6f4cfb90749b6f52f2d795",
+          "3bc3e4805dfe4a7f8167615ab6913ff0",
+          "3cf0b1134a3448dbaf0e79f63126aa48",
+          "3d3c11f0dcb94f5cb9a9aeff28b3da29",
+          "45aae3d61abd4c508222987de06a1a46",
+          "47a934df2cc445c581ddcd6c7a71f489",
+          "4b2762dd4b014154b2ddeed63ebd9e9a",
+          "542f777fb01941be8c4036a286280d78",
+          "57b8a88a53f74282951d1f3e290c0190",
+          "594454eb87c14761824504e71a566e87",
+          "60d500009202490db23085af90ad9344",
+          "661594d4cd154f4f87c197f28f473276",
+          "66b4c091d7ed44b893d5ba0f82eb73e2",
+          "6f87343c3a4d40ba916310b583f4cb06",
+          "7416a10728a24fd4be8e61629cdd7b83",
+          "76840dd5fa3a4d34b13b4f6a137aa24a",
+          "78ea674497d44a75a41a419dbdfcf2d3",
+          "78f2bd10a350486d812d3f5a5c08fc19",
+          "7df7d87a3ac749d2816061689f96f0d5",
+          "7ecea00c1de24da99e4f3ede4f9f5d5e",
+          "839d3c090e6e411f8c91b94e9ae57318",
+          "864a8e334ce94de0bf71eb87a952581c",
+          "8ae303918f00425a860fcbfcc8002733",
+          "8d5d12412b574e4bb91dba0fd0c00bab",
+          "94295224c19f47bab1d6ad12d2ac010e",
+          "95c1f1549bca42bfb1b06a995c50dadb",
+          "9e37b16f7848407db69bbec4e731208b",
+          "a03ad39af27d4719982a703fb12eb5a0",
+          "a5215edc47554950be495d559b428cde",
+          "a5487f0fb4ef45c28b0d338add95b2d5",
+          "a77a5ac4707046709ff516f1bea56558",
+          "a91366c320d440f5965062e2f7ed1183",
+          "ab0b5ee86d634e14b909dacdf00d409f",
+          "abfbd5f275e24fd8af7c95ad6040e715",
+          "ae7eaa970cab40bf9d16efd9ed6c02ca",
+          "b12469b652094035b1ae65e8284df066",
+          "b12ef18acdd341b587c05aeb1350886a",
+          "b155adc239ed4a27a600bd493b1e8ad8",
+          "b4916214eec4458ab9302053a6663425",
+          "b57c0e6959d445c3994043dd1850432c",
+          "ba534169c7c5469ca80ec0884da4fd0c",
+          "bba8257d2a964c11afae8c1c9ae019ea",
+          "bf1a30743e4d40309a20261f0dd6dfb0",
+          "bf7a97936e2b43cfba8bc7d1cc424d42",
+          "c364f1e9d55847f6984acd25e9beb41e",
+          "c433dd8762f74cfaa92419327ee0f928",
+          "c8f35377c8a34ece8abda48576431ed4",
+          "cefa8fc88bec48bda6df561b9869f0ea",
+          "cf9233eac7df4b48828a9c7ae219b5cb",
+          "d8f23101aabe42bc8eff27734c2bd161",
+          "dcb08fe2ac254249b6e220b51db5fa69",
+          "dd359c7e27e3400fa9b6a4a2fd405f98",
+          "defb0a8324ac4df3b0c11454521ca663",
+          "e5c78fd94d1741c8ba6592bf68c8205e",
+          "e782b987c7224499896cfced238100bc",
+          "e7e3fc8fa4c64f56845e4f0589599a8c",
+          "edd959f23d4b42b889b71ad4c86b2529",
+          "f74c5dc5278f46f6bd7562db6631789e",
+          "fc5c367349f84ced9a02e35293ad6311",
+          "fcf22002b1654061a9c5bbe47401f716"
+        ],
+        "failures": [
+          {
+            "call_id": "3bc3e4805dfe4a7f8167615ab6913ff0",
+            "error_code": "MODEL_ERROR",
+            "error_category": "rate_limit",
+            "exit_code": 1,
+            "classification_basis": {
+              "source": "stdout.json_event",
+              "event_type": "turn.failed",
+              "field_path": "error.message",
+              "signal": "quota_or_rate_message"
+            },
+            "scope": null,
+            "elapsed_ms": 21922.82,
+            "context": {
+              "run_id": "39f9bde5ddfd",
+              "version": 1,
+              "stage": "comparison",
+              "phase": "completed",
+              "comparison_id": "45f1144aa042",
+              "arm": "full",
+              "case_id": "mean-with-blanks",
+              "input_hash": "64bac0be9373108071bcd18245158bb4191b092e6911053adbefdca704e7c3b3"
+            }
+          },
+          {
+            "call_id": "864a8e334ce94de0bf71eb87a952581c",
+            "error_code": "TASK_TIMEOUT",
+            "error_category": "task_deadline",
+            "exit_code": null,
+            "classification_basis": {
+              "source": "caller_deadline",
+              "scope": "runtime"
+            },
+            "scope": "runtime",
+            "elapsed_ms": 600068.32,
+            "context": {
+              "run_id": "39f9bde5ddfd",
+              "version": 1,
+              "stage": "comparison",
+              "phase": "completed",
+              "comparison_id": "45f1144aa042",
+              "arm": "full",
+              "case_id": "pending-count-goal",
+              "input_hash": "2c8957ffe1abc26376485029dfe5ba86cfaf2711f0bd436fca4ad7c362e8df26"
+            }
+          }
+        ]
+      },
+      "cases": [
+        {
+          "id": "default-sum",
+          "category": "structured",
+          "status": "completed",
+          "passed": true,
+          "issues": [],
+          "elapsed_ms": 94127.43,
+          "new_model_calls": 3,
+          "custom_tool_executed": true,
+          "actual_data": {
+            "dataset_id": "dispatch_ledger-aa6d3e10",
+            "operation": "sum",
+            "column": "net_units",
+            "group_by": "warehouse",
+            "results": [
+              {
+                "group": "harbor",
+                "value": 50.0,
+                "count": 6
+              },
+              {
+                "group": "inland",
+                "value": 56.0,
+                "count": 6
+              },
+              {
+                "group": "metro",
+                "value": 65.0,
+                "count": 6
+              },
+              {
+                "group": "ridge",
+                "value": 34.0,
+                "count": 6
+              }
+            ]
+          },
+          "actual_error": null
+        },
+        {
+          "id": "top-two-goal",
+          "category": "natural_goal",
+          "status": "completed",
+          "passed": true,
+          "issues": [],
+          "elapsed_ms": 126604.26,
+          "new_model_calls": 3,
+          "custom_tool_executed": true,
+          "actual_data": {
+            "dataset_id": "dispatch_ledger-aa6d3e10",
+            "operation": "sum",
+            "column": "net_units",
+            "group_by": "warehouse",
+            "results": [
+              {
+                "group": "metro",
+                "value": 65.0,
+                "count": 6
+              },
+              {
+                "group": "inland",
+                "value": 56.0,
+                "count": 6
+              }
+            ]
+          },
+          "actual_error": null
+        },
+        {
+          "id": "adjustment-goal",
+          "category": "natural_goal",
+          "status": "completed",
+          "passed": true,
+          "issues": [],
+          "elapsed_ms": 99327.69,
+          "new_model_calls": 3,
+          "custom_tool_executed": true,
+          "actual_data": {
+            "dataset_id": "dispatch_ledger-aa6d3e10",
+            "operation": "sum",
+            "column": "net_units",
+            "group_by": "warehouse",
+            "results": [
+              {
+                "group": "harbor",
+                "value": -7.0,
+                "count": 1
+              },
+              {
+                "group": "inland",
+                "value": -4.0,
+                "count": 1
+              },
+              {
+                "group": "metro",
+                "value": -13.0,
+                "count": 2
+              },
+              {
+                "group": "ridge",
+                "value": -5.0,
+                "count": 1
+              }
+            ]
+          },
+          "actual_error": null
+        },
+        {
+          "id": "pending-count-goal",
+          "category": "natural_goal",
+          "status": "completed",
+          "passed": false,
+          "issues": [
+            "响应契约：错误响应格式无效。",
+            "数值、行数、筛选、排序或结果元数据与冻结答案不一致。"
+          ],
+          "elapsed_ms": 600109.95,
+          "new_model_calls": 1,
+          "custom_tool_executed": false,
+          "actual_data": null,
+          "actual_error": {
+            "code": "TASK_TIMEOUT",
+            "message": "任务已达到总耗时上限；状态已保留，可调整时间后继续。",
+            "scope": "runtime"
+          }
+        },
+        {
+          "id": "mean-with-blanks",
+          "category": "structured",
+          "status": "completed",
+          "passed": false,
+          "issues": [
+            "数值、行数、筛选、排序或结果元数据与冻结答案不一致。"
+          ],
+          "elapsed_ms": 21965.11,
+          "new_model_calls": 1,
+          "custom_tool_executed": false,
+          "actual_data": null,
+          "actual_error": {
+            "code": "MODEL_ERROR",
+            "message": "Codex 额度或速率限制阻止调用；检查账号状态后重试中断用例。"
+          }
+        },
+        {
+          "id": "minimum-adjustment",
+          "category": "structured",
+          "status": "unexecuted",
+          "passed": false,
+          "issues": [
+            "未执行；保留在交付分母内。"
+          ],
+          "elapsed_ms": null,
+          "new_model_calls": null,
+          "custom_tool_executed": null,
+          "actual_data": null,
+          "actual_error": null
+        },
+        {
+          "id": "shipped-top-two",
+          "category": "natural_goal",
+          "status": "unexecuted",
+          "passed": false,
+          "issues": [
+            "未执行；保留在交付分母内。"
+          ],
+          "elapsed_ms": null,
+          "new_model_calls": null,
+          "custom_tool_executed": null,
+          "actual_data": null,
+          "actual_error": null
+        },
+        {
+          "id": "explicit-over-goal",
+          "category": "explicit_conflict",
+          "status": "unexecuted",
+          "passed": false,
+          "issues": [
+            "未执行；保留在交付分母内。"
+          ],
+          "elapsed_ms": null,
+          "new_model_calls": null,
+          "custom_tool_executed": null,
+          "actual_data": null,
+          "actual_error": null
+        },
+        {
+          "id": "empty-mean",
+          "category": "boundary",
+          "status": "unexecuted",
+          "passed": false,
+          "issues": [
+            "未执行；保留在交付分母内。"
+          ],
+          "elapsed_ms": null,
+          "new_model_calls": null,
+          "custom_tool_executed": null,
+          "actual_data": null,
+          "actual_error": null
+        },
+        {
+          "id": "count-with-valid-column",
+          "category": "boundary",
+          "status": "unexecuted",
+          "passed": false,
+          "issues": [
+            "未执行；保留在交付分母内。"
+          ],
+          "elapsed_ms": null,
+          "new_model_calls": null,
+          "custom_tool_executed": null,
+          "actual_data": null,
+          "actual_error": null
+        },
+        {
+          "id": "unknown-column",
+          "category": "invalid_input",
+          "status": "unexecuted",
+          "passed": false,
+          "issues": [
+            "未执行；保留在交付分母内。"
+          ],
+          "elapsed_ms": null,
+          "new_model_calls": null,
+          "custom_tool_executed": null,
+          "actual_data": null,
+          "actual_error": null
+        },
+        {
+          "id": "invalid-limit",
+          "category": "invalid_input",
+          "status": "unexecuted",
+          "passed": false,
+          "issues": [
+            "未执行；保留在交付分母内。"
+          ],
+          "elapsed_ms": null,
+          "new_model_calls": null,
+          "custom_tool_executed": null,
+          "actual_data": null,
+          "actual_error": null
+        }
+      ],
+      "build": {
+        "status": "completed",
+        "phase": "completed",
+        "version": 1,
+        "elapsed_ms": 971961.97,
+        "repairs": 0,
+        "design_repairs": 0,
+        "call_audit": {
+          "available": true,
+          "model_calls": 60,
+          "completed_calls": 60,
+          "failed_calls": 0,
+          "inflight_calls": 0,
+          "model_elapsed_ms": 2023296.13
+        },
+        "export_path": ".agentforge\\comparisons\\45f1144aa042\\factory-workspace\\dist\\39f9bde5ddfd",
+        "archive_path": ".agentforge\\comparisons\\45f1144aa042\\factory-workspace\\dist\\39f9bde5ddfd.zip",
+        "last_error": null,
+        "error_info": null,
+        "archive_sha256": "475e74c01e67912801c4016546f3295906294851124b0508a74dd2b8a4e430c8",
+        "development": {
+          "passed": 20,
+          "total": 20,
+          "all_passed": true,
+          "new_model_calls": 25,
+          "reused_cases": [],
+          "tool_coverage": [
+            {
+              "tool": "custom.numeric_value_profile",
+              "partition": "development",
+              "computation": [
+                "dev-profile-mixed-signs-blanks",
+                "dev-profile-explicit-empty"
+              ],
+              "host_rejection": [
+                "dev-host-rows-wrong-type"
+              ],
+              "business_error": [
+                "dev-error-unknown-column",
+                "dev-error-malformed-row",
+                "dev-error-missing-column",
+                "dev-error-invalid-numeric-cell"
+              ]
+            }
+          ]
+        },
+        "acceptance": {
+          "passed": 19,
+          "total": 19,
+          "all_passed": true,
+          "new_model_calls": 28,
+          "reused_cases": [],
+          "tool_coverage": [
+            {
+              "tool": "custom.numeric_value_profile",
+              "partition": "acceptance",
+              "computation": [
+                "acc-profile-alternative-values"
+              ],
+              "host_rejection": [
+                "acc-host-rows-wrong-type"
+              ],
+              "business_error": [
+                "acc-error-unknown-column",
+                "acc-error-malformed-row",
+                "acc-error-missing-column",
+                "acc-error-invalid-numeric-cell"
+              ]
+            }
+          ]
+        }
+      },
+      "rejected_design_candidates": [
+        {
+          "attempt": 1,
+          "error": "custom.grouped_numeric_audit.output_schema_json 在字符 1639 处无效：Extra data；附近内容：'able_columns\",\"dataset_row_count\",\"groups\",\"totals\",\"error\"],\"additionalProperties\":false}〕困难？ Wait invalid closing character likely. Need fix JSON string actual ends `}` not Chine'。检查 properties 对象是否在 required 之前闭合。",
+          "feedback": null,
+          "design": {
+            "name": "warehouse_dispatch_ledger_agent",
+            "task_type": "csv_analysis",
+            "instructions": "你是仓库净出库账本分析 Agent。你必须运行时规划并调用工具，根据授权数据集的完整数据回答，而不是执行固定 DAG，也不得从预览或既有示例中硬编码结果。\n\n输入优先级与规划：\n1. 首先识别哪些规范化参数是用户或人类方向显式提供的。必须按键是否存在判断显式性，不能按值的真假判断；显式的空数组、false 和 null 均具有最高优先级并原样保留。\n2. 对未显式提供的参数，从自然语言目标推断。自然语言可覆盖默认值，但不能覆盖任何显式参数。\n3. 仍未确定的参数使用默认值：dataset_id=\"dispatch_ledger-aa6d3e10\"、operation=\"sum\"、column=\"net_units\"、group_by=\"warehouse\"、filters=[]、sort_by=\"group\"、descending=false、limit=null。\n4. 调用计算工具前，生成明确计划，逐项列出最终 dataset_id、operation、column、group_by、filters、sort_by、descending、limit，并为每项标记来源为 explicit、inferred 或 default。\n\n契约校验：\n- 唯一授权数据集是 dispatch_ledger-aa6d3e10；不得替换为预览、文件路径或其他 ID。\n- 合法列为 entry、warehouse、net_units、status。column、group_by 以及每个筛选字段必须是合法列；非法列错误必须包含原列名及完整可用列清单。\n- operation 仅允许 sum、mean、count、min、max。\n- sort_by 仅允许 group、value、count。\n- limit 仅接受 null 或非负整数；布尔值、负数、非整数和其他类型均须产生明确错误。由于 csv.query 内建契约只接受 1..1000 的非空 limit，最终 limit=0 时不得伪装成其他值：应直接返回空结果，并保留可核验的查询参数和行数证据；大于 1000 时返回明确的范围错误。\n- count 统计全部筛选后行，包括目标数值为空的行；执行 count 时规范化 column=null，即使用户提供了合法 column，也不得要求数值列。\n- sum、mean、min、max 仅使用目标列的非空数值；负数和零有效。若实际非空值不能转换为数值，应明确报错。\n\n决策循环：\n1. 规划：按上述优先级形成规范化查询及参数来源表；不要将默认值误当作用户约束。\n2. 校验：必要时调用 resources.list 核对授权资源和列；在计算前完成 dataset、列、操作、排序、筛选及 limit 校验。\n3. 主计算：对可执行查询调用 csv.query。传入完整规范化参数；filters=[] 表示不筛选，descending=false 必须显式保留，limit=null 表示不截断。筛选必须发生在聚合之前，排序发生在 limit 之前。\n4. 数值证据：对于 sum、mean、min、max，调用 custom.grouped_numeric_audit，column 与 group_by 使用最终查询的对应字段。仅在最终查询没有筛选时，审计工具的全数据分组证据可直接用于结果核验；存在筛选时，主结果及筛选后证据以 csv.query 观察为准，不得把未筛选审计值冒充筛选结果。\n5. 观察与复核：检查 csv.query 返回的 dataset ID、总行数、筛选后行数、各组行数或有效数值数、排序与截断状态。对无筛选数值查询，将审计工具报告的负数数、零数、空值数、有效数值数和分组 sum/min/max 用作独立证据。若观察与计划不一致，修正规范化参数或重试；不得编造缺失数据。\n6. 工具错误重规划：参数错误只修正模型推断或默认产生的值；不得擅自修改用户显式值。显式值非法时直接返回具体错误。\n7. 完成：最终 CSV 主结果的 result_ref 必须引用 csv.query 的观察 ID，不能引用工具 ID、资源 ID或自定义审计观察。最终 sources 必须为 []。回答应简洁呈现最终查询参数、结果和数值证据，说明空值处理；不得声称读取了 preview 作为完整账本。\n\n默认场景应执行完整 dispatch_ledger-aa6d3e10 上按 warehouse 对 net_units 求和，组名自然升序、不筛选、不截断。测试和运行均必须使用工具动态读取完整 rows，不得依赖未提供的隐藏验收用例。",
+            "planning_hints": [
+              "把“参数键存在”与“参数值为真”严格区分，以保护显式的 []、false 和 null。",
+              "先输出包含参数来源的查询计划，再调用任何计算工具。",
+              "csv.query 是最终聚合结果的权威来源；custom.grouped_numeric_audit 提供完整无筛选数值查询的独立质量与分组证据。",
+              "默认查询后核对组名自然升序、limit=null、负数和零计入、空字符串排除，并比较审计 sum 与主查询结果。",
+              "筛选查询不要使用全数据审计统计替代筛选后证据。",
+              "工具返回错误或证据矛盾时保留显式参数，只修正推断或默认部分。"
+            ],
+            "tools": [
+              "resources.list",
+              "csv.query",
+              "custom.grouped_numeric_audit"
+            ],
+            "custom_tools": [
+              {
+                "id": "custom.grouped_numeric_audit",
+                "description": "读取授权数据集 dispatch_ledger-aa6d3e10 的完整 rows，或在提供 rows 时审计该独立测试夹具。按指定 group_by 的字符串组值自然升序输出数值列证据。对每组以及全局确定性地报告总行数、空值数、有效数值数、负数数、零数、sum、min、max；空字符串和 null 计为空且不参与数值统计，负数和零参与统计。输入 rows 缺省时必须调用 dataset('dispatch_ledger-aa6d3e10')，不得使用 preview。rows=[] 返回成功、dataset_row_count=0、groups=[]，全局各计数为 0 且 sum=0、min=null、max=null。组数组严格按 group 字符串自然升序排列，不截断；每个输入行只属于一个组。若行不是对象、缺少所需列、组值不是字符串，或非空目标单元格不是受支持的十进制数文本/数值，则返回 ok=false 的确定性错误，groups=[]，并在 error 中给出代码和包含相关列名或零基行号的消息。",
+                "parameters": [
+                  {
+                    "name": "column",
+                    "type": "string",
+                    "required": true,
+                    "description": "要审计的数值列；必须是 entry、warehouse、net_units、status 之一。通常为 net_units。"
+                  },
+                  {
+                    "name": "group_by",
+                    "type": "string",
+                    "required": true,
+                    "description": "分组列；必须是 entry、warehouse、net_units、status 之一。通常为 warehouse。"
+                  },
+                  {
+                    "name": "rows",
+                    "type": "array",
+                    "required": false,
+                    "description": "可选独立测试夹具。省略时读取 dataset('dispatch_ledger-aa6d3e10') 的完整 rows；提供空数组时审计空输入。每项应为包含 column 和 group_by 字段的对象。"
+                  }
+                ],
+                "error_cases": [
+                  {
+                    "id": "host_rows_wrong_type",
+                    "layer": "host",
+                    "input_json": "{\"column\":\"net_units\",\"group_by\":\"warehouse\",\"rows\":false}",
+                    "code": "INVALID_ARGUMENTS",
+                    "description": "rows 的声明类型为 array；布尔值在源码执行前由宿主拒绝。"
+                  },
+                  {
+                    "id": "unknown_numeric_column",
+                    "layer": "tool_result",
+                    "input_json": "{\"column\":\"missing_units\",\"group_by\":\"warehouse\"}",
+                    "code": "INVALID_COLUMN",
+                    "description": "schema 合法但业务列不存在；返回的消息包含 missing_units 和可用列 entry, warehouse, net_units, status。"
+                  },
+                  {
+                    "id": "malformed_fixture_row",
+                    "layer": "tool_result",
+                    "input_json": "{\"column\":\"net_units\",\"group_by\":\"warehouse\",\"rows\":[\"bad-row\"]}",
+                    "code": "INVALID_ROW",
+                    "description": "数组成员不是对象；返回包含零基行号 0 的业务错误。"
+                  },
+                  {
+                    "id": "invalid_numeric_fixture_cell",
+                    "layer": "tool_result",
+                    "input_json": "{\"column\":\"net_units\",\"group_by\":\"warehouse\",\"rows\":[{\"warehouse\":\"harbor\",\"net_units\":\"abc\"}]}",
+                    "code": "INVALID_NUMERIC_CELL",
+                    "description": "非空目标值不是受支持的十进制数；返回包含列名 net_units 和零基行号 0 的业务错误。"
+                  }
+                ],
+                "execution_plan": {
+                  "algorithm": "定义固定 available_columns=[\"entry\",\"warehouse\",\"net_units\",\"status\"] 和 dataset_id=\"dispatch_ledger-aa6d3e10\"。先验证 column 与 group_by 是否在该数组中；失败时返回 ok=false、对应 INVALID_COLUMN 或 INVALID_GROUP_BY、完整可用列清单、空 groups 和零/空全局统计。若 rows 参数缺省，则调用 dataset(dataset_id)，取其完整 rows，并将 rows_source 设为 \"dataset\"；否则使用传入数组并设为 \"fixture\"。使用有界 for 循环逐行处理，最大项目数受工具 iteration_items 限制。验证每行是对象且同时含有 column 和 group_by；验证组值是字符串。目标单元格为 null 或空字符串时增加该组和全局 blank_count、row_count，不参与其余统计。非空单元格若为 number 则直接转换为 float；若为字符串，则用有界字符循环验证可选首字符 + 或 -、至多一个小数点、且至少一个数字，不接受指数、空白或其他字符，然后调用 float；失败返回 INVALID_NUMERIC_CELL。对有效值增加 valid_numeric_count，按值小于 0 或等于 0 增加 negative_count 或 zero_count，累加 sum，并用显式比较更新 min/max。用字典按组标签保存累积器，同时维护首次出现的标签数组；结束后调用 sorted(labels) 得到自然升序标签，并按该顺序生成 groups。每组字段固定为 group,row_count,blank_count,valid_numeric_count,negative_count,zero_count,sum,min,max。全局字段以相同规则计算；没有有效数值时 sum=0、min=null、max=null。dataset_row_count 等于实际处理 rows 的长度。成功返回 ok=true,error=null；任何业务错误返回 ok=false，groups=[]，且不输出部分聚合。",
+                  "helpers": [
+                    "dataset",
+                    "get",
+                    "len",
+                    "append",
+                    "sorted",
+                    "is_object",
+                    "is_array",
+                    "is_string",
+                    "float",
+                    "str"
+                  ],
+                  "syntax": [
+                    "Module",
+                    "FunctionDef",
+                    "arguments",
+                    "arg",
+                    "Assign",
+                    "Name",
+                    "Store",
+                    "Load",
+                    "Constant",
+                    "List",
+                    "Dict",
+                    "If",
+                    "For",
+                    "Return",
+                    "Call",
+                    "Compare",
+                    "In",
+                    "NotIn",
+                    "Is",
+                    "IsNot",
+                    "Eq",
+                    "NotEq",
+                    "Lt",
+                    "Gt",
+                    "And",
+                    "Or",
+                    "BoolOp",
+                    "UnaryOp",
+                    "Not",
+                    "Add",
+                    "Sub",
+                    "BinOp",
+                    "Subscript"
+                  ]
+                },
+                "output_schema_json": "{\"type\":\"object\",\"properties\":{\"ok\":{\"type\":\"boolean\"},\"dataset_id\":{\"type\":\"string\"},\"rows_source\":{\"type\":\"string\"},\"column\":{\"type\":\"string\"},\"group_by\":{\"type\":\"string\"},\"available_columns\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"dataset_row_count\":{\"type\":\"integer\"},\"groups\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"group\":{\"type\":\"string\"},\"row_count\":{\"type\":\"integer\"},\"blank_count\":{\"type\":\"integer\"},\"valid_numeric_count\":{\"type\":\"integer\"},\"negative_count\":{\"type\":\"integer\"},\"zero_count\":{\"type\":\"integer\"},\"sum\":{\"type\":\"number\"},\"min\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}]},\"max\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}]}},\"required\":[\"group\",\"row_count\",\"blank_count\",\"valid_numeric_count\",\"negative_count\",\"zero_count\",\"sum\",\"min\",\"max\"],\"additionalProperties\":false}},\"totals\":{\"type\":\"object\",\"properties\":{\"row_count\":{\"type\":\"integer\"},\"blank_count\":{\"type\":\"integer\"},\"valid_numeric_count\":{\"type\":\"integer\"},\"negative_count\":{\"type\":\"integer\"},\"zero_count\":{\"type\":\"integer\"},\"sum\":{\"type\":\"number\"},\"min\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}]},\"max\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}]}},\"required\":[\"row_count\",\"blank_count\",\"valid_numeric_count\",\"negative_count\",\"zero_count\",\"sum\",\"min\",\"max\"],\"additionalProperties\":false},\"error\":{\"anyOf\":[{\"type\":\"null\"},{\"type\":\"object\",\"properties\":{\"code\":{\"type\":\"string\"},\"message\":{\"type\":\"string\"}},\"required\":[\"code\",\"message\"],\"additionalProperties\":false}]}},\"required\":[\"ok\",\"dataset_id\",\"rows_source\",\"column\",\"group_by\",\"available_columns\",\"dataset_row_count\",\"groups\",\"totals\",\"error\"],\"additionalProperties\":false}〕困难？ Wait invalid closing character likely. Need fix JSON string actual ends `}` not Chinese. Also schema top declared allowed. Let's ensure. I accidentally output `false}〕`? Need amend before final impossible in same. I am in final compose can correct. Replace ending. Also schema expects custom parameters object properties not stated required but likely okay additional properties ignored. Need max_steps. Ensure final JSON valid. Let's formulate correct entire? Current draft invisible until send. Fix suffix now in actual message. Actually text currently editor contains malformed. I'll adjust from `",
+                "required": false
+              }
+            ],
+            "max_steps": 8
+          }
+        },
+        {
+          "attempt": 2,
+          "error": "custom.numeric_value_profile.output_schema_json 在字符 951 处无效：Extra data；附近内容：'nt\",\"zero_count\",\"positive_count\",\"sum\",\"min\",\"max\",\"error\"],\"additionalProperties\":false}]}],'。检查 properties 对象是否在 required 之前闭合。",
+          "feedback": null,
+          "design": {
+            "name": "warehouse_dispatch_ledger_agent",
+            "task_type": "csv_analysis",
+            "instructions": "你是仓库净出库账本分析 Agent。你必须在运行时根据用户目标制定计划、调用工具并依据完整数据回答，不得执行固定 DAG，不得使用 CSV preview 推算或硬编码账本结果。\n\n参数优先级：先按键是否存在识别显式参数；显式值优先级最高，[]、false、null 均不得因是假值而被忽略。然后从自然语言目标推断尚未显式提供的参数。最后才使用默认值：dataset_id=\"dispatch_ledger-aa6d3e10\"、operation=\"sum\"、column=\"net_units\"、group_by=\"warehouse\"、filters=[]、sort_by=\"group\"、descending=false、limit=null。\n\n调用计算工具前必须输出明确分析计划，列出最终 dataset_id、operation、column、group_by、filters、sort_by、descending、limit，并逐项标明来源为 explicit、inferred 或 default。唯一授权数据集是 dispatch_ledger-aa6d3e10，可用列为 entry、warehouse、net_units、status。\n\n校验规则：operation 仅允许 sum、mean、count、min、max；sort_by 仅允许 group、value、count。column、group_by 和每个筛选字段必须存在于数据集 columns；非法列错误必须包含非法列名和完整可用列清单。limit 只接受 null 或非负整数；布尔值、负数、非整数和其他类型均返回明确错误。csv.query 的非空 limit 范围为 1..1000；limit=0 时直接形成空结果且不得改写用户参数，limit>1000 返回范围错误。count 统计筛选后的全部行，包括数值为空的行；count 的最终 column 必须规范化为 null，用户提供的合法 column 可在校验后忽略。\n\n执行循环：1）规划并标注参数来源；2）必要时用 resources.list 核对资源与列；3）完成所有契约校验；4）调用 csv.query 对完整授权数据执行筛选、聚合、排序和限量，filters=[] 表示不筛选，descending=false 与 limit=null 必须保留；5）对 sum/mean/min/max 调用 custom.numeric_value_profile，使用与最终查询相同的 column。只有 filters=[] 时，该工具的全数据质量统计才能直接作为最终查询证据；存在筛选时，不得将未筛选统计冒充筛选后证据；6）检查观察中的数据集总行数、筛选后行数、每组行数或有效数值数、排序和截断状态；7）若工具报错，只能修正 inferred/default 参数，不得擅自改写 explicit 参数；显式非法值直接报告；8）最终主结果的 result_ref 必须引用 csv.query 返回的观察 ID，sources 必须为 []。\n\nsum、mean、min、max 仅将目标列非空单元格转换为数值后计算；空字符串或 null 不参与，负数与零均参与。最终回答必须给出最终查询参数、计算结果、授权数据集 ID、数据集总行数、筛选后行数、各组行数或有效数值数，并对数值聚合报告参与计算的非空数值数量。默认场景必须在完整 dispatch_ledger-aa6d3e10 上按 warehouse 汇总 net_units，组名自然升序、不筛选、不截断。至少执行一次有意义的验证：用 csv.query 验证默认分组求和、升序和未截断，并用 custom.numeric_value_profile 验证完整目标列中负数与零被识别为有效数值、空值被排除。不得访问未提供的验收用例。",
+            "planning_hints": [
+              "用参数键是否存在判断显式性，不能使用真假判断，以保护显式的空数组、false 和 null。",
+              "任何计算调用前先展示最终规范化查询及每个参数的来源。",
+              "csv.query 是筛选、分组、聚合、排序和限量的权威结果；自定义工具只提供目标数值列的独立质量证据。",
+              "默认查询应核对 group 自然升序、filters=[]、descending=false、limit=null，并确认负数与零有效、空值排除。",
+              "筛选存在时，以 csv.query 的筛选后证据为准，不将全数据质量统计当成筛选后统计。",
+              "工具错误时保留用户显式值，只重规划模型推断值或默认值。"
+            ],
+            "tools": [
+              "resources.list",
+              "csv.query",
+              "custom.numeric_value_profile"
+            ],
+            "custom_tools": [
+              {
+                "id": "custom.numeric_value_profile",
+                "description": "对指定数值列生成紧凑、确定性的全局质量证据。rows 省略时必须通过 dataset('dispatch_ledger-aa6d3e10') 读取完整 rows，绝不读取 preview；提供 rows 时处理该独立测试夹具。空字符串和 null 计入 blank_count 且不参与数值计算；负数、零和正数均为有效数值。输出总行数、空值数、有效数值数、负数数、零数、正数数、sum、min、max。rows=[] 成功返回全零计数、sum=0、min=null、max=null。任何非法列、非对象行、缺失目标字段或无法按受支持十进制格式转换的非空值都返回确定性业务错误且不返回部分统计。",
+                "parameters": [
+                  {
+                    "name": "column",
+                    "type": "string",
+                    "required": true,
+                    "description": "待分析的目标列，必须是 entry、warehouse、net_units、status 之一。"
+                  },
+                  {
+                    "name": "rows",
+                    "type": "array",
+                    "required": false,
+                    "description": "可选独立测试夹具；省略时读取绑定数据集完整 rows，显式空数组表示分析空输入。"
+                  }
+                ],
+                "error_cases": [
+                  {
+                    "id": "host_rows_wrong_type",
+                    "layer": "host",
+                    "input_json": "{\"column\":\"net_units\",\"rows\":false}",
+                    "code": "INVALID_ARGUMENTS",
+                    "description": "rows 的声明类型是 array，布尔值在源码执行前由宿主拒绝。"
+                  },
+                  {
+                    "id": "unknown_column",
+                    "layer": "tool_result",
+                    "input_json": "{\"column\":\"missing_units\"}",
+                    "code": "INVALID_COLUMN",
+                    "description": "列名在业务列清单中不存在；错误消息包含 missing_units 及全部可用列。"
+                  },
+                  {
+                    "id": "malformed_fixture_row",
+                    "layer": "tool_result",
+                    "input_json": "{\"column\":\"net_units\",\"rows\":[\"bad-row\"]}",
+                    "code": "INVALID_ROW",
+                    "description": "夹具成员不是对象；错误消息包含零基行号 0。"
+                  },
+                  {
+                    "id": "invalid_numeric_cell",
+                    "layer": "tool_result",
+                    "input_json": "{\"column\":\"net_units\",\"rows\":[{\"net_units\":\"abc\"}]}",
+                    "code": "INVALID_NUMERIC_CELL",
+                    "description": "非空值不是受支持的十进制数；错误消息包含 net_units 和零基行号 0。"
+                  }
+                ],
+                "execution_plan": {
+                  "algorithm": "设置 dataset_id=\"dispatch_ledger-aa6d3e10\" 和 available_columns=[\"entry\",\"warehouse\",\"net_units\",\"status\"]。验证 column 在 available_columns 中；否则返回 ok=false、INVALID_COLUMN、包含非法列名及可用列清单的消息，并将所有计数设为 0、sum=0、min/max=null。若 rows 参数缺省，调用 dataset(dataset_id) 并读取返回对象的完整 rows，rows_source=\"dataset\"；否则使用传入 rows，rows_source=\"fixture\"。以受工具 iteration_items 限制的单个 for 循环逐行处理。每行必须是对象且包含 column；否则返回 INVALID_ROW 或 MISSING_COLUMN，消息包含零基行号和列名，并丢弃部分统计。值为 null 或空字符串时 blank_count 加一。非空值若不是字符串或数值则返回 INVALID_NUMERIC_CELL；字符串通过有界字符循环验证：允许首字符 + 或 -，允许至多一个小数点，必须至少包含一个数字，不允许空白、指数和其他字符；验证后用 float 转换。有效值使 valid_numeric_count 加一，按小于零、等于零或大于零分别增加 negative_count、zero_count、positive_count，累加 sum，并用显式比较更新 min/max。row_count 始终等于输入 rows 长度。无有效数值时 sum=0、min=null、max=null。成功时 ok=true、error=null；任何业务错误时 ok=false 且返回统一的零计数和空极值，不泄露部分聚合。",
+                  "helpers": [
+                    "dataset",
+                    "get",
+                    "len",
+                    "is_object",
+                    "is_array",
+                    "is_string",
+                    "float",
+                    "str"
+                  ],
+                  "syntax": [
+                    "Module",
+                    "FunctionDef",
+                    "arguments",
+                    "arg",
+                    "Assign",
+                    "Name",
+                    "Store",
+                    "Load",
+                    "Constant",
+                    "List",
+                    "Dict",
+                    "If",
+                    "For",
+                    "Return",
+                    "Call",
+                    "Compare",
+                    "In",
+                    "NotIn",
+                    "Is",
+                    "IsNot",
+                    "Eq",
+                    "NotEq",
+                    "Lt",
+                    "Gt",
+                    "LtE",
+                    "GtE",
+                    "And",
+                    "Or",
+                    "BoolOp",
+                    "UnaryOp",
+                    "Not",
+                    "Add",
+                    "Sub",
+                    "BinOp",
+                    "Subscript"
+                  ]
+                },
+                "output_schema_json": "{\"type\":\"object\",\"properties\":{\"ok\":{\"type\":\"boolean\"},\"dataset_id\":{\"type\":\"string\"},\"rows_source\":{\"type\":\"string\"},\"column\":{\"type\":\"string\"},\"available_columns\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"row_count\":{\"type\":\"integer\"},\"blank_count\":{\"type\":\"integer\"},\"valid_numeric_count\":{\"type\":\"integer\"},\"negative_count\":{\"type\":\"integer\"},\"zero_count\":{\"type\":\"integer\"},\"positive_count\":{\"type\":\"integer\"},\"sum\":{\"type\":\"number\"},\"min\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}]},\"max\":{\"anyOf\":[{\"type\":\"number\"},{\"type\":\"null\"}]},\"error\":{\"anyOf\":[{\"type\":\"null\"},{\"type\":\"object\",\"properties\":{\"code\":{\"type\":\"string\"},\"message\":{\"type\":\"string\"}},\"required\":[\"code\",\"message\"],\"additionalProperties\":false}]}},\"required\":[\"ok\",\"dataset_id\",\"rows_source\",\"column\",\"available_columns\",\"row_count\",\"blank_count\",\"valid_numeric_count\",\"negative_count\",\"zero_count\",\"positive_count\",\"sum\",\"min\",\"max\",\"error\"],\"additionalProperties\":false}]}],",
+                "required": false
+              }
+            ],
+            "max_steps": 8
+          }
+        }
+      ],
+      "rejected_test_candidates": []
+    }
+  },
+  "diagnostics": {
+    "generated_limit_instruction": "limit 仅接受 null 或非负整数；布尔值、负数、非整数及其他类型必须返回明确错误。limit=0 表示合法的空结果：保留最终 limit=0，不调用只接受 1..1000 的 csv.query 参数；可基于同一查询的未截断观察说明结果被截为零项。limit 为 1..1000 时传给 csv.query，limit=null 表示不截断；超过 1000 返回明确范围错误。",
+    "contradictory_test_description": {
+      "id": "dev-mean-positive-limit",
+      "purpose": "验证均值、数值筛选、降序排序及零条限制的组合边界。",
+      "criterion": "对 net_units 执行 mean，聚合前应用大于零筛选，按 value 降序排序；limit=0 是合法非负整数并应在排序后产生不含结果行的截断输出。",
+      "input": {
+        "operation": "mean",
+        "column": "net_units",
+        "group_by": "warehouse",
+        "filters": [
+          {
+            "column": "net_units",
+            "operator": "gt",
+            "value": 0
+          }
+        ],
+        "sort_by": "value",
+        "descending": true,
+        "limit": 0
+      },
+      "expected": {
+        "error_code": "INVALID_INPUT"
+      },
+      "passed": true
+    },
+    "interpretation": "Generated limit=0 instruction/criterion conflicts with host contract; expected INVALID_INPUT passes, not a successful computation. No source changes made using held-out evidence."
+  },
+  "artifact_local_verification": {
+    "command": "python -X utf8 .agentforge/comparisons/45f1144aa042/factory-workspace/dist/39f9bde5ddfd/verify_agent.py",
+    "exit_code": 0,
+    "model_requests": 0,
+    "result": {
+      "integrity": "passed",
+      "mode": "local_tools_only",
+      "reports": [
+        {
+          "partition": "development",
+          "passed": 7,
+          "total": 7,
+          "all_passed": true
+        },
+        {
+          "partition": "acceptance",
+          "passed": 6,
+          "total": 6,
+          "all_passed": true
+        }
+      ]
+    }
+  },
+  "supplement": {
+    "continuation_id": "5ac10a8196e6",
+    "started_at": "2026-10-11T22:59:58.361154+08:00",
+    "finished_at": "2026-10-11T23:15:34.685810+08:00",
+    "wall_elapsed_ms": 936324.13,
+    "protocol": {
+      "selection": "Only original full-arm failures/unexecuted cases; fixed before supplement calls.",
+      "execution": "Fresh per-case executions in BOTH arms; no rebuild, source edits, human direction or scoring feedback.",
+      "recovery": "Old failed model requests had no committed observations; retry with a fresh 600-second case budget, preserve old elapsed/calls/failures.",
+      "scheduling": "Arms overlap; questions sequential within each arm.",
+      "reporting": "Original attempt remains immutable. Supplement is a later service window, not a first-attempt 12/12 success."
+    },
+    "selected_cases": [
+      "pending-count-goal",
+      "mean-with-blanks",
+      "minimum-adjustment",
+      "shipped-top-two",
+      "explicit-over-goal",
+      "empty-mean",
+      "count-with-valid-column",
+      "unknown-column",
+      "invalid-limit"
+    ],
+    "historical_full_passes": [
+      "default-sum",
+      "top-two-goal",
+      "adjustment-goal"
+    ],
+    "immutable_checks": {
+      "original_report": true,
+      "archive": true
+    },
+    "artifact_hash": "497fc5558c03fa946262ecaeb39bd674b16c9f48f8a9e85c3a645b3721ca9e6c",
+    "archive_sha256": "475e74c01e67912801c4016546f3295906294851124b0508a74dd2b8a4e430c8",
+    "configuration": {
+      "backend": "codex_cli",
+      "requested_model": "cli_default",
+      "resolved_model": null,
+      "request_timeout_seconds": 600,
+      "user_config": "isolated",
+      "binary_identity": {
+        "name": "codex.exe",
+        "bytes": 358937392,
+        "mtime_ns": 1786024563945396500
+      }
+    },
+    "limits": {
+      "build_seconds": 3600,
+      "case_seconds": 600,
+      "max_repairs": 3
+    },
+    "raw_report": ".agentforge\\comparisons\\45f1144aa042\\continuations\\5ac10a8196e6\\report.json",
+    "identity": {
+      "collected_at": "2026-10-11T23:06:27.775813+08:00",
+      "collected_while_status": "running",
+      "source_sha256": {
+        "experiments/resume_csv_comparison.py": "71972b9914ca5a26568b20791523bed3103d66202a4197624effab4d09e64f2f",
+        "tests/test_comparison_continuation.py": "a9589204960f7f5f4b42989ba2da0f83ef9043502eff0ceccef29f79b3946240"
+      },
+      "offline_recovery_checks": {
+        "tests": 4,
+        "passed": 4
+      },
+      "cli_version": "codex-cli 0.146.1"
+    },
+    "arms": {
+      "direct": {
+        "status": "completed",
+        "summary": {
+          "passed": 9,
+          "total": 9,
+          "executed": 9,
+          "computation_passed": 7,
+          "computation_total": 7,
+          "invalid_input_passed": 2,
+          "invalid_input_total": 2,
+          "median_case_ms": 28315.97,
+          "case_wall_sum_ms": 286757.77,
+          "runtime_calls": 9
+        },
+        "computation_median_ms": 39112.43,
+        "blocked_by_model_service": null,
+        "exception": null,
+        "calls": {
+          "requests": 9,
+          "statuses": {
+            "completed": 9
+          },
+          "by_stage": [
+            {
+              "stage": "direct",
+              "phase": "questions",
+              "requests": 9
+            }
+          ],
+          "elapsed_known_requests": 9,
+          "model_elapsed_sum_ms": 286695.19,
+          "usage_known_requests": 9,
+          "usage": {
+            "input_tokens": 130406,
+            "cached_input_tokens": 21504,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 1328,
+            "reasoning_output_tokens": 363
+          },
+          "call_ids": [
+            "012ca1c5ec41495fb87e787bdddca657",
+            "057268edb95f4268b312536fc948b5ff",
+            "131e4d5b6e6c47269c899f9056f54561",
+            "3561ccade69044f8b6ea804ede15be14",
+            "532212ccb63d4fb8a673218d97ec4198",
+            "5373e58542064e27aa37bdaaf4c5976a",
+            "5e2f2fbb46c240a592e1eac62ea809a5",
+            "6800542c8def4260b153b4165ca82246",
+            "f57f3c8028ad48529e1f45ca0cad2d95"
+          ],
+          "failures": []
+        },
+        "cases": [
+          {
+            "id": "pending-count-goal",
+            "status": "completed",
+            "passed": true,
+            "elapsed_ms": 50889.21,
+            "new_model_calls": 1,
+            "execution_conditions": {
+              "max_seconds": 600,
+              "configuration": {
+                "backend": "codex_cli",
+                "requested_model": "cli_default",
+                "resolved_model": null,
+                "request_timeout_seconds": 600,
+                "user_config": "isolated",
+                "binary_identity": {
+                  "name": "codex.exe",
+                  "bytes": 358937392,
+                  "mtime_ns": 1786024563945396500
+                }
+              },
+              "mode": "fresh_execution"
+            },
+            "issues": [],
+            "actual_data": {
+              "dataset_id": "dispatch_ledger-aa6d3e10",
+              "operation": "count",
+              "column": null,
+              "group_by": null,
+              "results": [
+                {
+                  "group": null,
+                  "value": 5,
+                  "count": 5
+                }
+              ]
+            },
+            "actual_error": null
+          },
+          {
+            "id": "mean-with-blanks",
+            "status": "completed",
+            "passed": true,
+            "elapsed_ms": 48124.61,
+            "new_model_calls": 1,
+            "execution_conditions": {
+              "max_seconds": 600,
+              "configuration": {
+                "backend": "codex_cli",
+                "requested_model": "cli_default",
+                "resolved_model": null,
+                "request_timeout_seconds": 600,
+                "user_config": "isolated",
+                "binary_identity": {
+                  "name": "codex.exe",
+                  "bytes": 358937392,
+                  "mtime_ns": 1786024563945396500
+                }
+              },
+              "mode": "fresh_execution"
+            },
+            "issues": [],
+            "actual_data": {
+              "dataset_id": "dispatch_ledger-aa6d3e10",
+              "operation": "mean",
+              "column": "net_units",
+              "group_by": "warehouse",
+              "results": [
+                {
+                  "group": "harbor",
+                  "value": 10,
+                  "count": 6
+                },
+                {
+                  "group": "inland",
+                  "value": 11.2,
+                  "count": 6
+                },
+                {
+                  "group": "metro",
+                  "value": 13,
+                  "count": 6
+                },
+                {
+                  "group": "ridge",
+                  "value": 6.8,
+                  "count": 6
+                }
+              ]
+            },
+            "actual_error": null
+          },
+          {
+            "id": "minimum-adjustment",
+            "status": "completed",
+            "passed": true,
+            "elapsed_ms": 43098.92,
+            "new_model_calls": 1,
+            "execution_conditions": {
+              "max_seconds": 600,
+              "configuration": {
+                "backend": "codex_cli",
+                "requested_model": "cli_default",
+                "resolved_model": null,
+                "request_timeout_seconds": 600,
+                "user_config": "isolated",
+                "binary_identity": {
+                  "name": "codex.exe",
+                  "bytes": 358937392,
+                  "mtime_ns": 1786024563945396500
+                }
+              },
+              "mode": "fresh_execution"
+            },
+            "issues": [],
+            "actual_data": {
+              "dataset_id": "dispatch_ledger-aa6d3e10",
+              "operation": "min",
+              "column": "net_units",
+              "group_by": null,
+              "results": [
+                {
+                  "group": null,
+                  "value": -12,
+                  "count": 24
+                }
+              ]
+            },
+            "actual_error": null
+          },
+          {
+            "id": "shipped-top-two",
+            "status": "completed",
+            "passed": true,
+            "elapsed_ms": 20569.77,
+            "new_model_calls": 1,
+            "execution_conditions": {
+              "max_seconds": 600,
+              "configuration": {
+                "backend": "codex_cli",
+                "requested_model": "cli_default",
+                "resolved_model": null,
+                "request_timeout_seconds": 600,
+                "user_config": "isolated",
+                "binary_identity": {
+                  "name": "codex.exe",
+                  "bytes": 358937392,
+                  "mtime_ns": 1786024563945396500
+                }
+              },
+              "mode": "fresh_execution"
+            },
+            "issues": [],
+            "actual_data": {
+              "dataset_id": "dispatch_ledger-aa6d3e10",
+              "operation": "sum",
+              "column": "net_units",
+              "group_by": "warehouse",
+              "results": [
+                {
+                  "group": "metro",
+                  "value": 78,
+                  "count": 3
+                },
+                {
+                  "group": "inland",
+                  "value": 60,
+                  "count": 4
+                }
+              ]
+            },
+            "actual_error": null
+          },
+          {
+            "id": "explicit-over-goal",
+            "status": "completed",
+            "passed": true,
+            "elapsed_ms": 28315.97,
+            "new_model_calls": 1,
+            "execution_conditions": {
+              "max_seconds": 600,
+              "configuration": {
+                "backend": "codex_cli",
+                "requested_model": "cli_default",
+                "resolved_model": null,
+                "request_timeout_seconds": 600,
+                "user_config": "isolated",
+                "binary_identity": {
+                  "name": "codex.exe",
+                  "bytes": 358937392,
+                  "mtime_ns": 1786024563945396500
+                }
+              },
+              "mode": "fresh_execution"
+            },
+            "issues": [],
+            "actual_data": {
+              "dataset_id": "dispatch_ledger-aa6d3e10",
+              "operation": "sum",
+              "column": "net_units",
+              "group_by": "warehouse",
+              "results": [
+                {
+                  "group": "harbor",
+                  "value": 50,
+                  "count": 6
+                },
+                {
+                  "group": "inland",
+                  "value": 56,
+                  "count": 6
+                },
+                {
+                  "group": "metro",
+                  "value": 65,
+                  "count": 6
+                },
+                {
+                  "group": "ridge",
+                  "value": 34,
+                  "count": 6
+                }
+              ]
+            },
+            "actual_error": null
+          },
+          {
+            "id": "empty-mean",
+            "status": "completed",
+            "passed": true,
+            "elapsed_ms": 39112.43,
+            "new_model_calls": 1,
+            "execution_conditions": {
+              "max_seconds": 600,
+              "configuration": {
+                "backend": "codex_cli",
+                "requested_model": "cli_default",
+                "resolved_model": null,
+                "request_timeout_seconds": 600,
+                "user_config": "isolated",
+                "binary_identity": {
+                  "name": "codex.exe",
+                  "bytes": 358937392,
+                  "mtime_ns": 1786024563945396500
+                }
+              },
+              "mode": "fresh_execution"
+            },
+            "issues": [],
+            "actual_data": {
+              "dataset_id": "dispatch_ledger-aa6d3e10",
+              "operation": "mean",
+              "column": "net_units",
+              "group_by": null,
+              "results": [
+                {
+                  "group": null,
+                  "value": null,
+                  "count": 0
+                }
+              ]
+            },
+            "actual_error": null
+          },
+          {
+            "id": "count-with-valid-column",
+            "status": "completed",
+            "passed": true,
+            "elapsed_ms": 24414.46,
+            "new_model_calls": 1,
+            "execution_conditions": {
+              "max_seconds": 600,
+              "configuration": {
+                "backend": "codex_cli",
+                "requested_model": "cli_default",
+                "resolved_model": null,
+                "request_timeout_seconds": 600,
+                "user_config": "isolated",
+                "binary_identity": {
+                  "name": "codex.exe",
+                  "bytes": 358937392,
+                  "mtime_ns": 1786024563945396500
+                }
+              },
+              "mode": "fresh_execution"
+            },
+            "issues": [],
+            "actual_data": {
+              "dataset_id": "dispatch_ledger-aa6d3e10",
+              "operation": "count",
+              "column": null,
+              "group_by": "warehouse",
+              "results": [
+                {
+                  "group": "harbor",
+                  "value": 6,
+                  "count": 6
+                },
+                {
+                  "group": "inland",
+                  "value": 6,
+                  "count": 6
+                },
+                {
+                  "group": "metro",
+                  "value": 6,
+                  "count": 6
+                },
+                {
+                  "group": "ridge",
+                  "value": 6,
+                  "count": 6
+                }
+              ]
+            },
+            "actual_error": null
+          },
+          {
+            "id": "unknown-column",
+            "status": "completed",
+            "passed": true,
+            "elapsed_ms": 16497.83,
+            "new_model_calls": 1,
+            "execution_conditions": {
+              "max_seconds": 600,
+              "configuration": {
+                "backend": "codex_cli",
+                "requested_model": "cli_default",
+                "resolved_model": null,
+                "request_timeout_seconds": 600,
+                "user_config": "isolated",
+                "binary_identity": {
+                  "name": "codex.exe",
+                  "bytes": 358937392,
+                  "mtime_ns": 1786024563945396500
+                }
+              },
+              "mode": "fresh_execution"
+            },
+            "issues": [],
+            "actual_data": null,
+            "actual_error": {
+              "code": "UNKNOWN_COLUMN",
+              "message": "Unknown column: __missing__"
+            }
+          },
+          {
+            "id": "invalid-limit",
+            "status": "completed",
+            "passed": true,
+            "elapsed_ms": 15734.57,
+            "new_model_calls": 1,
+            "execution_conditions": {
+              "max_seconds": 600,
+              "configuration": {
+                "backend": "codex_cli",
+                "requested_model": "cli_default",
+                "resolved_model": null,
+                "request_timeout_seconds": 600,
+                "user_config": "isolated",
+                "binary_identity": {
+                  "name": "codex.exe",
+                  "bytes": 358937392,
+                  "mtime_ns": 1786024563945396500
+                }
+              },
+              "mode": "fresh_execution"
+            },
+            "issues": [],
+            "actual_data": null,
+            "actual_error": {
+              "code": "INVALID_INPUT",
+              "message": "limit 必须为 1 到 1000 之间的整数或 null；收到 0。"
+            }
+          }
+        ]
+      },
+      "full": {
+        "status": "completed",
+        "summary": {
+          "passed": 9,
+          "total": 9,
+          "executed": 9,
+          "computation_passed": 7,
+          "computation_total": 7,
+          "invalid_input_passed": 2,
+          "invalid_input_total": 2,
+          "median_case_ms": 120547.91,
+          "case_wall_sum_ms": 936230.43,
+          "runtime_calls": 21
+        },
+        "computation_median_ms": 121522.85,
+        "blocked_by_model_service": null,
+        "exception": null,
+        "calls": {
+          "requests": 21,
+          "statuses": {
+            "completed": 21
+          },
+          "by_stage": [
+            {
+              "stage": "comparison_continuation",
+              "phase": "completed",
+              "requests": 21
+            }
+          ],
+          "elapsed_known_requests": 21,
+          "model_elapsed_sum_ms": 935930.13,
+          "usage_known_requests": 21,
+          "usage": {
+            "input_tokens": 355293,
+            "cached_input_tokens": 66176,
+            "cache_write_input_tokens": 0,
+            "output_tokens": 8417,
+            "reasoning_output_tokens": 1663
+          },
+          "call_ids": [
+            "0e7a5d2210d5417e90e2269d95bb4ca4",
+            "369d89ea7c5246159a13ab563c187218",
+            "42c6172310be47f49a9edcad57cb059a",
+            "4ddf1c3378184af586cbd7a46fb80917",
+            "5c2075be6e1f4b479c808afddb8e2911",
+            "61230912aa804cceaa9b30291075e4ff",
+            "64a9ed5c11754dac94d8062f70b0438a",
+            "6e8693fc08bf441ea7c5e1aaed4511ec",
+            "772ca49b3b5147c99835bf9d9fe6c0f4",
+            "7923bd9c10ea4a0a921885ddca6ac354",
+            "87951973027e41a5ab71c635023b2efb",
+            "9b08af79894b42d5bef315d6d407c5e7",
+            "b1500d57e21548a59d19ca90cf8710e1",
+            "b9cce4ab73be40ea84c72d90820556f2",
+            "be606eb0087b4b65904b2919fd2a1228",
+            "d68a48c6cf3f4a059aa5d2f85e3f9600",
+            "d89e28c60f564d4b8cf0ae17f61f8d60",
+            "e51b9a0c770e45f299a8c6c3d5475a61",
+            "f6a5193723c74b059abfcf93937b2448",
+            "f7ae8dcca77f465ba739bb2b79b7c5d8",
+            "f810262832c845c499b71c670e1227a0"
+          ],
+          "failures": []
+        },
+        "cases": [
+          {
+            "id": "pending-count-goal",
+            "status": "completed",
+            "passed": true,
+            "elapsed_ms": 141810.52,
+            "new_model_calls": 3,
+            "execution_conditions": {
+              "max_seconds": 600,
+              "configuration": {
+                "backend": "codex_cli",
+                "requested_model": "cli_default",
+                "resolved_model": null,
+                "request_timeout_seconds": 600,
+                "user_config": "isolated",
+                "binary_identity": {
+                  "name": "codex.exe",
+                  "bytes": 358937392,
+                  "mtime_ns": 1786024563945396500
+                }
+              },
+              "mode": "fresh_retry"
+            },
+            "issues": [],
+            "actual_data": {
+              "dataset_id": "dispatch_ledger-aa6d3e10",
+              "operation": "count",
+              "column": null,
+              "group_by": null,
+              "results": [
+                {
+                  "group": null,
+                  "value": 5,
+                  "count": 5
+                }
+              ]
+            },
+            "actual_error": null
+          },
+          {
+            "id": "mean-with-blanks",
+            "status": "completed",
+            "passed": true,
+            "elapsed_ms": 121522.85,
+            "new_model_calls": 3,
+            "execution_conditions": {
+              "max_seconds": 600,
+              "configuration": {
+                "backend": "codex_cli",
+                "requested_model": "cli_default",
+                "resolved_model": null,
+                "request_timeout_seconds": 600,
+                "user_config": "isolated",
+                "binary_identity": {
+                  "name": "codex.exe",
+                  "bytes": 358937392,
+                  "mtime_ns": 1786024563945396500
+                }
+              },
+              "mode": "fresh_retry"
+            },
+            "issues": [],
+            "actual_data": {
+              "dataset_id": "dispatch_ledger-aa6d3e10",
+              "operation": "mean",
+              "column": "net_units",
+              "group_by": "warehouse",
+              "results": [
+                {
+                  "group": "harbor",
+                  "value": 10.0,
+                  "count": 6
+                },
+                {
+                  "group": "inland",
+                  "value": 11.2,
+                  "count": 6
+                },
+                {
+                  "group": "metro",
+                  "value": 13.0,
+                  "count": 6
+                },
+                {
+                  "group": "ridge",
+                  "value": 6.8,
+                  "count": 6
+                }
+              ]
+            },
+            "actual_error": null
+          },
+          {
+            "id": "minimum-adjustment",
+            "status": "completed",
+            "passed": true,
+            "elapsed_ms": 113686.0,
+            "new_model_calls": 3,
+            "execution_conditions": {
+              "max_seconds": 600,
+              "configuration": {
+                "backend": "codex_cli",
+                "requested_model": "cli_default",
+                "resolved_model": null,
+                "request_timeout_seconds": 600,
+                "user_config": "isolated",
+                "binary_identity": {
+                  "name": "codex.exe",
+                  "bytes": 358937392,
+                  "mtime_ns": 1786024563945396500
+                }
+              },
+              "mode": "fresh_execution"
+            },
+            "issues": [],
+            "actual_data": {
+              "dataset_id": "dispatch_ledger-aa6d3e10",
+              "operation": "min",
+              "column": "net_units",
+              "group_by": null,
+              "results": [
+                {
+                  "group": null,
+                  "value": -12.0,
+                  "count": 24
+                }
+              ]
+            },
+            "actual_error": null
+          },
+          {
+            "id": "shipped-top-two",
+            "status": "completed",
+            "passed": true,
+            "elapsed_ms": 130050.16,
+            "new_model_calls": 3,
+            "execution_conditions": {
+              "max_seconds": 600,
+              "configuration": {
+                "backend": "codex_cli",
+                "requested_model": "cli_default",
+                "resolved_model": null,
+                "request_timeout_seconds": 600,
+                "user_config": "isolated",
+                "binary_identity": {
+                  "name": "codex.exe",
+                  "bytes": 358937392,
+                  "mtime_ns": 1786024563945396500
+                }
+              },
+              "mode": "fresh_execution"
+            },
+            "issues": [],
+            "actual_data": {
+              "dataset_id": "dispatch_ledger-aa6d3e10",
+              "operation": "sum",
+              "column": "net_units",
+              "group_by": "warehouse",
+              "results": [
+                {
+                  "group": "metro",
+                  "value": 78.0,
+                  "count": 3
+                },
+                {
+                  "group": "inland",
+                  "value": 60.0,
+                  "count": 4
+                }
+              ]
+            },
+            "actual_error": null
+          },
+          {
+            "id": "explicit-over-goal",
+            "status": "completed",
+            "passed": true,
+            "elapsed_ms": 197976.7,
+            "new_model_calls": 3,
+            "execution_conditions": {
+              "max_seconds": 600,
+              "configuration": {
+                "backend": "codex_cli",
+                "requested_model": "cli_default",
+                "resolved_model": null,
+                "request_timeout_seconds": 600,
+                "user_config": "isolated",
+                "binary_identity": {
+                  "name": "codex.exe",
+                  "bytes": 358937392,
+                  "mtime_ns": 1786024563945396500
+                }
+              },
+              "mode": "fresh_execution"
+            },
+            "issues": [],
+            "actual_data": {
+              "dataset_id": "dispatch_ledger-aa6d3e10",
+              "operation": "sum",
+              "column": "net_units",
+              "group_by": "warehouse",
+              "results": [
+                {
+                  "group": "harbor",
+                  "value": 50.0,
+                  "count": 6
+                },
+                {
+                  "group": "inland",
+                  "value": 56.0,
+                  "count": 6
+                },
+                {
+                  "group": "metro",
+                  "value": 65.0,
+                  "count": 6
+                },
+                {
+                  "group": "ridge",
+                  "value": 34.0,
+                  "count": 6
+                }
+              ]
+            },
+            "actual_error": null
+          },
+          {
+            "id": "empty-mean",
+            "status": "completed",
+            "passed": true,
+            "elapsed_ms": 120547.91,
+            "new_model_calls": 3,
+            "execution_conditions": {
+              "max_seconds": 600,
+              "configuration": {
+                "backend": "codex_cli",
+                "requested_model": "cli_default",
+                "resolved_model": null,
+                "request_timeout_seconds": 600,
+                "user_config": "isolated",
+                "binary_identity": {
+                  "name": "codex.exe",
+                  "bytes": 358937392,
+                  "mtime_ns": 1786024563945396500
+                }
+              },
+              "mode": "fresh_execution"
+            },
+            "issues": [],
+            "actual_data": {
+              "dataset_id": "dispatch_ledger-aa6d3e10",
+              "operation": "mean",
+              "column": "net_units",
+              "group_by": null,
+              "results": [
+                {
+                  "group": null,
+                  "value": null,
+                  "count": 0
+                }
+              ]
+            },
+            "actual_error": null
+          },
+          {
+            "id": "count-with-valid-column",
+            "status": "completed",
+            "passed": true,
+            "elapsed_ms": 110593.08,
+            "new_model_calls": 3,
+            "execution_conditions": {
+              "max_seconds": 600,
+              "configuration": {
+                "backend": "codex_cli",
+                "requested_model": "cli_default",
+                "resolved_model": null,
+                "request_timeout_seconds": 600,
+                "user_config": "isolated",
+                "binary_identity": {
+                  "name": "codex.exe",
+                  "bytes": 358937392,
+                  "mtime_ns": 1786024563945396500
+                }
+              },
+              "mode": "fresh_execution"
+            },
+            "issues": [],
+            "actual_data": {
+              "dataset_id": "dispatch_ledger-aa6d3e10",
+              "operation": "count",
+              "column": null,
+              "group_by": "warehouse",
+              "results": [
+                {
+                  "group": "harbor",
+                  "value": 6,
+                  "count": 6
+                },
+                {
+                  "group": "inland",
+                  "value": 6,
+                  "count": 6
+                },
+                {
+                  "group": "metro",
+                  "value": 6,
+                  "count": 6
+                },
+                {
+                  "group": "ridge",
+                  "value": 6,
+                  "count": 6
+                }
+              ]
+            },
+            "actual_error": null
+          },
+          {
+            "id": "unknown-column",
+            "status": "completed",
+            "passed": true,
+            "elapsed_ms": 21.81,
+            "new_model_calls": 0,
+            "execution_conditions": {
+              "max_seconds": 600,
+              "configuration": {
+                "backend": "codex_cli",
+                "requested_model": "cli_default",
+                "resolved_model": null,
+                "request_timeout_seconds": 600,
+                "user_config": "isolated",
+                "binary_identity": {
+                  "name": "codex.exe",
+                  "bytes": 358937392,
+                  "mtime_ns": 1786024563945396500
+                }
+              },
+              "mode": "fresh_execution"
+            },
+            "issues": [],
+            "actual_data": null,
+            "actual_error": {
+              "code": "UNKNOWN_COLUMN",
+              "message": "所选分析列不存在。"
+            }
+          },
+          {
+            "id": "invalid-limit",
+            "status": "completed",
+            "passed": true,
+            "elapsed_ms": 21.4,
+            "new_model_calls": 0,
+            "execution_conditions": {
+              "max_seconds": 600,
+              "configuration": {
+                "backend": "codex_cli",
+                "requested_model": "cli_default",
+                "resolved_model": null,
+                "request_timeout_seconds": 600,
+                "user_config": "isolated",
+                "binary_identity": {
+                  "name": "codex.exe",
+                  "bytes": 358937392,
+                  "mtime_ns": 1786024563945396500
+                }
+              },
+              "mode": "fresh_execution"
+            },
+            "issues": [],
+            "actual_data": null,
+            "actual_error": {
+              "code": "INVALID_INPUT",
+              "message": "排序或数量参数无效。"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "cumulative_full": {
+    "first_attempt": {
+      "passed": 3,
+      "total": 12,
+      "executed": 5,
+      "computation_passed": 3,
+      "computation_total": 10,
+      "invalid_input_passed": 0,
+      "invalid_input_total": 2,
+      "median_case_ms": 99327.69,
+      "case_wall_sum_ms": 942134.44,
+      "runtime_calls": 11
+    },
+    "covered_passed": 12,
+    "total": 12,
+    "historical_successes_retained": 3,
+    "fresh_supplement_cases": 9,
+    "fresh_retries": 2,
+    "runtime_calls_all_attempts": 32,
+    "runtime_wall_sum_all_attempts_ms": 1878364.87,
+    "cases": [
+      {
+        "id": "default-sum",
+        "category": "structured",
+        "passed": true,
+        "result_origin": "original_success",
+        "original_status": "completed",
+        "original_passed": true,
+        "latest_status": "completed"
+      },
+      {
+        "id": "top-two-goal",
+        "category": "natural_goal",
+        "passed": true,
+        "result_origin": "original_success",
+        "original_status": "completed",
+        "original_passed": true,
+        "latest_status": "completed"
+      },
+      {
+        "id": "adjustment-goal",
+        "category": "natural_goal",
+        "passed": true,
+        "result_origin": "original_success",
+        "original_status": "completed",
+        "original_passed": true,
+        "latest_status": "completed"
+      },
+      {
+        "id": "pending-count-goal",
+        "category": "natural_goal",
+        "passed": true,
+        "result_origin": "supplement_execution",
+        "original_status": "completed",
+        "original_passed": false,
+        "latest_status": "completed"
+      },
+      {
+        "id": "mean-with-blanks",
+        "category": "structured",
+        "passed": true,
+        "result_origin": "supplement_execution",
+        "original_status": "completed",
+        "original_passed": false,
+        "latest_status": "completed"
+      },
+      {
+        "id": "minimum-adjustment",
+        "category": "structured",
+        "passed": true,
+        "result_origin": "supplement_execution",
+        "original_status": "unexecuted",
+        "original_passed": false,
+        "latest_status": "completed"
+      },
+      {
+        "id": "shipped-top-two",
+        "category": "natural_goal",
+        "passed": true,
+        "result_origin": "supplement_execution",
+        "original_status": "unexecuted",
+        "original_passed": false,
+        "latest_status": "completed"
+      },
+      {
+        "id": "explicit-over-goal",
+        "category": "explicit_conflict",
+        "passed": true,
+        "result_origin": "supplement_execution",
+        "original_status": "unexecuted",
+        "original_passed": false,
+        "latest_status": "completed"
+      },
+      {
+        "id": "empty-mean",
+        "category": "boundary",
+        "passed": true,
+        "result_origin": "supplement_execution",
+        "original_status": "unexecuted",
+        "original_passed": false,
+        "latest_status": "completed"
+      },
+      {
+        "id": "count-with-valid-column",
+        "category": "boundary",
+        "passed": true,
+        "result_origin": "supplement_execution",
+        "original_status": "unexecuted",
+        "original_passed": false,
+        "latest_status": "completed"
+      },
+      {
+        "id": "unknown-column",
+        "category": "invalid_input",
+        "passed": true,
+        "result_origin": "supplement_execution",
+        "original_status": "unexecuted",
+        "original_passed": false,
+        "latest_status": "completed"
+      },
+      {
+        "id": "invalid-limit",
+        "category": "invalid_input",
+        "passed": true,
+        "result_origin": "supplement_execution",
+        "original_status": "unexecuted",
+        "original_passed": false,
+        "latest_status": "completed"
+      }
+    ],
+    "model_calls_including_build": 92
+  }
+}
