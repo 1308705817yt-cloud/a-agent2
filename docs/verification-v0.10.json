@@ -1,0 +1,189 @@
+{
+  "version": "0.10.0",
+  "status": "offline_verification_completed",
+  "checked_at": "2026-10-10T01:15:56.677271+08:00",
+  "runtime_hash": "2e24bb4433996540f7380e0099c42967bedbbf75d9ffefc6df43ada4db2250c3",
+  "runtime_manifest": {
+    "contracts.py": "3fbf693b93f8aa82290836b7f9c312847acace7dc6bfc2b9e5e9dfca52a1709d",
+    "resources.py": "4525908c8028cc83574534c5e7fcdc5e6242eafd9e015cd5595de0a9ae1fc9d4",
+    "tool_registry.py": "0864196fc35785a8a4af6e14b91db5784ee7975164e1b335308817b55b6fc682",
+    "program.py": "b850c1c07c5cd413895c6fd1638ee73e1161b1f8dfe75609f14347a8a79580f7",
+    "workflow.py": "6bda4d40fe6c9e9d4d8f779fe744a26bdf7cb383b4abb612eae9a8c67635aab4",
+    "testing.py": "9b47da3f2bbe75a25d28f166c4d04f3c5f2d9cc3dd39d9de44c9549adefdac84",
+    "codex_client.py": "65fc1b49d69f3c2759cda23eadc354fe3bacf3cd29f1ef55d6b3f40518bdc876",
+    "adaptive_contracts.py": "cdc6acfe9f86f8057e9c914a23761ed3d18d496143fb76aeb3378da83510fc8d",
+    "custom_tools.py": "7f6835d05f5ed726b905baeb62611b6f71051cd09346c3c974bf7c8d3b121620",
+    "adaptive_runtime.py": "4b9f8af30ec8ce2ca885ce14264319df8aadca3cf18e2995259e4f4c366dc137",
+    "adaptive_testing.py": "eed0d39e73c888fcfc6dbebf17316e679ec6a9d759df4422078449210d4bbc70",
+    "adaptive_artifacts.py": "3435f4a9528b772a9e2ac492d44d16f95b7e3462553a270759952f565e4a5052",
+    "trusted_tools.py": "4a7021219486f02478675e7ce1f818c72b7af60e66b1ae7e28032b7c0e4f6d71",
+    "source_validation.py": "15c1a800d68d7e08e587c81dfd73510a1b60922a51059cfa70e9dc106b8460fd",
+    "evaluation_progress.py": "ec8ab11e3ffb21eb809b5c599d7b0ebf530cf7081c7d30afdeac85e00a20483d"
+  },
+  "unit_tests": {
+    "passed": 200,
+    "total": 200,
+    "elapsed_seconds": 42.477,
+    "exit_code": 0,
+    "new_contract_recovery_tests": 24,
+    "log": ".agentforge\\verification-v0.10\\tests.log"
+  },
+  "checks": {
+    "frontend_syntax": true,
+    "frontend_rendering_and_recovery": true,
+    "compileall": true,
+    "frontend_DOM": true,
+    "installed_wheel_byte_matches": true,
+    "standalone_export_integrity_and_tools": true
+  },
+  "wheel": {
+    "sha256": "f78faf49aa8a214a638fcb7850066efbbfb7968cd423d27f851d8bbf8dbc5839",
+    "bytes": 151249,
+    "verified_package_files": 33
+  },
+  "installed_wheel": {
+    "version": "0.10.0",
+    "import_path": "C:\\Users\\86158\\Desktop\\codex123\\尝试1\\.agentforge\\package-smoke-v10\\agentforge\\__init__.py",
+    "large_result": {
+      "code": "CODE_LIMIT",
+      "message": "代码数据超过大小预算。",
+      "location": "logic.py:1",
+      "origin": "runtime",
+      "retryable": false,
+      "recovery": "reduce_result_or_adjust_limit"
+    },
+    "host_negative": {
+      "code": "INVALID_ARGUMENTS",
+      "message": "Codex 返回的 input.rows 类型错误。 期望 array，实际 string。",
+      "location": "input.rows",
+      "origin": "decision",
+      "retryable": true,
+      "recovery": "revise_decision",
+      "details": {
+        "field_path": "input.rows",
+        "expected_type": "array",
+        "actual_type": "string",
+        "constraint": "type",
+        "rejection_layer": "host",
+        "tool": "custom.fixture"
+      }
+    },
+    "classification": {
+      "category": "network",
+      "exit_code": 1,
+      "basis": {
+        "source": "stdout.json_event",
+        "event_type": "turn.failed",
+        "field_path": "error.code",
+        "signal": "network_error"
+      }
+    },
+    "case_recovery": "passed",
+    "real_model_calls": 0
+  },
+  "original_parcel_draft_boundary_replay": [
+    {
+      "attempt": 1,
+      "cases": [
+        {
+          "case_id": "dev_numeric_quality_invalid_rows",
+          "partition": "development",
+          "original_feedback": {
+            "case_id": "dev_numeric_quality_invalid_rows",
+            "field_path": "input.rows",
+            "expected_type": "array",
+            "actual_type": "string",
+            "constraint": "type",
+            "rejection_layer": "host",
+            "tool": "custom.numeric_quality_profile"
+          },
+          "corrected_host_negative_passed": true,
+          "source_executed": false
+        }
+      ]
+    },
+    {
+      "attempt": 2,
+      "cases": [
+        {
+          "case_id": "dev_quality_invalid_rows",
+          "partition": "development",
+          "original_feedback": {
+            "case_id": "dev_quality_invalid_rows",
+            "field_path": "input.rows",
+            "expected_type": "array",
+            "actual_type": "string",
+            "constraint": "type",
+            "rejection_layer": "host",
+            "tool": "custom.numeric_quality_profile"
+          },
+          "corrected_host_negative_passed": true,
+          "source_executed": false
+        }
+      ]
+    },
+    {
+      "attempt": 3,
+      "cases": [
+        {
+          "case_id": "dev_numeric_quality_bad_rows_006",
+          "partition": "development",
+          "original_feedback": {
+            "case_id": "dev_numeric_quality_bad_rows_006",
+            "field_path": "input.rows",
+            "expected_type": "array",
+            "actual_type": "string",
+            "constraint": "type",
+            "rejection_layer": "host",
+            "tool": "custom.numeric_quality_profile"
+          },
+          "corrected_host_negative_passed": true,
+          "source_executed": false
+        }
+      ]
+    }
+  ],
+  "standalone_export": {
+    "run_id": "2c0c50190b64",
+    "relative_path": ".agentforge\\verification-v0.10\\fixture-workspace\\dist\\2c0c50190b64",
+    "verification": {
+      "integrity": "passed",
+      "mode": "local_tools_only",
+      "reports": [
+        {
+          "partition": "development",
+          "passed": 2,
+          "total": 2,
+          "all_passed": true
+        },
+        {
+          "partition": "acceptance",
+          "passed": 2,
+          "total": 2,
+          "all_passed": true
+        }
+      ]
+    }
+  },
+  "case_recovery_evidence": {
+    "interrupted_acceptance": "one interrupted case resumes; all finished cases reused; 2 new calls; no repeated document read",
+    "crashed_parallel_worker": "inflight checkpoint and other workers' commits retained; recover continues only missing case",
+    "all_completed": "0 new calls on repeated evaluation",
+    "binding_and_tamper": "rejected",
+    "test_module": "tests/test_contract_recovery.py"
+  },
+  "real_model_calls": 0,
+  "historical_files_unchanged": {
+    "evaluations\\2168b134203b\\report.json": "4d53c5cd854f7e04fcc704680cf596f9043492aa8810a785364a55b01e60112a",
+    "docs\\verification-v0.9.json": "1ecc7d79bd3dfbe7cd80ae299708d541549976fe2a5ee6da24dc6f2df75bd213",
+    "runs\\c28a278a49e9\\state.json": "b4bbcca0b9173e202ddb5af96ec61f59e1574c25ea9e1cd83fc797c42a2a4e43",
+    "runs\\c28a278a49e9\\tool_contracts.json": "f66afdb98742b5ee0383c4b8031b630fffbd64a236def19e2699829c4277c55c",
+    "runs\\c28a278a49e9\\rejected_test_attempts.json": "0b83063429245b7c23a36b95dc41250c0f203c09b886dbc1a03fcb0497970adf",
+    "runs\\223ee6d77b2b\\state.json": "7b947b3a35d146e87b8fa7eb94d55b00a59fe969114707182422b3391460cf22"
+  },
+  "limitations": [
+    "Deterministic offline regressions, no new real-model delivery benchmark.",
+    "Original kitchen CLI failure causes remain unconfirmed; old error labels are not reinterpreted as verified causes.",
+    "Historical artifacts keep their frozen runtime; new case-progress records are not fabricated for legacy runs."
+  ]
+}

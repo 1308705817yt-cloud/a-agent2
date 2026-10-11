@@ -1,0 +1,6 @@
+[
+  {"id": "accept-leave", "question": "申请年假需要提前多久提交？", "answer_contains": ["3 个工作日"], "expected_sources": ["leave-policy"]},
+  {"id": "accept-expense", "question": "单笔超过 1000 元的报销由谁审批？", "answer_contains": ["部门负责人"], "expected_sources": ["expense-policy"]},
+  {"id": "accept-remote", "question": "远程办公需要获得谁的同意？", "answer_contains": ["主管"], "expected_sources": ["remote-policy"]},
+  {"id": "accept-unknown", "question": "木星卫星的表面温度是多少？", "expect_abstain": true}
+]

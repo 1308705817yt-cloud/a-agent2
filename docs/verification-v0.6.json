@@ -1,0 +1,164 @@
+{
+  "project_version": "0.6.0",
+  "status": "verification_completed_with_optional_audit_pending",
+  "engineering_checks": {
+    "unittest_passed": 127,
+    "python_compile": "passed",
+    "frontend_rendering_and_escaping": "passed",
+    "javascript_syntax": "passed",
+    "design_repair_preserves_business_tests": "passed",
+    "stopped_build_continuation": "passed",
+    "runtime_time_limit_and_crash_accounting": "passed",
+    "unittest_elapsed_seconds": 20.424,
+    "nested_json_type_error_is_diagnosable": "passed",
+    "incomparable_test_ratios_do_not_trigger_design_repair": "passed",
+    "source_syntax_self_correction": "passed"
+  },
+  "runtime_hash": "c0a5d5e9b6ab2b49fb34d0d03f10f8f779265ef8728e010dae975a4b7dc48472",
+  "token_budget": "none",
+  "dashboard": {
+    "url": "http://127.0.0.1:8787",
+    "http_api": "passed after final restart",
+    "visual_browser_qa": "unavailable; DOM fixture tested",
+    "creation_max_repairs": 20
+  },
+  "live_csv": {
+    "run_id": "9032d25f183c",
+    "version": 1,
+    "development": {
+      "passed": 14,
+      "total": 14,
+      "model_calls": 27
+    },
+    "acceptance": {
+      "passed": 14,
+      "total": 14,
+      "model_calls": 27
+    },
+    "independent": {
+      "report": "evaluations/be66fe378426/report.json",
+      "passed": 7,
+      "total": 7,
+      "performance": {
+        "build_elapsed_ms": 542983.67,
+        "repairs": 0,
+        "design_repairs": 0,
+        "runtime_model_calls": 22,
+        "runtime_elapsed_ms": 259418.64
+      }
+    },
+    "standalone": ".agentforge/live-export-v0.6.json",
+    "runtime_hash": "6bb648f2275339a64ee354da32154eea6336c39c78275ca1ea0d938c674b89e2",
+    "post_runtime_upgrade_local_verify": "passed"
+  },
+  "document_attempts": [
+    {
+      "run_id": "90f44f2be73c",
+      "version": 5,
+      "status": "rejected",
+      "development": {
+        "passed": 13,
+        "total": 13
+      },
+      "acceptance": {
+        "passed": 0,
+        "total": 3
+      },
+      "design_repairs": 2,
+      "repairs": 4,
+      "human_direction_used": true,
+      "hidden_cases_executed": false,
+      "elapsed_ms": 1940039.27
+    },
+    {
+      "run_id": "ebbbcdf3aee8",
+      "version": 2,
+      "status": "rejected",
+      "development": {
+        "passed": 12,
+        "total": 12
+      },
+      "acceptance": {
+        "passed": 0,
+        "total": 1,
+        "behavior_skipped": true
+      },
+      "repairs": 1,
+      "design_repairs": 0,
+      "human_direction_used": false,
+      "hidden_cases_executed": false,
+      "elapsed_ms": 533822.11
+    },
+    {
+      "run_id": "be8454b4e199",
+      "status": "completed",
+      "version": 8,
+      "repairs": 6,
+      "design_repairs": 5,
+      "development": {
+        "passed": 11,
+        "total": 11,
+        "model_calls": 25
+      },
+      "acceptance": {
+        "passed": 12,
+        "total": 12,
+        "model_calls": 30
+      },
+      "human_direction_used": false,
+      "budget_extended": true,
+      "runtime_upgrade_version": 3,
+      "runtime_hash": "c0a5d5e9b6ab2b49fb34d0d03f10f8f779265ef8728e010dae975a4b7dc48472",
+      "elapsed_ms": 1798977.7100000002,
+      "archive": "dist/be8454b4e199.zip",
+      "local_export_verification": "passed",
+      "independent": {
+        "report": "evaluations/357669a90445/report.json",
+        "passed": 7,
+        "total": 7,
+        "suite_version": "unseen-v2.1",
+        "eligible_for_delivery": true,
+        "performance": {
+          "build_elapsed_ms": 1798977.7100000002,
+          "repairs": 6,
+          "design_repairs": 5,
+          "runtime_model_calls": 27,
+          "runtime_elapsed_ms": 285427.01
+        }
+      },
+      "framework_interruption": "runs/be8454b4e199/versions/v2/host_interrupted.json"
+    }
+  ],
+  "limitations": [
+    "Two synthetic bounded tasks; not a general production success rate or latency guarantee.",
+    "Both earlier document candidates failed preserved acceptance and were not exported.",
+    "Document delivery required six repairs, manual repair-budget extensions and one trusted runtime fix/upgrade; no task-specific human direction was provided.",
+    "Independent questions and acceptance failures were not fed back to repair these candidates.",
+    "The optional new contract/example model audit was rejected by automatic approval review and remains disabled pending explicit authorization."
+  ],
+  "pending_enhancement": {
+    "proposal": "docs/contract-audit-proposal.json",
+    "status": "awaiting_explicit_authorization",
+    "implemented": false,
+    "executed": false
+  },
+  "packaging": {
+    "version": "0.6.0",
+    "package_files_verified": 29,
+    "suite_version": "unseen-v2.1",
+    "task_count": 2,
+    "supports_time_limit": true,
+    "wheel_sha256": "152166e52782e08c2d29b56a00bc389ea323482d509e13f482fe496215d6ed48",
+    "wheel_bytes": 118453,
+    "wheel": ".agentforge/wheels/agentforge_codex-0.6.0-py3-none-any.whl",
+    "installed_in_isolation": true
+  },
+  "verified_at": "2026-10-09T11:25:07.215Z",
+  "combined_independent": {
+    "passed": 14,
+    "total": 14,
+    "delivered_task_types": 2,
+    "csv_task_identical_between_suite_versions": true,
+    "note": "Final qualified exports from separate evaluations; not first-attempt delivery rate."
+  }
+}

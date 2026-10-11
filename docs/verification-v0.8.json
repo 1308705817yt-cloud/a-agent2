@@ -1,0 +1,207 @@
+{
+  "version": "0.8.0",
+  "runtime_hash": "af30051f752a81e28053ce707f2368ad60dac233cfdbe9a1d629d33ac9707aaf",
+  "runtime_manifest": {
+    "contracts.py": "0ddf242263a8746e4143d6f991613dac44aced73b7a3f9a71ccdb1699fcf05ef",
+    "resources.py": "4525908c8028cc83574534c5e7fcdc5e6242eafd9e015cd5595de0a9ae1fc9d4",
+    "tool_registry.py": "0864196fc35785a8a4af6e14b91db5784ee7975164e1b335308817b55b6fc682",
+    "program.py": "bb65fe5561a24ba8dc76d9c265a29f70dc342faf48179bfe12e78d59f45ee4b1",
+    "workflow.py": "6bda4d40fe6c9e9d4d8f779fe744a26bdf7cb383b4abb612eae9a8c67635aab4",
+    "testing.py": "9b47da3f2bbe75a25d28f166c4d04f3c5f2d9cc3dd39d9de44c9549adefdac84",
+    "codex_client.py": "475681eedc4bf9cfd759e422f413041bd11dbfff2bb09e8eacc64dfd28a49878",
+    "adaptive_contracts.py": "ea7c09516bbe4081f5f4edfd5fbaf8eea608f95421d1241a37bc7b0e7527e687",
+    "custom_tools.py": "21a99e35d530459405424eb4b7e54f6a8d584e474bbdc61443b36f73196caeee",
+    "adaptive_runtime.py": "269ffbb5f7866e0054aa84e6651dfa54975e1294402fbf115c5a2de2df9dd23c",
+    "adaptive_testing.py": "e7c29438996a35a94e91b84945a0310f526d0d7c5733383ff680d14dee43562b",
+    "adaptive_artifacts.py": "3435f4a9528b772a9e2ac492d44d16f95b7e3462553a270759952f565e4a5052",
+    "trusted_tools.py": "079e0662ada00b7a84bf1f2d5806565876a83c697453b8262addf1b1fe06944c",
+    "source_validation.py": "ef92b901d7ecab8fe68fb6590919f67fcd95a599a5def5ddca8b7d7460fe2667"
+  },
+  "wheel": {
+    "sha256": "9cdcf6368c95b096bc0945a63ef18ed4ab637899a32a0304c0a63fcf4bc68c5e",
+    "bytes": 136054,
+    "verified_package_files": 31
+  },
+  "old_v07_replay": {
+    "source": "C:\\Users\\86158\\Desktop\\codex123\\尝试1\\runs\\707ef4f70969\\versions\\v4\\logic.py",
+    "model_calls": 0,
+    "failure": {
+      "code": "OUTPUT_CONTRACT",
+      "message": "冻结前输出契约检查 success-null 失败：响应必须包含且仅包含 answer/data/sources/abstained/error；缺少 ['data', 'error']，多出 ['result_ref']。",
+      "location": "logic.py:39",
+      "origin": "source",
+      "retryable": false,
+      "recovery": "repair_source"
+    }
+  },
+  "status": "verification_completed",
+  "completed_at": "2026-10-09T13:42:06.660Z",
+  "unit_tests": {
+    "passed": 162,
+    "total": 162,
+    "elapsed_seconds": 35.6
+  },
+  "checks": {
+    "compileall": true,
+    "frontend_syntax": true,
+    "frontend_DOM": true,
+    "localhost_HTTP": true,
+    "installed_wheel_byte_matches": true,
+    "export_integrity_and_local_tools": true
+  },
+  "real_codex": {
+    "runs": [
+      {
+        "run_id": "0beac76fa145",
+        "status": "failed",
+        "phase": "tests",
+        "version": 0,
+        "repairs": 0,
+        "design_repairs": 0,
+        "active_elapsed_ms": 323896.56,
+        "runtime_hash": null,
+        "development": null,
+        "acceptance": null,
+        "model_calls": 7,
+        "completed_calls": 7,
+        "failed_calls": 0,
+        "inflight_calls": 0,
+        "audit_binding_failures": 0,
+        "error": "新增测试校验连续失败：custom.locker_policy_evidence_index 需要至少两个不同输入的开发样例，覆盖正常计算与边界/替代输入。",
+        "artifact_hash": null
+      },
+      {
+        "run_id": "94ba710c54bf",
+        "status": "completed",
+        "phase": "completed",
+        "version": 1,
+        "repairs": 0,
+        "design_repairs": 0,
+        "active_elapsed_ms": 534213.26,
+        "runtime_hash": "a59ef1790c51a95200cf36c89f273511e110b927cc18a8a88a73650a4ffb62d4",
+        "development": {
+          "passed": 14,
+          "total": 14
+        },
+        "acceptance": {
+          "passed": 14,
+          "total": 14
+        },
+        "model_calls": 89,
+        "completed_calls": 89,
+        "failed_calls": 0,
+        "inflight_calls": 0,
+        "audit_binding_failures": 0,
+        "error": null,
+        "artifact_hash": "03b85d0d7d9db343cea63d99c7865b870f29bc4751965c1610464348433ad8dc"
+      },
+      {
+        "run_id": "4438203f4dc6",
+        "status": "completed",
+        "phase": "completed",
+        "version": 1,
+        "repairs": 0,
+        "design_repairs": 0,
+        "active_elapsed_ms": 257965.18,
+        "runtime_hash": "af30051f752a81e28053ce707f2368ad60dac233cfdbe9a1d629d33ac9707aaf",
+        "development": {
+          "passed": 14,
+          "total": 14
+        },
+        "acceptance": {
+          "passed": 14,
+          "total": 14
+        },
+        "model_calls": 80,
+        "completed_calls": 80,
+        "failed_calls": 0,
+        "inflight_calls": 0,
+        "audit_binding_failures": 0,
+        "error": null,
+        "artifact_hash": "5d8774eafeb5448ba7f95a8d3683519bca727d238bb4270ae0447a888de94542"
+      }
+    ],
+    "total_unique_request_ids": 176,
+    "first_attempt_explanation": "A zero-parameter tool could not satisfy two distinct legal development inputs. First attempt failed before source generation. A design-stage testability guard was added; the same task was rebuilt. Runtime-only revalidation reused original generated source/design and immutable business tests.",
+    "original_generated_independent": {
+      "evaluation_id": "1a896bacee47",
+      "passed": 6,
+      "total": 6,
+      "runtime_hash": "a59ef1790c51a95200cf36c89f273511e110b927cc18a8a88a73650a4ffb62d4"
+    },
+    "final_independent": {
+      "evaluation_id": "ed6d08cf69ed",
+      "report_path": "C:\\Users\\86158\\Desktop\\codex123\\尝试1\\evaluations\\ed6d08cf69ed\\report.json",
+      "sha256": "dcf48e754e38d98329ffdbc3f86f688d7173d570c2b664782a2b926bac35fb94",
+      "passed": 6,
+      "total": 6,
+      "all_passed": true,
+      "metrics": {
+        "task_count": 1,
+        "first_delivery_successes": null,
+        "first_delivery_rate": null,
+        "first_candidate_successes": null,
+        "repairs": 0,
+        "design_repairs": 0,
+        "wall_elapsed_ms": 100864.46,
+        "model_calls": 80
+      },
+      "performance": {
+        "build_elapsed_ms": 257965.18,
+        "runtime_elapsed_ms": 200378.83,
+        "active_elapsed_ms": 458344.01,
+        "wall_elapsed_ms": 100837.38,
+        "repairs": 0,
+        "design_repairs": 0,
+        "runtime_model_calls": 18,
+        "build_call_audit": {
+          "available": true,
+          "model_calls": 62,
+          "completed_calls": 62,
+          "failed_calls": 0,
+          "inflight_calls": 0,
+          "model_elapsed_ms": 666226.05
+        },
+        "total_call_audit": {
+          "available": true,
+          "model_calls": 80,
+          "completed_calls": 80,
+          "failed_calls": 0,
+          "inflight_calls": 0,
+          "model_elapsed_ms": 866512.23
+        }
+      }
+    },
+    "runtime_reverification": {
+      "mode": "runtime_only_reverification",
+      "original_run_id": "94ba710c54bf",
+      "original_artifact_hash": "03b85d0d7d9db343cea63d99c7865b870f29bc4751965c1610464348433ad8dc",
+      "run_id": "4438203f4dc6",
+      "runtime_hash": "af30051f752a81e28053ce707f2368ad60dac233cfdbe9a1d629d33ac9707aaf",
+      "source_unchanged": true,
+      "spec_unchanged": true,
+      "suite_hash": "b42f0a46bd20c236d9680ff6267941283c005c1e9b066d86592501bf60a073fc",
+      "fresh_delivery_measurement": false
+    },
+    "first_delivery_rate_claimed": false
+  },
+  "independent_freeze": {
+    "frozen_at": "2026-10-09T13:12:51.498Z",
+    "sha256": "11ce606484ef99f0b42d52aabfb3a6e9ea9332c9f41c836ab3d9575850a877ce",
+    "source_generated": false,
+    "run_id": "0beac76fa145"
+  },
+  "independent_metadata_normalization": {
+    "normalized_at": "2026-10-09T13:26:24.995Z",
+    "change": "Version label only, required by existing suite reader. All tasks, questions and gold answers remain byte-equivalent after JSON encoding.",
+    "original_version": "verification-v0.8-locker",
+    "accepted_version": "unseen-v4",
+    "tasks_sha256": "878c7e63ae28798fbfbd701cf0895b669637f3640e946eda33e04122ff6b2220"
+  },
+  "limitations": [
+    "Host shape preflight does not prove all input-dependent branches or algorithm correctness; runtime still enforces contracts.",
+    "execution_plan declarations and AST/helper validation do not prove all resource sizes fit execution budgets.",
+    "One synthetic task, rebuilt after failure and then revalidated, does not establish unfamiliar-task first-delivery success."
+  ],
+  "qualified_artifact": "dist/4438203f4dc6.zip"
+}

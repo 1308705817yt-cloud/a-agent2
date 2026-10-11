@@ -1,0 +1,8 @@
+region,product,amount,quantity
+East,Notebook,120.50,2
+West,Notebook,80.00,1
+East,Keyboard,60.00,3
+North,Mouse,25.50,2
+West,Keyboard,90.00,2
+North,Notebook,110.00,1
+East,Mouse,,1

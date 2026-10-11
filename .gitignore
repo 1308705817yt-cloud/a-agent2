@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+runs/
+dist/
+.agentforge/
+build/
+*.egg-info/
+evaluations/
+trusted_data/
+trusted_tools.json
+.restore-backup/

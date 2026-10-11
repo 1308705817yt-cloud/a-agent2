@@ -1,0 +1,18 @@
+{
+  "status": "awaiting_explicit_authorization",
+  "purpose": "在冻结工具测试、生成源码之前，用独立 Codex 调用检查生成样例是否与工具契约一致，减少错误样例导致的无效代码修复。",
+  "destination": "本项目既有 CodexClient：当前已登录的 Codex CLI 后端；保持现有模型及认证配置。",
+  "payload": {
+    "tools": "已生成的工具 ID、描述、参数和输出 Schema；移除 source。",
+    "tool_cases": "已生成的输入、expected、用途、判分标准及分区；可能含文档片段、资源 ID 和事实。"
+  },
+  "excluded": ["额外原始资源快照", "源码", "独立评测问题与答案", "磁盘其他文件"],
+  "review": {
+    "output": {"valid": "boolean", "errors": "case ID + JSON path + reason 的数组"},
+    "checks": ["字段计算与标签", "字面匹配", "排列与去重", "缺字段与空值", "小夹具数值"],
+    "resource_id_only_cases": "只能检查结构与契约一致性，不声称验证未知资源值。",
+    "rejected_examples": "冻结前最多重新生成三次；保留被拒样例与理由。",
+    "frozen_tests": "已冻结业务场景及历史验收不修改；只审查尚未冻结的新接口样例。"
+  },
+  "automatic_review": "已拒绝两种新增发送方案，认为当前授权未明确覆盖可能包含敏感文档派生信息的审查载荷。获得明确同意前不实现或执行此新调用。"
+}

@@ -1,0 +1,20 @@
+{
+  "tools": [
+    {
+      "id": "trusted.inventory",
+      "description": "按门店查询可用库存，返回 sku 与 available；固定只读查询。",
+      "kind": "sqlite_read",
+      "input_schema": {"type": "object", "properties": {"branch": {"type": "string", "maxLength": 80}}, "required": ["branch"], "additionalProperties": false},
+      "output_schema": {"type": "object", "properties": {"rows": {"type": "array", "items": {"type": "object", "properties": {"sku": {"type": "string"}, "available": {"type": "integer"}}, "required": ["sku", "available"], "additionalProperties": false}}, "row_count": {"type": "integer"}}, "required": ["rows", "row_count"], "additionalProperties": false},
+      "config": {"database": "trusted_data/inventory.sqlite", "query": "SELECT sku, available FROM inventory WHERE branch = :branch ORDER BY sku", "tables": ["inventory"], "max_rows": 100, "timeout": 5}
+    },
+    {
+      "id": "trusted.service_status",
+      "description": "查询指定服务的状态；固定 HTTPS JSON 服务，需要部署者配置实际地址。",
+      "kind": "http_json",
+      "input_schema": {"type": "object", "properties": {"service": {"type": "string", "maxLength": 80}}, "required": ["service"], "additionalProperties": false},
+      "output_schema": {"type": "object", "properties": {"status": {"type": "string", "enum": ["ok", "degraded", "down"]}}, "required": ["status"], "additionalProperties": false},
+      "config": {"url": "https://your-service.example/status", "header_env": {"Authorization": "AGENTFORGE_SERVICE_AUTH"}, "timeout": 5}
+    }
+  ]
+}

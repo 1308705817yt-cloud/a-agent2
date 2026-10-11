@@ -1,0 +1,380 @@
+{
+  "version": "0.9.0",
+  "runtime_hash": "e44f50be372692e21440adc2093a0d289223a473323280a2854ac1d93289cb5e",
+  "runtime_manifest": {
+    "contracts.py": "b506b4b5bf80466ded4034cf6c38e1e6fce779fab1dedb149f7006280b8259ba",
+    "resources.py": "4525908c8028cc83574534c5e7fcdc5e6242eafd9e015cd5595de0a9ae1fc9d4",
+    "tool_registry.py": "0864196fc35785a8a4af6e14b91db5784ee7975164e1b335308817b55b6fc682",
+    "program.py": "b850c1c07c5cd413895c6fd1638ee73e1161b1f8dfe75609f14347a8a79580f7",
+    "workflow.py": "6bda4d40fe6c9e9d4d8f779fe744a26bdf7cb383b4abb612eae9a8c67635aab4",
+    "testing.py": "9b47da3f2bbe75a25d28f166c4d04f3c5f2d9cc3dd39d9de44c9549adefdac84",
+    "codex_client.py": "475681eedc4bf9cfd759e422f413041bd11dbfff2bb09e8eacc64dfd28a49878",
+    "adaptive_contracts.py": "ea7c09516bbe4081f5f4edfd5fbaf8eea608f95421d1241a37bc7b0e7527e687",
+    "custom_tools.py": "338d58a73eeef1fa52dbe220ef3191447ab3bf2da5fe846b36cdbe8f9e82d040",
+    "adaptive_runtime.py": "2dbd7a9b8bdae04776fba197d49ca34237faf0cde0e4ca6462d27eae293d6cb7",
+    "adaptive_testing.py": "e7c29438996a35a94e91b84945a0310f526d0d7c5733383ff680d14dee43562b",
+    "adaptive_artifacts.py": "3435f4a9528b772a9e2ac492d44d16f95b7e3462553a270759952f565e4a5052",
+    "trusted_tools.py": "4a7021219486f02478675e7ce1f818c72b7af60e66b1ae7e28032b7c0e4f6d71",
+    "source_validation.py": "15c1a800d68d7e08e587c81dfd73510a1b60922a51059cfa70e9dc106b8460fd"
+  },
+  "unit_tests": {
+    "passed": 176,
+    "total": 176,
+    "elapsed_seconds": 31.736,
+    "new_boundary_tests": 14
+  },
+  "checks": {
+    "compileall": true,
+    "frontend_syntax": true,
+    "frontend_DOM": true,
+    "installed_wheel_byte_matches": true,
+    "localhost_HTTP": true,
+    "installed_wheel_boundary_reproduction": true,
+    "export_integrity_and_local_tools": true
+  },
+  "reported_120001_character_reproduction": {
+    "source": "def run(context):\n    return context[\"result\"]\n",
+    "result_characters": 120001,
+    "failure": {
+      "code": "CODE_LIMIT",
+      "message": "代码数据超过大小预算。",
+      "location": "logic.py:1",
+      "origin": "runtime",
+      "retryable": false,
+      "recovery": "reduce_result_or_adjust_limit"
+    },
+    "model_calls": 0
+  },
+  "wheel": {
+    "sha256": "dcbebfe4816ce9371ed5364a2ccf36a39fffc1a318f36604ab035a5d3757bb80",
+    "bytes": 142217,
+    "verified_package_files": 32
+  },
+  "suite_freeze": {
+    "suite_version": "unseen-v5",
+    "suite_hash": "f8e8e5f89c3cfc55f680e59aa42df956c699b5ace342ce4f06ebadd259ad574b",
+    "file_sha256": "a722f32222b3b0047652d5dc60684e7c332868788b8da630e820a941d58e044c",
+    "checked_cases": 24,
+    "task_count": 4,
+    "references_for_local_verification_only": {
+      "parcel_weight": {
+        "top-two-goal": {
+          "sort_by": "value",
+          "descending": true,
+          "limit": 2
+        },
+        "adjustment-goal": {
+          "filters": [
+            {
+              "column": "state",
+              "operator": "eq",
+              "value": "adjustment"
+            }
+          ]
+        }
+      },
+      "kitchen_ledger": {
+        "return-goal": {
+          "filters": [
+            {
+              "column": "state",
+              "operator": "eq",
+              "value": "return"
+            }
+          ]
+        },
+        "pending-count-goal": {
+          "operation": "count",
+          "column": null,
+          "group_by": null,
+          "filters": [
+            {
+              "column": "state",
+              "operator": "eq",
+              "value": "pending"
+            }
+          ]
+        }
+      }
+    },
+    "protocol": {
+      "fresh_builds": true,
+      "reuse_artifacts": false,
+      "manual_retry": false,
+      "manual_direction": false,
+      "task_workers": 2,
+      "max_repairs": 3,
+      "build_max_seconds": 1800,
+      "run_max_seconds": 600,
+      "model_timeout_seconds": 600
+    },
+    "limitations": "Small public synthetic suite; literal fact scoring is not a semantic proof. All selected tasks stay in the denominator."
+  },
+  "checked_at": "2026-10-09T23:47:15.690929+08:00",
+  "status": "verification_completed",
+  "real_codex": {
+    "evaluation_id": "2168b134203b",
+    "report_path": "C:\\Users\\86158\\Desktop\\codex123\\尝试1\\evaluations\\2168b134203b\\report.json",
+    "suite_hash": "f8e8e5f89c3cfc55f680e59aa42df956c699b5ace342ce4f06ebadd259ad574b",
+    "fresh_builds": true,
+    "reused_artifacts": 0,
+    "manual_retries": 0,
+    "passed": 12,
+    "total": 24,
+    "delivered_tasks": 2,
+    "metrics": {
+      "task_count": 4,
+      "first_delivery_successes": 2,
+      "first_delivery_rate": 0.5,
+      "first_candidate_successes": 0,
+      "repairs": 2,
+      "design_repairs": 0,
+      "wall_elapsed_ms": 1918443.86,
+      "model_calls": 367
+    },
+    "tasks": [
+      {
+        "task": "park_construction",
+        "run_id": "f1f47a26c2a4",
+        "status": "completed",
+        "phase": "completed",
+        "version": 2,
+        "error_info": null,
+        "last_error": null,
+        "first_delivery_passed": true,
+        "first_candidate_passed": false,
+        "independent_passed": 6,
+        "independent_total": 6,
+        "independent_executed": 6,
+        "independent_execution_policy": {
+          "adaptive_steps": true,
+          "max_seconds": 600
+        },
+        "performance": {
+          "build_elapsed_ms": 850180.1400000001,
+          "runtime_elapsed_ms": 224005.79,
+          "active_elapsed_ms": 1074185.9300000002,
+          "wall_elapsed_ms": 974386.68,
+          "repairs": 1,
+          "design_repairs": 0,
+          "runtime_model_calls": 20,
+          "build_call_audit": {
+            "available": true,
+            "model_calls": 116,
+            "completed_calls": 116,
+            "failed_calls": 0,
+            "inflight_calls": 0,
+            "model_elapsed_ms": 1763383.6
+          },
+          "total_call_audit": {
+            "available": true,
+            "model_calls": 136,
+            "completed_calls": 136,
+            "failed_calls": 0,
+            "inflight_calls": 0,
+            "model_elapsed_ms": 1987278.27
+          }
+        }
+      },
+      {
+        "task": "archive_reading",
+        "run_id": "9612ab2f9685",
+        "status": "completed",
+        "phase": "completed",
+        "version": 2,
+        "error_info": null,
+        "last_error": null,
+        "first_delivery_passed": true,
+        "first_candidate_passed": false,
+        "independent_passed": 6,
+        "independent_total": 6,
+        "independent_executed": 6,
+        "independent_execution_policy": {
+          "adaptive_steps": true,
+          "max_seconds": 600
+        },
+        "performance": {
+          "build_elapsed_ms": 1143294.7600000002,
+          "runtime_elapsed_ms": 287645.11,
+          "active_elapsed_ms": 1430939.87,
+          "wall_elapsed_ms": 1290864.06,
+          "repairs": 1,
+          "design_repairs": 0,
+          "runtime_model_calls": 30,
+          "build_call_audit": {
+            "available": true,
+            "model_calls": 129,
+            "completed_calls": 129,
+            "failed_calls": 0,
+            "inflight_calls": 0,
+            "model_elapsed_ms": 1911623.3
+          },
+          "total_call_audit": {
+            "available": true,
+            "model_calls": 159,
+            "completed_calls": 159,
+            "failed_calls": 0,
+            "inflight_calls": 0,
+            "model_elapsed_ms": 2199129.24
+          }
+        }
+      },
+      {
+        "task": "parcel_weight",
+        "run_id": "c28a278a49e9",
+        "status": "failed",
+        "phase": "tests",
+        "version": 0,
+        "error_info": {
+          "code": "BUILD_ERROR"
+        },
+        "last_error": "新增测试校验连续失败：Codex 返回的 test.arguments.rows 类型错误。",
+        "first_delivery_passed": false,
+        "first_candidate_passed": false,
+        "independent_passed": 0,
+        "independent_total": 6,
+        "independent_executed": 0,
+        "independent_execution_policy": {
+          "adaptive_steps": true,
+          "max_seconds": 600
+        },
+        "performance": {
+          "build_elapsed_ms": 271416.79,
+          "runtime_elapsed_ms": 0,
+          "active_elapsed_ms": 271416.79,
+          "wall_elapsed_ms": 271601.03,
+          "repairs": 0,
+          "design_repairs": 0,
+          "runtime_model_calls": 0,
+          "build_call_audit": {
+            "available": true,
+            "model_calls": 7,
+            "completed_calls": 7,
+            "failed_calls": 0,
+            "inflight_calls": 0,
+            "model_elapsed_ms": 271367.42
+          },
+          "total_call_audit": {
+            "available": true,
+            "model_calls": 7,
+            "completed_calls": 7,
+            "failed_calls": 0,
+            "inflight_calls": 0,
+            "model_elapsed_ms": 271367.42
+          }
+        }
+      },
+      {
+        "task": "kitchen_ledger",
+        "run_id": "223ee6d77b2b",
+        "status": "failed",
+        "phase": "acceptance",
+        "version": 1,
+        "error_info": {
+          "code": "MODEL_TIMEOUT"
+        },
+        "last_error": "子 Agent 的 Codex 调用失败；执行记录已保留，请从当前测试阶段重试。",
+        "first_delivery_passed": false,
+        "first_candidate_passed": false,
+        "independent_passed": 0,
+        "independent_total": 6,
+        "independent_executed": 0,
+        "independent_execution_policy": {
+          "adaptive_steps": true,
+          "max_seconds": 600
+        },
+        "performance": {
+          "build_elapsed_ms": 671988.39,
+          "runtime_elapsed_ms": 0,
+          "active_elapsed_ms": 671988.39,
+          "wall_elapsed_ms": 672385.01,
+          "repairs": 0,
+          "design_repairs": 0,
+          "runtime_model_calls": 0,
+          "build_call_audit": {
+            "available": true,
+            "model_calls": 65,
+            "completed_calls": 60,
+            "failed_calls": 5,
+            "inflight_calls": 0,
+            "model_elapsed_ms": 1267852.73
+          },
+          "total_call_audit": {
+            "available": true,
+            "model_calls": 65,
+            "completed_calls": 60,
+            "failed_calls": 5,
+            "inflight_calls": 0,
+            "model_elapsed_ms": 1267852.73
+          }
+        }
+      }
+    ],
+    "limitations": "公开且固定的陌生任务回归集；只验证指定事实、引用及数值，不能证明任意业务能力。结果禁止反馈到本轮生成或修复。",
+    "time_limit_scope": "CLI --run-max-seconds=600 applies to development/acceptance runs. Independent cases use each frozen artifact's execution_policy; the single-call timeout remains 600. No global batch time cap was set.",
+    "audit": {
+      "total": 367,
+      "unique_call_ids": 367,
+      "statuses": {
+        "completed": 362,
+        "failed": 5
+      },
+      "binding_violations": [],
+      "covers": [
+        "run_id",
+        "task_id",
+        "case_id",
+        "partition",
+        "input_hash"
+      ]
+    }
+  },
+  "exported_agents_local_verification": [
+    {
+      "task": "park_construction",
+      "run_id": "f1f47a26c2a4",
+      "path": "C:\\Users\\86158\\Desktop\\codex123\\尝试1\\dist\\f1f47a26c2a4",
+      "verification": {
+        "integrity": "passed",
+        "mode": "local_tools_only",
+        "reports": [
+          {
+            "partition": "development",
+            "passed": 3,
+            "total": 3,
+            "all_passed": true
+          },
+          {
+            "partition": "acceptance",
+            "passed": 2,
+            "total": 2,
+            "all_passed": true
+          }
+        ]
+      }
+    },
+    {
+      "task": "archive_reading",
+      "run_id": "9612ab2f9685",
+      "path": "C:\\Users\\86158\\Desktop\\codex123\\尝试1\\dist\\9612ab2f9685",
+      "verification": {
+        "integrity": "passed",
+        "mode": "local_tools_only",
+        "reports": [
+          {
+            "partition": "development",
+            "passed": 3,
+            "total": 3,
+            "all_passed": true
+          },
+          {
+            "partition": "acceptance",
+            "passed": 2,
+            "total": 2,
+            "all_passed": true
+          }
+        ]
+      }
+    }
+  ]
+}

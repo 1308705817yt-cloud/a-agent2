@@ -1,0 +1,1060 @@
+{
+  "version": "0.11.0",
+  "checked_at": "2026-10-10T09:49:42.883728+08:00",
+  "runtime_hash": "2e3a710e8dc8fb0d931131f84a420ef1a9012cb6c8934a11433687b2a05808a1",
+  "runtime_manifest": {
+    "contracts.py": "3fbf693b93f8aa82290836b7f9c312847acace7dc6bfc2b9e5e9dfca52a1709d",
+    "resources.py": "4525908c8028cc83574534c5e7fcdc5e6242eafd9e015cd5595de0a9ae1fc9d4",
+    "tool_registry.py": "0864196fc35785a8a4af6e14b91db5784ee7975164e1b335308817b55b6fc682",
+    "program.py": "b850c1c07c5cd413895c6fd1638ee73e1161b1f8dfe75609f14347a8a79580f7",
+    "workflow.py": "6bda4d40fe6c9e9d4d8f779fe744a26bdf7cb383b4abb612eae9a8c67635aab4",
+    "testing.py": "9b47da3f2bbe75a25d28f166c4d04f3c5f2d9cc3dd39d9de44c9549adefdac84",
+    "codex_client.py": "c6fad7b77004a7105b58168cc30d3f9854833d4d7596fd8825df5192c16c7d32",
+    "adaptive_contracts.py": "cdc6acfe9f86f8057e9c914a23761ed3d18d496143fb76aeb3378da83510fc8d",
+    "custom_tools.py": "7f6835d05f5ed726b905baeb62611b6f71051cd09346c3c974bf7c8d3b121620",
+    "adaptive_runtime.py": "4b9f8af30ec8ce2ca885ce14264319df8aadca3cf18e2995259e4f4c366dc137",
+    "adaptive_testing.py": "16c18a72ec038ea3808aba9ee66bc858ad9f2f38052ba35254f28663b8f91f1a",
+    "adaptive_artifacts.py": "3435f4a9528b772a9e2ac492d44d16f95b7e3462553a270759952f565e4a5052",
+    "trusted_tools.py": "4a7021219486f02478675e7ce1f818c72b7af60e66b1ae7e28032b7c0e4f6d71",
+    "source_validation.py": "15c1a800d68d7e08e587c81dfd73510a1b60922a51059cfa70e9dc106b8460fd",
+    "evaluation_progress.py": "79fddc5ebaa05bf21c3b1757b8ce5595a371c8a1daea329033fbf78812ca79e1"
+  },
+  "unit_tests": {
+    "tests": 210,
+    "passed": 210,
+    "elapsed_seconds": 52.425,
+    "exit_code": 0,
+    "frontend": true,
+    "compileall": true,
+    "new_evaluation_condition_tests": 9
+  },
+  "wheel": {
+    "sha256": "237719f32204d695ccecab00def820fb8d44d9b93a70a31d1a86b2a1f62d625f",
+    "bytes": 158735,
+    "verified_package_files": 34
+  },
+  "installed_import_path": "C:\\Users\\86158\\Desktop\\codex123\\尝试1\\.agentforge\\package-smoke-v11\\agentforge\\__init__.py",
+  "installed_source_bytes_match": true,
+  "standalone_export": {
+    "integrity": "passed",
+    "mode": "local_tools_only",
+    "reports": [
+      {
+        "partition": "development",
+        "passed": 3,
+        "total": 3,
+        "all_passed": true
+      },
+      {
+        "partition": "acceptance",
+        "passed": 2,
+        "total": 2,
+        "all_passed": true
+      }
+    ]
+  },
+  "negative_only_acceptance_rejection": "custom.policy_profile 在 acceptance 分区缺少 至少 1 个不同的合法计算结果样例（宿主拒绝和业务错误不抵消计算覆盖）。",
+  "large_result": {
+    "code": "CODE_LIMIT",
+    "message": "代码数据超过大小预算。",
+    "location": "logic.py:1",
+    "origin": "runtime",
+    "retryable": false,
+    "recovery": "reduce_result_or_adjust_limit"
+  },
+  "frozen_novel_suite": {
+    "suite_hash": "9da458d6f3bb36d736630cfbbb92f7c1f6d565a98f9c417f06d0106d3a933c5e",
+    "suite_path": "agentforge\\benchmarks\\unseen_v6.json",
+    "manual_gold_checked_by_decimal_cases": 12,
+    "document_gold_cases": 6,
+    "created_at": "2026-10-10T01:41:23.842107+00:00",
+    "frozen_before_real_builds": true,
+    "historical_regression_tasks": [
+      "parcel_weight",
+      "kitchen_ledger"
+    ]
+  },
+  "real_evaluation": {
+    "status": "completed",
+    "runtime_hash": "2e3a710e8dc8fb0d931131f84a420ef1a9012cb6c8934a11433687b2a05808a1",
+    "suite_hash": "9da458d6f3bb36d736630cfbbb92f7c1f6d565a98f9c417f06d0106d3a933c5e",
+    "cohorts": [
+      {
+        "cohort": "historical_regression",
+        "evaluation_id": "fe29c5e42653",
+        "report_path": "C:\\Users\\86158\\Desktop\\codex123\\尝试1\\evaluations\\fe29c5e42653\\report.json",
+        "metrics": {
+          "task_count": 2,
+          "first_delivery_successes": 0,
+          "first_delivery_rate": 0.0,
+          "first_candidate_successes": 0,
+          "repairs": 1,
+          "design_repairs": 1,
+          "wall_elapsed_ms": 1819805.8,
+          "model_calls": 191
+        },
+        "tasks": [
+          {
+            "task_id": "parcel_weight",
+            "run_id": "4d7499e7f46d",
+            "build_status": "completed",
+            "version": 1,
+            "first_delivery_passed": false,
+            "first_candidate_passed": false,
+            "passed": 4,
+            "total": 6,
+            "performance": {
+              "build_elapsed_ms": 688037.67,
+              "runtime_elapsed_ms": 367482.45,
+              "active_elapsed_ms": 1055520.12,
+              "wall_elapsed_ms": 874490.75,
+              "repairs": 0,
+              "design_repairs": 0,
+              "runtime_model_calls": 18,
+              "build_call_audit": {
+                "available": true,
+                "model_calls": 65,
+                "completed_calls": 65,
+                "failed_calls": 0,
+                "inflight_calls": 0,
+                "model_elapsed_ms": 1436293.37
+              },
+              "total_call_audit": {
+                "available": true,
+                "model_calls": 83,
+                "completed_calls": 83,
+                "failed_calls": 0,
+                "inflight_calls": 0,
+                "model_elapsed_ms": 1803680.51
+              },
+              "calls_by_phase": [
+                {
+                  "stage": "benchmark",
+                  "phase": "completed",
+                  "partition": "none",
+                  "calls": 18
+                },
+                {
+                  "stage": "factory",
+                  "phase": "code",
+                  "partition": "none",
+                  "calls": 1
+                },
+                {
+                  "stage": "factory",
+                  "phase": "requirements",
+                  "partition": "none",
+                  "calls": 1
+                },
+                {
+                  "stage": "factory",
+                  "phase": "tests",
+                  "partition": "none",
+                  "calls": 2
+                },
+                {
+                  "stage": "factory",
+                  "phase": "workflow",
+                  "partition": "none",
+                  "calls": 1
+                },
+                {
+                  "stage": "runtime",
+                  "phase": "acceptance",
+                  "partition": "acceptance",
+                  "calls": 30
+                },
+                {
+                  "stage": "runtime",
+                  "phase": "evaluate",
+                  "partition": "development",
+                  "calls": 30
+                }
+              ]
+            },
+            "human_interventions": {
+              "operator_directions": 0,
+              "heldout_requested_replies": 0,
+              "heldout_predeclared_replies": 0
+            },
+            "recovery": {
+              "evaluation_attempts": 2,
+              "reused_cases": 0,
+              "resumed_cases": 0,
+              "historical_recorded_calls_reused": 0,
+              "avoided_decision_reexecution": 0,
+              "measurement": "No natural interruption means zero observed recovery use. Avoided decisions estimate re-execution savings; no counterfactual full rerun was measured."
+            }
+          },
+          {
+            "task_id": "kitchen_ledger",
+            "run_id": "9f627f782fc0",
+            "build_status": "completed",
+            "version": 2,
+            "first_delivery_passed": false,
+            "first_candidate_passed": false,
+            "passed": 5,
+            "total": 6,
+            "performance": {
+              "build_elapsed_ms": 1619223.1000000006,
+              "runtime_elapsed_ms": 392747.92,
+              "active_elapsed_ms": 2011971.0200000005,
+              "wall_elapsed_ms": 1819737.87,
+              "repairs": 1,
+              "design_repairs": 1,
+              "runtime_model_calls": 18,
+              "build_call_audit": {
+                "available": true,
+                "model_calls": 90,
+                "completed_calls": 90,
+                "failed_calls": 0,
+                "inflight_calls": 0,
+                "model_elapsed_ms": 2695081.28
+              },
+              "total_call_audit": {
+                "available": true,
+                "model_calls": 108,
+                "completed_calls": 108,
+                "failed_calls": 0,
+                "inflight_calls": 0,
+                "model_elapsed_ms": 3087726.4
+              },
+              "calls_by_phase": [
+                {
+                  "stage": "benchmark",
+                  "phase": "completed",
+                  "partition": "none",
+                  "calls": 18
+                },
+                {
+                  "stage": "factory",
+                  "phase": "code",
+                  "partition": "none",
+                  "calls": 2
+                },
+                {
+                  "stage": "factory",
+                  "phase": "diagnosis",
+                  "partition": "none",
+                  "calls": 1
+                },
+                {
+                  "stage": "factory",
+                  "phase": "redesign",
+                  "partition": "none",
+                  "calls": 1
+                },
+                {
+                  "stage": "factory",
+                  "phase": "redesign_code",
+                  "partition": "none",
+                  "calls": 1
+                },
+                {
+                  "stage": "factory",
+                  "phase": "redesign_tests",
+                  "partition": "none",
+                  "calls": 1
+                },
+                {
+                  "stage": "factory",
+                  "phase": "requirements",
+                  "partition": "none",
+                  "calls": 1
+                },
+                {
+                  "stage": "factory",
+                  "phase": "tests",
+                  "partition": "none",
+                  "calls": 2
+                },
+                {
+                  "stage": "factory",
+                  "phase": "workflow",
+                  "partition": "none",
+                  "calls": 3
+                },
+                {
+                  "stage": "runtime",
+                  "phase": "acceptance",
+                  "partition": "acceptance",
+                  "calls": 39
+                },
+                {
+                  "stage": "runtime",
+                  "phase": "evaluate",
+                  "partition": "development",
+                  "calls": 39
+                }
+              ]
+            },
+            "human_interventions": {
+              "operator_directions": 0,
+              "heldout_requested_replies": 0,
+              "heldout_predeclared_replies": 0
+            },
+            "recovery": {
+              "evaluation_attempts": 3,
+              "reused_cases": 0,
+              "resumed_cases": 0,
+              "historical_recorded_calls_reused": 0,
+              "avoided_decision_reexecution": 0,
+              "measurement": "No natural interruption means zero observed recovery use. Avoided decisions estimate re-execution savings; no counterfactual full rerun was measured."
+            }
+          }
+        ]
+      },
+      {
+        "cohort": "novel",
+        "evaluation_id": "e0c99da889c6",
+        "report_path": "C:\\Users\\86158\\Desktop\\codex123\\尝试1\\evaluations\\e0c99da889c6\\report.json",
+        "status": "interrupted",
+        "metrics": {
+          "task_count": 3,
+          "observed_deliveries": 0,
+          "first_delivery_rate": 0.0,
+          "quota_blocked_tasks": 2,
+          "interrupted_tasks": 1,
+          "measurement": "No first-attempt delivery was observed; two quota failures and one interrupted build are not source-correctness failures."
+        },
+        "tasks": [
+          {
+            "task_id": "repair_minutes",
+            "run_id": "a7570772ec79",
+            "status": "completed",
+            "build_status": "failed",
+            "passed": 0,
+            "total": 6
+          },
+          {
+            "task_id": "lab_consumables",
+            "run_id": "8c1c34dff6bc",
+            "status": "completed",
+            "build_status": "failed",
+            "passed": 0,
+            "total": 6
+          },
+          {
+            "task_id": "community_meeting",
+            "run_id": "4efb34a1fab3",
+            "status": "building",
+            "build_status": null,
+            "passed": null,
+            "total": null
+          }
+        ]
+      }
+    ],
+    "requested_conditions": {
+      "single_call_timeout": 600,
+      "run_max_seconds": 600,
+      "build_max_seconds": 1800,
+      "max_repairs": 3,
+      "task_workers": 2
+    },
+    "first_delivery_definition": "First fresh build command; no operator retry, no artifact reuse. Historical regressions remain separate from novel tasks.",
+    "operator_interventions": 0,
+    "environment_setup_requests": 1,
+    "resume_evaluation": {
+      "evaluation_id": "76b1e620d646",
+      "report_path": "C:\\Users\\86158\\Desktop\\codex123\\尝试1\\evaluations\\76b1e620d646\\report.json",
+      "status": "completed",
+      "metrics": {
+        "task_count": 3,
+        "first_delivery_rate": null,
+        "first_delivery_successes": null,
+        "first_candidate_successes": null,
+        "after_resume_successes": 1,
+        "passed_cases": 6,
+        "total_cases": 18,
+        "repairs": 2,
+        "design_repairs": 0,
+        "wall_elapsed_ms": 2233749.7,
+        "model_calls": 134,
+        "new_model_calls": 131
+      },
+      "tasks": [
+        {
+          "task_id": "repair_minutes",
+          "run_id": "a7570772ec79",
+          "build_status": "failed",
+          "version": 0,
+          "first_delivery_passed": null,
+          "first_candidate_passed": null,
+          "passed": 0,
+          "total": 6,
+          "performance": {
+            "build_elapsed_ms": 646457.84,
+            "runtime_elapsed_ms": 0,
+            "active_elapsed_ms": 646457.84,
+            "wall_elapsed_ms": 17.61,
+            "repairs": 0,
+            "design_repairs": 0,
+            "runtime_model_calls": 0,
+            "build_call_audit": {
+              "available": true,
+              "model_calls": 3,
+              "completed_calls": 1,
+              "failed_calls": 2,
+              "inflight_calls": 0,
+              "model_elapsed_ms": 646445.58
+            },
+            "total_call_audit": {
+              "available": true,
+              "model_calls": 3,
+              "completed_calls": 1,
+              "failed_calls": 2,
+              "inflight_calls": 0,
+              "model_elapsed_ms": 646445.58
+            },
+            "calls_by_phase": [
+              {
+                "stage": "factory",
+                "phase": "requirements",
+                "partition": "none",
+                "calls": 2
+              },
+              {
+                "stage": "factory",
+                "phase": "workflow",
+                "partition": "none",
+                "calls": 1
+              }
+            ],
+            "new_model_calls": 2,
+            "resume_wall_elapsed_ms": 633066.16,
+            "previously_recorded_build_elapsed_ms": 13586.0,
+            "resumed_build_elapsed_ms": 632871.84
+          },
+          "human_interventions": {
+            "operator_directions": 0,
+            "heldout_requested_replies": 0,
+            "heldout_predeclared_replies": 0
+          },
+          "recovery": {
+            "evaluation_attempts": 0,
+            "reused_cases": 0,
+            "resumed_cases": 0,
+            "historical_recorded_calls_reused": 0,
+            "avoided_decision_reexecution": 0,
+            "measurement": "No natural interruption means zero observed recovery use. Avoided decisions estimate re-execution savings; no counterfactual full rerun was measured."
+          }
+        },
+        {
+          "task_id": "lab_consumables",
+          "run_id": "8c1c34dff6bc",
+          "build_status": "failed",
+          "version": 0,
+          "first_delivery_passed": null,
+          "first_candidate_passed": null,
+          "passed": 0,
+          "total": 6,
+          "performance": {
+            "build_elapsed_ms": 644863.9,
+            "runtime_elapsed_ms": 0,
+            "active_elapsed_ms": 644863.9,
+            "wall_elapsed_ms": 18.85,
+            "repairs": 0,
+            "design_repairs": 0,
+            "runtime_model_calls": 0,
+            "build_call_audit": {
+              "available": true,
+              "model_calls": 3,
+              "completed_calls": 1,
+              "failed_calls": 2,
+              "inflight_calls": 0,
+              "model_elapsed_ms": 644849.74
+            },
+            "total_call_audit": {
+              "available": true,
+              "model_calls": 3,
+              "completed_calls": 1,
+              "failed_calls": 2,
+              "inflight_calls": 0,
+              "model_elapsed_ms": 644849.74
+            },
+            "calls_by_phase": [
+              {
+                "stage": "factory",
+                "phase": "requirements",
+                "partition": "none",
+                "calls": 2
+              },
+              {
+                "stage": "factory",
+                "phase": "workflow",
+                "partition": "none",
+                "calls": 1
+              }
+            ],
+            "new_model_calls": 2,
+            "resume_wall_elapsed_ms": 630622.64,
+            "previously_recorded_build_elapsed_ms": 14413.56,
+            "resumed_build_elapsed_ms": 630450.34
+          },
+          "human_interventions": {
+            "operator_directions": 0,
+            "heldout_requested_replies": 0,
+            "heldout_predeclared_replies": 0
+          },
+          "recovery": {
+            "evaluation_attempts": 0,
+            "reused_cases": 0,
+            "resumed_cases": 0,
+            "historical_recorded_calls_reused": 0,
+            "avoided_decision_reexecution": 0,
+            "measurement": "No natural interruption means zero observed recovery use. Avoided decisions estimate re-execution savings; no counterfactual full rerun was measured."
+          }
+        },
+        {
+          "task_id": "community_meeting",
+          "run_id": "4efb34a1fab3",
+          "build_status": "completed",
+          "version": 3,
+          "first_delivery_passed": null,
+          "first_candidate_passed": null,
+          "passed": 6,
+          "total": 6,
+          "performance": {
+            "build_elapsed_ms": 1375566.4299999997,
+            "runtime_elapsed_ms": 448926.35,
+            "active_elapsed_ms": 1824492.7799999998,
+            "wall_elapsed_ms": 226662.42,
+            "repairs": 2,
+            "design_repairs": 0,
+            "runtime_model_calls": 18,
+            "build_call_audit": {
+              "available": true,
+              "model_calls": 110,
+              "completed_calls": 109,
+              "failed_calls": 0,
+              "inflight_calls": 0,
+              "model_elapsed_ms": 2847998.2
+            },
+            "total_call_audit": {
+              "available": true,
+              "model_calls": 128,
+              "completed_calls": 127,
+              "failed_calls": 0,
+              "inflight_calls": 0,
+              "model_elapsed_ms": 3296828.47
+            },
+            "calls_by_phase": [
+              {
+                "stage": "benchmark",
+                "phase": "completed",
+                "partition": "none",
+                "calls": 18
+              },
+              {
+                "stage": "factory",
+                "phase": "code",
+                "partition": "none",
+                "calls": 1
+              },
+              {
+                "stage": "factory",
+                "phase": "diagnosis",
+                "partition": "none",
+                "calls": 2
+              },
+              {
+                "stage": "factory",
+                "phase": "repair",
+                "partition": "none",
+                "calls": 2
+              },
+              {
+                "stage": "factory",
+                "phase": "requirements",
+                "partition": "none",
+                "calls": 2
+              },
+              {
+                "stage": "factory",
+                "phase": "tests",
+                "partition": "none",
+                "calls": 2
+              },
+              {
+                "stage": "factory",
+                "phase": "workflow",
+                "partition": "none",
+                "calls": 1
+              },
+              {
+                "stage": "runtime",
+                "phase": "acceptance",
+                "partition": "acceptance",
+                "calls": 34
+              },
+              {
+                "stage": "runtime",
+                "phase": "evaluate",
+                "partition": "development",
+                "calls": 66
+              }
+            ],
+            "new_model_calls": 127,
+            "resume_wall_elapsed_ms": 1603038.08,
+            "previously_recorded_build_elapsed_ms": 0,
+            "resumed_build_elapsed_ms": 1375566.43
+          },
+          "human_interventions": {
+            "operator_directions": 0,
+            "heldout_requested_replies": 0,
+            "heldout_predeclared_replies": 0
+          },
+          "recovery": {
+            "evaluation_attempts": 4,
+            "reused_cases": 0,
+            "resumed_cases": 0,
+            "historical_recorded_calls_reused": 0,
+            "avoided_decision_reexecution": 0,
+            "measurement": "No natural interruption means zero observed recovery use. Avoided decisions estimate re-execution savings; no counterfactual full rerun was measured."
+          }
+        }
+      ]
+    },
+    "resumption": {
+      "operator_resume_requests": 1,
+      "operator_modification_directions": 0,
+      "completed_historical_tasks_reexecuted": 0,
+      "historical_recorded_calls_not_reexecuted": 191,
+      "abandoned_call_duration": "unknown",
+      "notes": "Historical call count is provenance, not a measured counterfactual savings claim."
+    },
+    "audit_validation": {
+      "total": 325,
+      "unique_call_ids": 325,
+      "statuses": {
+        "completed": 320,
+        "failed": 4,
+        "interrupted": 1
+      },
+      "binding_violations": [],
+      "error_categories": {
+        "rate_limit": 2,
+        "process_timeout": 2
+      },
+      "calls_by_phase_sum_matches": true,
+      "probe_calls_separate": 1,
+      "resume_probe_calls_separate": 1,
+      "unknown_elapsed_call_ids": [
+        "bfafee57f42146df97441d5097c9914d"
+      ]
+    },
+    "login_resolution": {
+      "logged_in": true,
+      "method": "ChatGPT",
+      "cause_of_initial_status_disagreement": "Sandbox process default home differed from the user's Codex home",
+      "resolution": "Run authorized evaluation with CODEX_HOME set to the user's existing Codex directory",
+      "credentials_in_report": false
+    },
+    "delivery_analysis": [
+      {
+        "cohort": "historical_regression",
+        "task_id": "parcel_weight",
+        "run_id": "4d7499e7f46d",
+        "build_status": "completed",
+        "independent_passed": 4,
+        "independent_total": 6,
+        "independent_executed": 6,
+        "independent_not_executed": 0,
+        "independent_failed_cases": [
+          {
+            "id": "top-two-goal",
+            "issues": [
+              "结果不符合人工核对的账本答案（检查筛选、空值、退款和完整行数）。"
+            ]
+          },
+          {
+            "id": "adjustment-goal",
+            "issues": [
+              "结果不符合人工核对的账本答案（检查筛选、空值、退款和完整行数）。"
+            ]
+          }
+        ],
+        "final_build_error": null,
+        "final_build_error_info": null,
+        "build_versions": [
+          {
+            "version": 1,
+            "partition": "development",
+            "passed": 18,
+            "total": 18,
+            "behavior_skipped": false,
+            "failed_cases": []
+          },
+          {
+            "version": 1,
+            "partition": "acceptance",
+            "passed": 18,
+            "total": 18,
+            "behavior_skipped": false,
+            "failed_cases": []
+          }
+        ],
+        "human_interventions": {
+          "operator_directions": 0,
+          "heldout_requested_replies": 0,
+          "heldout_predeclared_replies": 0
+        },
+        "recovery": {
+          "evaluation_attempts": 2,
+          "reused_cases": 0,
+          "resumed_cases": 0,
+          "historical_recorded_calls_reused": 0,
+          "avoided_decision_reexecution": 0,
+          "measurement": "No natural interruption means zero observed recovery use. Avoided decisions estimate re-execution savings; no counterfactual full rerun was measured."
+        }
+      },
+      {
+        "cohort": "historical_regression",
+        "task_id": "kitchen_ledger",
+        "run_id": "9f627f782fc0",
+        "build_status": "completed",
+        "independent_passed": 5,
+        "independent_total": 6,
+        "independent_executed": 6,
+        "independent_not_executed": 0,
+        "independent_failed_cases": [
+          {
+            "id": "pending-count-goal",
+            "issues": [
+              "结果不符合人工核对的账本答案（检查筛选、空值、退款和完整行数）。"
+            ]
+          }
+        ],
+        "final_build_error": null,
+        "final_build_error_info": null,
+        "build_versions": [
+          {
+            "version": 1,
+            "partition": "development",
+            "passed": 6,
+            "total": 7,
+            "behavior_skipped": true,
+            "failed_cases": [
+              {
+                "id": "dev_unauthorized_dataset",
+                "issues": [
+                  "自定义工具不能读取未授权数据集。"
+                ]
+              }
+            ]
+          },
+          {
+            "version": 2,
+            "partition": "development",
+            "passed": 25,
+            "total": 25,
+            "behavior_skipped": false,
+            "failed_cases": []
+          },
+          {
+            "version": 2,
+            "partition": "acceptance",
+            "passed": 23,
+            "total": 23,
+            "behavior_skipped": false,
+            "failed_cases": []
+          }
+        ],
+        "human_interventions": {
+          "operator_directions": 0,
+          "heldout_requested_replies": 0,
+          "heldout_predeclared_replies": 0
+        },
+        "recovery": {
+          "evaluation_attempts": 3,
+          "reused_cases": 0,
+          "resumed_cases": 0,
+          "historical_recorded_calls_reused": 0,
+          "avoided_decision_reexecution": 0,
+          "measurement": "No natural interruption means zero observed recovery use. Avoided decisions estimate re-execution savings; no counterfactual full rerun was measured."
+        }
+      },
+      {
+        "cohort": "novel",
+        "task_id": "repair_minutes",
+        "run_id": "a7570772ec79",
+        "build_status": "failed",
+        "independent_passed": 0,
+        "independent_total": 6,
+        "independent_executed": 0,
+        "independent_not_executed": 6,
+        "independent_failed_cases": [],
+        "final_build_error": "Codex 单次调用超时；可重试中断用例。",
+        "final_build_error_info": {
+          "code": "MODEL_TIMEOUT",
+          "model_failure": {
+            "category": "process_timeout",
+            "exit_code": null,
+            "basis": {
+              "source": "subprocess.TimeoutExpired",
+              "effective_timeout_seconds": 600
+            }
+          }
+        },
+        "build_versions": [],
+        "human_interventions": {
+          "operator_directions": 0,
+          "heldout_requested_replies": 0,
+          "heldout_predeclared_replies": 0
+        },
+        "recovery": {
+          "evaluation_attempts": 0,
+          "reused_cases": 0,
+          "resumed_cases": 0,
+          "historical_recorded_calls_reused": 0,
+          "avoided_decision_reexecution": 0,
+          "measurement": "No natural interruption means zero observed recovery use. Avoided decisions estimate re-execution savings; no counterfactual full rerun was measured."
+        }
+      },
+      {
+        "cohort": "novel",
+        "task_id": "lab_consumables",
+        "run_id": "8c1c34dff6bc",
+        "build_status": "failed",
+        "independent_passed": 0,
+        "independent_total": 6,
+        "independent_executed": 0,
+        "independent_not_executed": 6,
+        "independent_failed_cases": [],
+        "final_build_error": "Codex 单次调用超时；可重试中断用例。",
+        "final_build_error_info": {
+          "code": "MODEL_TIMEOUT",
+          "model_failure": {
+            "category": "process_timeout",
+            "exit_code": null,
+            "basis": {
+              "source": "subprocess.TimeoutExpired",
+              "effective_timeout_seconds": 600
+            }
+          }
+        },
+        "build_versions": [],
+        "human_interventions": {
+          "operator_directions": 0,
+          "heldout_requested_replies": 0,
+          "heldout_predeclared_replies": 0
+        },
+        "recovery": {
+          "evaluation_attempts": 0,
+          "reused_cases": 0,
+          "resumed_cases": 0,
+          "historical_recorded_calls_reused": 0,
+          "avoided_decision_reexecution": 0,
+          "measurement": "No natural interruption means zero observed recovery use. Avoided decisions estimate re-execution savings; no counterfactual full rerun was measured."
+        }
+      },
+      {
+        "cohort": "novel",
+        "task_id": "community_meeting",
+        "run_id": "4efb34a1fab3",
+        "build_status": "completed",
+        "independent_passed": 6,
+        "independent_total": 6,
+        "independent_executed": 6,
+        "independent_not_executed": 0,
+        "independent_failed_cases": [],
+        "final_build_error": null,
+        "final_build_error_info": null,
+        "build_versions": [
+          {
+            "version": 1,
+            "partition": "development",
+            "passed": 18,
+            "total": 19,
+            "behavior_skipped": false,
+            "failed_cases": [
+              {
+                "id": "goal_dev_application_evidence",
+                "issues": [
+                  "目标回答缺少来源事实。"
+                ]
+              }
+            ]
+          },
+          {
+            "version": 2,
+            "partition": "development",
+            "passed": 4,
+            "total": 6,
+            "behavior_skipped": true,
+            "failed_cases": [
+              {
+                "id": "dev_evidence_multi_document_status",
+                "issues": [
+                  "生成的工具计算与独立冻结样例不一致。"
+                ]
+              },
+              {
+                "id": "dev_evidence_empty_markers_truncated",
+                "issues": [
+                  "生成的工具计算与独立冻结样例不一致。"
+                ]
+              }
+            ]
+          },
+          {
+            "version": 3,
+            "partition": "development",
+            "passed": 19,
+            "total": 19,
+            "behavior_skipped": false,
+            "failed_cases": []
+          },
+          {
+            "version": 3,
+            "partition": "acceptance",
+            "passed": 17,
+            "total": 17,
+            "behavior_skipped": false,
+            "failed_cases": []
+          }
+        ],
+        "human_interventions": {
+          "operator_directions": 0,
+          "heldout_requested_replies": 0,
+          "heldout_predeclared_replies": 0
+        },
+        "recovery": {
+          "evaluation_attempts": 4,
+          "reused_cases": 0,
+          "resumed_cases": 0,
+          "historical_recorded_calls_reused": 0,
+          "avoided_decision_reexecution": 0,
+          "measurement": "No natural interruption means zero observed recovery use. Avoided decisions estimate re-execution savings; no counterfactual full rerun was measured."
+        }
+      }
+    ],
+    "failure_findings": [
+      {
+        "task_id": "parcel_weight",
+        "cases": [
+          "top-two-goal",
+          "adjustment-goal"
+        ],
+        "observed": "Generated agents treated injected default filters, sort order and limit as explicit user parameters, overriding the natural-language goals.",
+        "inference": "The runtime merges defaults with supplied parameters before presenting effective_input without parameter provenance; this likely contributes to these two failures.",
+        "evidence": [
+          "evaluations/fe29c5e42653/report.json",
+          "agentforge/adaptive_runtime.py:148",
+          "agentforge/adaptive_runtime.py:365"
+        ]
+      },
+      {
+        "task_id": "kitchen_ledger",
+        "cases": [
+          "pending-count-goal"
+        ],
+        "observed": "Count was correct (3), but the result's column metadata was kg rather than the required canonical null.",
+        "evidence": [
+          "evaluations/fe29c5e42653/report.json"
+        ]
+      },
+      {
+        "task_ids": [
+          "repair_minutes",
+          "lab_consumables"
+        ],
+        "observed": "Both resumed workflow-design calls hit a local 600-second subprocess timeout before generating tool source. Their twelve independent cases were not executed.",
+        "classification": "process_timeout; remote cause unknown; no evidence of a source defect",
+        "evidence": [
+          "runs/a7570772ec79/calls",
+          "runs/8c1c34dff6bc/calls"
+        ]
+      },
+      {
+        "task_id": "community_meeting",
+        "observed": "Version 1 passed 18/19 development cases; exact quote punctuation failed. Version 2 preserved punctuation in tool excerpts, which broke two frozen computation fixtures (4/6); version 3 restored tool semantics and strengthened the original-document quote instructions.",
+        "evidence": [
+          "runs/4efb34a1fab3/versions/v1/development.json",
+          "runs/4efb34a1fab3/versions/v2/development.json",
+          "runs/4efb34a1fab3/versions/v3/agent.json"
+        ]
+      }
+    ],
+    "checked_at": "2026-10-10T20:39:12.208222+08:00"
+  },
+  "limitations": [
+    "Historical failed-task rebuilds and three newly frozen synthetic tasks are reported separately. This small sample does not establish a causal delivery-rate improvement or arbitrary production generalization.",
+    "Novel tasks were resumed after two quota failures and an uncommitted process interruption. Their resumed outcomes cannot count as first-delivery successes. The abandoned request duration and remote outcome are unknown.",
+    "Resolved CLI-default model identities remain unknown; requested configuration, binary identity and effective call timeouts are recorded.",
+    "Avoided committed decisions estimate recovery savings; no counterfactual full rerun was measured."
+  ],
+  "real_checked_at": "2026-10-10T20:39:12.208222+08:00",
+  "exported_agents_local_verification": [
+    {
+      "run_id": "4d7499e7f46d",
+      "path": "dist/4d7499e7f46d",
+      "verification": {
+        "integrity": "passed",
+        "mode": "local_tools_only",
+        "reports": [
+          {
+            "partition": "development",
+            "passed": 5,
+            "total": 5,
+            "all_passed": true
+          },
+          {
+            "partition": "acceptance",
+            "passed": 4,
+            "total": 4,
+            "all_passed": true
+          }
+        ]
+      }
+    },
+    {
+      "run_id": "9f627f782fc0",
+      "path": "dist/9f627f782fc0",
+      "verification": {
+        "integrity": "passed",
+        "mode": "local_tools_only",
+        "reports": [
+          {
+            "partition": "development",
+            "passed": 8,
+            "total": 8,
+            "all_passed": true
+          },
+          {
+            "partition": "acceptance",
+            "passed": 6,
+            "total": 6,
+            "all_passed": true
+          }
+        ]
+      }
+    },
+    {
+      "run_id": "4efb34a1fab3",
+      "path": "dist/4efb34a1fab3",
+      "verification": {
+        "integrity": "passed",
+        "mode": "local_tools_only",
+        "reports": [
+          {
+            "partition": "development",
+            "passed": 6,
+            "total": 6,
+            "all_passed": true
+          },
+          {
+            "partition": "acceptance",
+            "passed": 4,
+            "total": 4,
+            "all_passed": true
+          }
+        ]
+      },
+      "checked_at": "2026-10-10T12:36:27.719216+00:00",
+      "command": "python -X utf8 verify_agent.py",
+      "PYTHONPATH": "unset"
+    }
+  ]
+}

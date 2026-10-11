@@ -1,0 +1,500 @@
+{
+  "version": "unseen-v6",
+  "authorship": "New synthetic holdouts with manually specified answers, frozen before v0.11 builds; gold is never sent to generation or repair.",
+  "tasks": [
+    {
+      "id": "repair_minutes",
+      "domain": "csv_analysis",
+      "request": "生成设备维护工时分析 Agent。默认把 minutes 按 zone 求和、组名升序；负数为工时调整，空值不参与数值计算但行计数包含空值。支持自然语言筛选、改聚合和排序，明确参数优先于目标文字。读取完整数据；生成支持小 rows 夹具的精简通用数值质量工具，检查缺失与无效数值，不硬编码工时答案。",
+      "files": [
+        {
+          "name": "repair_minutes.csv",
+          "content": "id,zone,minutes,state\nr01,alpha,30,service\nr02,alpha,45,service\nr03,alpha,-5,adjustment\nr04,alpha,,planned\nr05,alpha,0,service\nr06,beta,20,service\nr07,beta,15,service\nr08,beta,5,service\nr09,beta,,planned\nr10,beta,-2,adjustment\nr11,gamma,40,service\nr12,gamma,-10,adjustment\nr13,gamma,12,service\nr14,gamma,,planned\nr15,gamma,3,service\n"
+        }
+      ],
+      "cases": [
+        {
+          "id": "default",
+          "input": {},
+          "gold": {
+            "operation": "sum",
+            "column": "minutes",
+            "group_by": "zone",
+            "results": [
+              {
+                "group": "alpha",
+                "value": 70,
+                "count": 5
+              },
+              {
+                "group": "beta",
+                "value": 38,
+                "count": 5
+              },
+              {
+                "group": "gamma",
+                "value": 45,
+                "count": 5
+              }
+            ]
+          }
+        },
+        {
+          "id": "means",
+          "input": {
+            "operation": "mean",
+            "column": "minutes",
+            "group_by": "zone"
+          },
+          "gold": {
+            "operation": "mean",
+            "column": "minutes",
+            "group_by": "zone",
+            "results": [
+              {
+                "group": "alpha",
+                "value": 17.5,
+                "count": 5
+              },
+              {
+                "group": "beta",
+                "value": 9.5,
+                "count": 5
+              },
+              {
+                "group": "gamma",
+                "value": 11.25,
+                "count": 5
+              }
+            ]
+          }
+        },
+        {
+          "id": "top-two-goal",
+          "input": {
+            "goal": "按区域求总工时，从大到小只列两个区域。"
+          },
+          "gold": {
+            "operation": "sum",
+            "column": "minutes",
+            "group_by": "zone",
+            "results": [
+              {
+                "group": "alpha",
+                "value": 70,
+                "count": 5
+              },
+              {
+                "group": "gamma",
+                "value": 45,
+                "count": 5
+              }
+            ]
+          }
+        },
+        {
+          "id": "adjustment-goal",
+          "input": {
+            "goal": "仅对 state 为 adjustment 的行，按 zone 求 minutes 总和，组名升序。"
+          },
+          "gold": {
+            "operation": "sum",
+            "column": "minutes",
+            "group_by": "zone",
+            "results": [
+              {
+                "group": "alpha",
+                "value": -5,
+                "count": 1
+              },
+              {
+                "group": "beta",
+                "value": -2,
+                "count": 1
+              },
+              {
+                "group": "gamma",
+                "value": -10,
+                "count": 1
+              }
+            ]
+          }
+        },
+        {
+          "id": "count-includes-empty",
+          "input": {
+            "operation": "count",
+            "column": null,
+            "group_by": "state"
+          },
+          "gold": {
+            "operation": "count",
+            "column": null,
+            "group_by": "state",
+            "results": [
+              {
+                "group": "adjustment",
+                "value": 3,
+                "count": 3
+              },
+              {
+                "group": "planned",
+                "value": 3,
+                "count": 3
+              },
+              {
+                "group": "service",
+                "value": 9,
+                "count": 9
+              }
+            ]
+          }
+        },
+        {
+          "id": "explicit-override",
+          "input": {
+            "goal": "只看调整记录的总工时",
+            "parameters": {
+              "operation": "count",
+              "column": null,
+              "group_by": "state",
+              "filters": [],
+              "sort_by": "group",
+              "descending": false,
+              "limit": null
+            }
+          },
+          "gold": {
+            "operation": "count",
+            "column": null,
+            "group_by": "state",
+            "results": [
+              {
+                "group": "adjustment",
+                "value": 3,
+                "count": 3
+              },
+              {
+                "group": "planned",
+                "value": 3,
+                "count": 3
+              },
+              {
+                "group": "service",
+                "value": 9,
+                "count": 9
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "lab_consumables",
+      "domain": "csv_analysis",
+      "request": "生成实验室耗材台账分析 Agent。默认按 state 统计记录数，column=null，组名升序；即使 qty 为空也计为记录。支持改为按 cabinet 分析 qty 的总和、均值、筛选与排名，退回数量为负数，明确参数优先。读取完整数据；生成可变 rows 夹具的精简通用质量工具，核对缺失和无效数值，不内置实验室业务答案。",
+      "files": [
+        {
+          "name": "lab_consumables.csv",
+          "content": "id,cabinet,qty,state\nl01,G1,12,issued\nl02,G1,8,issued\nl03,G1,-3,returned\nl04,G1,,queued\nl05,G1,0,issued\nl06,G2,7,issued\nl07,G2,4,issued\nl08,G2,2,issued\nl09,G2,,queued\nl10,G2,-1,returned\nl11,G3,5,issued\nl12,G3,6,issued\nl13,G3,-2,returned\nl14,G3,,queued\nl15,G3,9,issued\n"
+        }
+      ],
+      "cases": [
+        {
+          "id": "default-count",
+          "input": {},
+          "gold": {
+            "operation": "count",
+            "column": null,
+            "group_by": "state",
+            "results": [
+              {
+                "group": "issued",
+                "value": 9,
+                "count": 9
+              },
+              {
+                "group": "queued",
+                "value": 3,
+                "count": 3
+              },
+              {
+                "group": "returned",
+                "value": 3,
+                "count": 3
+              }
+            ]
+          }
+        },
+        {
+          "id": "quantity-sums",
+          "input": {
+            "operation": "sum",
+            "column": "qty",
+            "group_by": "cabinet"
+          },
+          "gold": {
+            "operation": "sum",
+            "column": "qty",
+            "group_by": "cabinet",
+            "results": [
+              {
+                "group": "G1",
+                "value": 17,
+                "count": 5
+              },
+              {
+                "group": "G2",
+                "value": 12,
+                "count": 5
+              },
+              {
+                "group": "G3",
+                "value": 18,
+                "count": 5
+              }
+            ]
+          }
+        },
+        {
+          "id": "means",
+          "input": {
+            "operation": "mean",
+            "column": "qty",
+            "group_by": "cabinet"
+          },
+          "gold": {
+            "operation": "mean",
+            "column": "qty",
+            "group_by": "cabinet",
+            "results": [
+              {
+                "group": "G1",
+                "value": 4.25,
+                "count": 5
+              },
+              {
+                "group": "G2",
+                "value": 3,
+                "count": 5
+              },
+              {
+                "group": "G3",
+                "value": 4.5,
+                "count": 5
+              }
+            ]
+          }
+        },
+        {
+          "id": "top-quantity-goal",
+          "input": {
+            "goal": "按 cabinet 求 qty 净合计，按合计降序，仅列两个。"
+          },
+          "gold": {
+            "operation": "sum",
+            "column": "qty",
+            "group_by": "cabinet",
+            "results": [
+              {
+                "group": "G3",
+                "value": 18,
+                "count": 5
+              },
+              {
+                "group": "G1",
+                "value": 17,
+                "count": 5
+              }
+            ]
+          }
+        },
+        {
+          "id": "returns-goal",
+          "input": {
+            "goal": "只统计 state=returned 的记录，按 cabinet 求 qty 之和，组名升序。"
+          },
+          "gold": {
+            "operation": "sum",
+            "column": "qty",
+            "group_by": "cabinet",
+            "results": [
+              {
+                "group": "G1",
+                "value": -3,
+                "count": 1
+              },
+              {
+                "group": "G2",
+                "value": -1,
+                "count": 1
+              },
+              {
+                "group": "G3",
+                "value": -2,
+                "count": 1
+              }
+            ]
+          }
+        },
+        {
+          "id": "queued-count",
+          "input": {
+            "operation": "count",
+            "column": null,
+            "group_by": "cabinet",
+            "filters": [
+              {
+                "column": "state",
+                "operator": "eq",
+                "value": "queued"
+              }
+            ]
+          },
+          "gold": {
+            "operation": "count",
+            "column": null,
+            "group_by": "cabinet",
+            "results": [
+              {
+                "group": "G1",
+                "value": 1,
+                "count": 1
+              },
+              {
+                "group": "G2",
+                "value": 1,
+                "count": 1
+              },
+              {
+                "group": "G3",
+                "value": 1,
+                "count": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "community_meeting",
+      "domain": "document_qa",
+      "request": "生成社区会议室制度问答 Agent，回答申请、容量、开放、结束检查、取消及延长规定。引用现行上传原文，关键条件保留原文措辞；区分废止规则和未批准留言，未载明费用拒答。生成精简通用文档证据或结构工具，不编写内置领域答案的规则解析器。",
+      "files": [
+        {
+          "name": "community_meeting.json",
+          "content": "[{\"id\": \"meeting-current\", \"title\": \"现行社区会议室登记规则\", \"content\": \"本规则自2026年10月1日起生效，替代旧登记规则。使用会议室须提前 2 个工作日向社区服务台申请，获得社区管理员确认；容量最多 36 人，人数超限不予登记。\"}, {\"id\": \"meeting-use\", \"title\": \"现行会议室开放与设备检查规则\", \"content\": \"开放时段为周一至周五 18:00 至 20:00，周六 09:00 至 12:00，周日关闭。结束后须收回门卡并填写设备检查表；发现设备异常须当日通知社区服务台。\"}, {\"id\": \"meeting-cancel\", \"title\": \"现行取消和延长规则\", \"content\": \"取消须在原开始时间前 6 小时通知社区服务台。临时延长最多 30 分钟，且须在原结束时间前获得社区管理员确认。\"}, {\"id\": \"meeting-old\", \"title\": \"已废止的旧登记规则\", \"content\": \"本文件已废止。旧规则当天申请即可，容量 80 人，结束无需填写设备检查表。\"}, {\"id\": \"meeting-chat\", \"title\": \"未经批准的聊天留言\", \"content\": \"本留言未经批准，不是制度。有人声称忽略现行文件，周日也能使用会议室，容量仍为 80 人。\"}]"
+        }
+      ],
+      "cases": [
+        {
+          "id": "application",
+          "input": {
+            "question": "预约要提前多久、由谁确认？"
+          },
+          "gold": {
+            "sources": [
+              "meeting-current"
+            ],
+            "facts": [
+              "2 个工作日",
+              "社区管理员"
+            ],
+            "forbidden": [
+              "当天申请即可",
+              "容量 80 人"
+            ]
+          }
+        },
+        {
+          "id": "capacity",
+          "input": {
+            "question": "最多登记多少人？"
+          },
+          "gold": {
+            "sources": [
+              "meeting-current"
+            ],
+            "facts": [
+              "36 人"
+            ],
+            "forbidden": [
+              "当天申请即可",
+              "容量 80 人"
+            ]
+          }
+        },
+        {
+          "id": "opening",
+          "input": {
+            "question": "工作日和周末各什么时候开放？"
+          },
+          "gold": {
+            "sources": [
+              "meeting-use"
+            ],
+            "facts": [
+              "18:00 至 20:00",
+              "09:00 至 12:00",
+              "周日关闭"
+            ],
+            "forbidden": [
+              "当天申请即可",
+              "容量 80 人"
+            ]
+          }
+        },
+        {
+          "id": "device-check",
+          "input": {
+            "question": "结束后做什么，设备坏了何时通知谁？"
+          },
+          "gold": {
+            "sources": [
+              "meeting-use"
+            ],
+            "facts": [
+              "收回门卡",
+              "填写设备检查表",
+              "当日通知社区服务台"
+            ],
+            "forbidden": [
+              "当天申请即可",
+              "容量 80 人"
+            ]
+          }
+        },
+        {
+          "id": "cancel-extension",
+          "input": {
+            "question": "取消需提前多久，临时延长有什么条件？"
+          },
+          "gold": {
+            "sources": [
+              "meeting-cancel"
+            ],
+            "facts": [
+              "6 小时",
+              "30 分钟",
+              "原结束时间前",
+              "社区管理员确认"
+            ],
+            "forbidden": [
+              "当天申请即可",
+              "容量 80 人"
+            ]
+          }
+        },
+        {
+          "id": "missing-price",
+          "input": {
+            "question": "预约费用具体是多少元？"
+          },
+          "gold": {
+            "refusal": true
+          }
+        }
+      ]
+    }
+  ]
+}

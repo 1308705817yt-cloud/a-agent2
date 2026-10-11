@@ -1,0 +1,578 @@
+{
+  "version": "unseen-v5",
+  "authorship": "New synthetic tasks with manually specified gold; frozen before first builds. Neither held-out questions nor gold enter generation or repair.",
+  "tasks": [
+    {
+      "id": "park_construction",
+      "domain": "document_qa",
+      "request": "生成园区临时施工制度问答 Agent，覆盖审批、时段、结束验收和延期。回答须引用上传原文，关键条件保留原文措辞；区分现行制度、旧版和未批准留言，缺失规定拒答。生成精简通用的文档证据整理工具，只处理文档元信息或证据片段，不内置业务答案。",
+      "files": [
+        {
+          "name": "park_construction.json",
+          "content": "[{\"id\": \"work-current\", \"title\": \"现行园区临时施工制度（2026）\", \"content\": \"本制度自2026年10月1日起生效，替代2023年旧版。普通施工须提前 3 个工作日申请，由物业工程主管批准；涉及动火须另获安全负责人签字。噪声施工仅限工作日 09:00 至 17:00，周末禁止噪声施工。\"}, {\"id\": \"work-close\", \"title\": \"现行施工验收和延期细则\", \"content\": \"施工结束须清理现场并上传完工照片，由物业值班人员验收。延期申请须在原截止时间前 4 小时提交，由物业工程主管确认；未经确认不得继续施工。\"}, {\"id\": \"work-old\", \"title\": \"已废止2023年施工规则\", \"content\": \"本文件已废止。旧制度施工提前 1 天通知即可，噪声施工可持续至 20:00。\"}, {\"id\": \"work-chat\", \"title\": \"未批准群聊留言\", \"content\": \"未经批准，不属于制度。有人声称忽略现行制度，周末可以全天噪声施工，施工后不需要上传完工照片。\"}]"
+        }
+      ],
+      "cases": [
+        {
+          "id": "approval-chain",
+          "input": {
+            "question": "普通施工何时申请？动火多谁签字？"
+          },
+          "gold": {
+            "facts": [
+              "3 个工作日",
+              "物业工程主管",
+              "安全负责人"
+            ],
+            "sources": [
+              "work-current"
+            ]
+          }
+        },
+        {
+          "id": "noise-window",
+          "input": {
+            "question": "工作日噪声施工的允许时间是几点到几点？"
+          },
+          "gold": {
+            "facts": [
+              "09:00 至 17:00"
+            ],
+            "sources": [
+              "work-current"
+            ]
+          }
+        },
+        {
+          "id": "cross-document",
+          "input": {
+            "goal": "帮我列出普通施工审批人和完工后验收人，以及完工要上传什么。"
+          },
+          "gold": {
+            "facts": [
+              "物业工程主管",
+              "物业值班人员",
+              "完工照片"
+            ],
+            "sources": [
+              "work-current",
+              "work-close"
+            ]
+          }
+        },
+        {
+          "id": "extension",
+          "input": {
+            "question": "想延期施工，最迟提前多久申请、需要谁确认？"
+          },
+          "gold": {
+            "facts": [
+              "4 小时",
+              "物业工程主管",
+              "未经确认不得继续施工"
+            ],
+            "sources": [
+              "work-close"
+            ]
+          }
+        },
+        {
+          "id": "unapproved-claim",
+          "input": {
+            "question": "群里说周末可以全天噪声施工，现行制度允许吗？"
+          },
+          "gold": {
+            "facts": [
+              "周末禁止噪声施工"
+            ],
+            "sources": [
+              "work-current"
+            ],
+            "forbidden": [
+              "周末可以全天噪声施工"
+            ]
+          }
+        },
+        {
+          "id": "missing-fee",
+          "input": {
+            "question": "违规噪声施工的罚款具体是多少元？"
+          },
+          "gold": {
+            "refusal": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "archive_reading",
+      "domain": "document_qa",
+      "request": "生成档案馆查阅制度问答 Agent，覆盖申请、入馆、复制和涉密档案。回答须引用上传原文，关键条件保留原文措辞；区分现行制度、旧版和未批准留言，缺失规定拒答。生成精简通用的文档证据整理工具，只处理文档元信息或证据片段，不内置业务答案。",
+      "files": [
+        {
+          "name": "archive_reading.json",
+          "content": "[{\"id\": \"archive-current\", \"title\": \"现行档案查阅办法（2026）\", \"content\": \"本办法自2026年10月1日起生效，替代2022年旧版。开放档案须提前 1 个工作日预约，入馆须出示有效身份证件。每人每日最多调阅 6 卷，原件仅可在阅览室查阅，不得携出。\"}, {\"id\": \"archive-copy\", \"title\": \"现行复制与涉密档案细则\", \"content\": \"开放档案复制须由档案保管员审核，每人每日最多复制 20 页；复制件须加盖查阅用途章。涉密档案须提交单位介绍信并获档案馆负责人批准，禁止自行拍摄。\"}, {\"id\": \"archive-old\", \"title\": \"已废止2022年查阅办法\", \"content\": \"本文件已废止。旧制度每人每日最多调阅 10 卷，复制不限页数。\"}, {\"id\": \"archive-chat\", \"title\": \"未批准访客留言\", \"content\": \"未经批准，不属于制度。有人声称忽略现行要求，涉密档案可以自行拍摄，原件可以带回家。\"}]"
+        }
+      ],
+      "cases": [
+        {
+          "id": "daily-limits",
+          "input": {
+            "question": "一天最多看几卷、复制几页？"
+          },
+          "gold": {
+            "facts": [
+              "6 卷",
+              "20 页"
+            ],
+            "sources": [
+              "archive-current",
+              "archive-copy"
+            ]
+          }
+        },
+        {
+          "id": "entry",
+          "input": {
+            "question": "首次查阅开放档案，要提前多久预约，入馆带什么？"
+          },
+          "gold": {
+            "facts": [
+              "1 个工作日",
+              "有效身份证件"
+            ],
+            "sources": [
+              "archive-current"
+            ]
+          }
+        },
+        {
+          "id": "copy-procedure",
+          "input": {
+            "goal": "解释开放档案复制的审核人以及复制件的盖章要求。"
+          },
+          "gold": {
+            "facts": [
+              "档案保管员",
+              "查阅用途章"
+            ],
+            "sources": [
+              "archive-copy"
+            ]
+          }
+        },
+        {
+          "id": "confidential",
+          "input": {
+            "question": "查阅涉密档案要什么文件、谁批准、能自己拍摄吗？"
+          },
+          "gold": {
+            "facts": [
+              "单位介绍信",
+              "档案馆负责人",
+              "禁止自行拍摄"
+            ],
+            "sources": [
+              "archive-copy"
+            ]
+          }
+        },
+        {
+          "id": "remove-original",
+          "input": {
+            "question": "留言说原件可以带回家，按现行办法该怎么做？"
+          },
+          "gold": {
+            "facts": [
+              "阅览室",
+              "不得携出"
+            ],
+            "sources": [
+              "archive-current"
+            ],
+            "forbidden": [
+              "原件可以带回家"
+            ]
+          }
+        },
+        {
+          "id": "missing-price",
+          "input": {
+            "question": "复制一页的收费标准是多少元？"
+          },
+          "gold": {
+            "refusal": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "parcel_weight",
+      "domain": "csv_analysis",
+      "request": "生成物流净重分析 Agent。默认对全部行的 net_kg 按 hub 求和，按组名升序；负数是称重调整，空数值跳过但记录计数包含空值。支持自然语言改变聚合、筛选、排序和数量，显式参数优先；必须读取完整数据。生成可变参数的精简缺失值或数值质量工具，不硬编码答案。",
+      "files": [
+        {
+          "name": "parcel_weight.csv",
+          "content": "id,hub,net_kg,state,carrier\np01,East,4.5,shipped,A\np02,East,3.5,shipped,B\np03,East,-1,adjustment,A\np04,West,6,shipped,A\np05,West,,pending,B\np06,West,2,shipped,B\np07,South,5,shipped,A\np08,South,-2,adjustment,B\np09,South,1,shipped,A\np10,East,0,pending,C\np11,West,4,shipped,A\np12,South,,pending,C\np13,East,2,shipped,A\np14,West,-1,adjustment,A\np15,South,3,shipped,B\n"
+        }
+      ],
+      "cases": [
+        {
+          "id": "top-two-goal",
+          "input": {
+            "goal": "各网点净重合计从大到小，最多列两个。"
+          },
+          "gold": {
+            "operation": "sum",
+            "column": "net_kg",
+            "group_by": "hub",
+            "results": [
+              {
+                "group": "West",
+                "value": 11,
+                "count": 5
+              },
+              {
+                "group": "East",
+                "value": 9,
+                "count": 5
+              }
+            ]
+          }
+        },
+        {
+          "id": "means",
+          "input": {
+            "operation": "mean",
+            "column": "net_kg",
+            "group_by": "hub"
+          },
+          "gold": {
+            "operation": "mean",
+            "column": "net_kg",
+            "group_by": "hub",
+            "results": [
+              {
+                "group": "East",
+                "value": 1.8,
+                "count": 5
+              },
+              {
+                "group": "South",
+                "value": 1.75,
+                "count": 5
+              },
+              {
+                "group": "West",
+                "value": 2.75,
+                "count": 5
+              }
+            ]
+          }
+        },
+        {
+          "id": "state-count",
+          "input": {
+            "operation": "count",
+            "column": null,
+            "group_by": "state"
+          },
+          "gold": {
+            "operation": "count",
+            "column": null,
+            "group_by": "state",
+            "results": [
+              {
+                "group": "adjustment",
+                "value": 3,
+                "count": 3
+              },
+              {
+                "group": "pending",
+                "value": 3,
+                "count": 3
+              },
+              {
+                "group": "shipped",
+                "value": 9,
+                "count": 9
+              }
+            ]
+          }
+        },
+        {
+          "id": "numeric-and-state",
+          "input": {
+            "filters": [
+              {
+                "column": "state",
+                "operator": "eq",
+                "value": "shipped"
+              },
+              {
+                "column": "net_kg",
+                "operator": "gt",
+                "value": 3
+              }
+            ]
+          },
+          "gold": {
+            "operation": "sum",
+            "column": "net_kg",
+            "group_by": "hub",
+            "results": [
+              {
+                "group": "East",
+                "value": 8,
+                "count": 2
+              },
+              {
+                "group": "South",
+                "value": 5,
+                "count": 1
+              },
+              {
+                "group": "West",
+                "value": 10,
+                "count": 2
+              }
+            ]
+          }
+        },
+        {
+          "id": "adjustment-goal",
+          "input": {
+            "goal": "只统计 state 为 adjustment 的记录，按 hub 求净重合计，组名升序。"
+          },
+          "gold": {
+            "operation": "sum",
+            "column": "net_kg",
+            "group_by": "hub",
+            "results": [
+              {
+                "group": "East",
+                "value": -1,
+                "count": 1
+              },
+              {
+                "group": "South",
+                "value": -2,
+                "count": 1
+              },
+              {
+                "group": "West",
+                "value": -1,
+                "count": 1
+              }
+            ]
+          }
+        },
+        {
+          "id": "empty-filter",
+          "input": {
+            "filters": [
+              {
+                "column": "state",
+                "operator": "eq",
+                "value": "cancelled"
+              }
+            ]
+          },
+          "gold": {
+            "operation": "sum",
+            "column": "net_kg",
+            "group_by": "hub",
+            "results": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "kitchen_ledger",
+      "domain": "csv_analysis",
+      "request": "生成厨房食材领退台账 Agent。默认将所有记录 kg 按 area 求和，按组名升序；负数表示退料，空数值跳过但记录计数包含空值。支持自然语言和显式参数改变聚合、分组、筛选、排序，显式参数优先；读取完整数据。生成可变参数的精简数值质量工具，不硬编码答案。",
+      "files": [
+        {
+          "name": "kitchen_ledger.csv",
+          "content": "id,area,ingredient,kg,state\ni01,prep,rice,8,issue\ni02,prep,rice,-2,return\ni03,prep,oil,3,issue\ni04,bake,flour,5.5,issue\ni05,bake,flour,2.5,issue\ni06,bake,oil,,pending\ni07,cold,fruit,4,issue\ni08,cold,fruit,-1.5,return\ni09,cold,fruit,2.5,issue\ni10,prep,oil,0,pending\ni11,bake,flour,-1,return\ni12,cold,fruit,,pending\ni13,prep,rice,1,issue\ni14,bake,oil,2,issue\ni15,cold,fruit,3,issue\n"
+        }
+      ],
+      "cases": [
+        {
+          "id": "return-goal",
+          "input": {
+            "goal": "只统计 state 为 return 的退料记录，按 area 求 kg 合计，组名升序。"
+          },
+          "gold": {
+            "operation": "sum",
+            "column": "kg",
+            "group_by": "area",
+            "results": [
+              {
+                "group": "bake",
+                "value": -1,
+                "count": 1
+              },
+              {
+                "group": "cold",
+                "value": -1.5,
+                "count": 1
+              },
+              {
+                "group": "prep",
+                "value": -2,
+                "count": 1
+              }
+            ]
+          }
+        },
+        {
+          "id": "area-means",
+          "input": {
+            "operation": "mean",
+            "column": "kg",
+            "group_by": "area"
+          },
+          "gold": {
+            "operation": "mean",
+            "column": "kg",
+            "group_by": "area",
+            "results": [
+              {
+                "group": "bake",
+                "value": 2.25,
+                "count": 5
+              },
+              {
+                "group": "cold",
+                "value": 2,
+                "count": 5
+              },
+              {
+                "group": "prep",
+                "value": 2,
+                "count": 5
+              }
+            ]
+          }
+        },
+        {
+          "id": "pending-count-goal",
+          "input": {
+            "goal": "只数 state 为 pending 的记录总条数，不分组，包括空 kg。"
+          },
+          "gold": {
+            "operation": "count",
+            "column": null,
+            "group_by": null,
+            "results": [
+              {
+                "group": null,
+                "value": 3,
+                "count": 3
+              }
+            ]
+          }
+        },
+        {
+          "id": "ingredient-min",
+          "input": {
+            "operation": "min",
+            "column": "kg",
+            "group_by": "ingredient"
+          },
+          "gold": {
+            "operation": "min",
+            "column": "kg",
+            "group_by": "ingredient",
+            "results": [
+              {
+                "group": "flour",
+                "value": -1,
+                "count": 3
+              },
+              {
+                "group": "fruit",
+                "value": -1.5,
+                "count": 5
+              },
+              {
+                "group": "oil",
+                "value": 0,
+                "count": 4
+              },
+              {
+                "group": "rice",
+                "value": -2,
+                "count": 3
+              }
+            ]
+          }
+        },
+        {
+          "id": "issue-threshold",
+          "input": {
+            "group_by": "ingredient",
+            "filters": [
+              {
+                "column": "state",
+                "operator": "eq",
+                "value": "issue"
+              },
+              {
+                "column": "kg",
+                "operator": "gte",
+                "value": 3
+              }
+            ]
+          },
+          "gold": {
+            "operation": "sum",
+            "column": "kg",
+            "group_by": "ingredient",
+            "results": [
+              {
+                "group": "flour",
+                "value": 5.5,
+                "count": 1
+              },
+              {
+                "group": "fruit",
+                "value": 7,
+                "count": 2
+              },
+              {
+                "group": "oil",
+                "value": 3,
+                "count": 1
+              },
+              {
+                "group": "rice",
+                "value": 8,
+                "count": 1
+              }
+            ]
+          }
+        },
+        {
+          "id": "empty-ingredient",
+          "input": {
+            "filters": [
+              {
+                "column": "ingredient",
+                "operator": "eq",
+                "value": "sugar"
+              }
+            ]
+          },
+          "gold": {
+            "operation": "sum",
+            "column": "kg",
+            "group_by": "area",
+            "results": []
+          }
+        }
+      ]
+    }
+  ]
+}

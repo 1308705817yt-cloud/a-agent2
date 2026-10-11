@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agentforge-codex"
+version = "0.11.0"
+description = "Codex agent factory with adaptive runtime decisions, generated custom tools and frozen evaluation"
+requires-python = ">=3.11"
+dependencies = []
+readme = "README.md"
+
+[project.scripts]
+agentforge = "agentforge.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["agentforge*"]
+
+[tool.setuptools.package-data]
+agentforge = ["web/*.html", "web/*.css", "web/*.js", "benchmarks/*.json"]

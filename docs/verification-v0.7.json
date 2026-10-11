@@ -1,0 +1,150 @@
+{
+  "version": "0.7.0",
+  "status": "verification_completed_delivery_benchmark_failed",
+  "verification": {
+    "unittest": {
+      "passed": 144,
+      "duration_seconds": 31.192
+    },
+    "compileall": true,
+    "frontend_syntax": true,
+    "frontend_dom_pagination": true,
+    "localhost_http": true,
+    "pagination_scan_tasks": 451,
+    "package": {
+      "version": "0.7.0",
+      "sha256": "dfb6944da9d9872ce14d1f112aefca725473f140288ef258ac92598e11c5e9bb",
+      "checked_files": 30,
+      "bytes": 129786,
+      "suite_tasks": 4
+    },
+    "final_decision_resume_no_new_request": true
+  },
+  "evaluation": {
+    "id": "7958723e4b49",
+    "suite": "unseen-v3",
+    "suite_hash": "bb55ffbb9d36bd70de04453cbc347a9502e9a2a7f851a06aa242124956e08d26",
+    "tasks": 4,
+    "cases": 24,
+    "status": "completed",
+    "metrics": {
+      "task_count": 4,
+      "first_delivery_successes": 0,
+      "first_delivery_rate": 0,
+      "first_candidate_successes": 0,
+      "repairs": 3,
+      "design_repairs": 0,
+      "wall_elapsed_ms": 1833627.52,
+      "model_calls": 219
+    },
+    "independent_cases_executed": 0,
+    "delivery_candidates": 0,
+    "audit": {
+      "calls": 219,
+      "unique_call_ids": 219,
+      "completed": 217,
+      "failed": 2,
+      "inflight": 0,
+      "binding_errors": [],
+      "peak_concurrent_requests": 6
+    },
+    "report_sha256": "703223e8f4b5db567f76e32591a04cba8dabcd80854d6590876536d156de1ca0",
+    "task_results": [
+      {
+        "task_id": "laboratory_booking",
+        "run_id": "707ef4f70969",
+        "status": "stopped",
+        "repairs": 3,
+        "wall_elapsed_ms": 1364857.27,
+        "model_calls": 169,
+        "first_delivery_passed": false
+      },
+      {
+        "task_id": "service_cancellation",
+        "run_id": "3ee4471ca6b3",
+        "status": "failed",
+        "repairs": 0,
+        "wall_elapsed_ms": 628816.25,
+        "model_calls": 2,
+        "first_delivery_passed": false
+      },
+      {
+        "task_id": "supplier_net_units",
+        "run_id": "8ab579f67348",
+        "status": "rejected",
+        "repairs": 0,
+        "wall_elapsed_ms": 588096.97,
+        "model_calls": 46,
+        "first_delivery_passed": false
+      },
+      {
+        "task_id": "energy_metering",
+        "run_id": "1374522f0982",
+        "status": "failed",
+        "repairs": 0,
+        "wall_elapsed_ms": 616645.29,
+        "model_calls": 2,
+        "first_delivery_passed": false
+      }
+    ],
+    "notes": "Four fresh autonomous builds; no retries or manual directions. No independent cases executed because all builds failed qualification; counted as failures in delivery denominator. No hidden gold was used for repair."
+  },
+  "controls": {
+    "token_budget": null,
+    "model_request_timeout": 600,
+    "task_build_seconds": 1800,
+    "task_runtime_seconds": 600,
+    "max_repairs": 3,
+    "task_workers": 2
+  },
+  "pending_optional_contract_oracle_audit": "not_enabled_no_additional_model_audit_call",
+  "created_at": "2026-10-09T12:12:35.687Z",
+  "updated_at": "2026-10-09T12:41:21.748Z",
+  "runtime_hashes": {
+    "707ef4f70969": "bcbc67d3f4c0c66b70b28584af83bfde7a0cc9890a723e878d4815099446ed80",
+    "3ee4471ca6b3": null,
+    "8ab579f67348": "bcbc67d3f4c0c66b70b28584af83bfde7a0cc9890a723e878d4815099446ed80",
+    "1374522f0982": null
+  },
+  "verified_failures": {
+    "laboratory_output_hook": {
+      "source": "runs/707ef4f70969/versions/v4/logic.py",
+      "host_keys": [
+        "abstained",
+        "answer",
+        "data",
+        "error",
+        "sources"
+      ],
+      "generated_keys": [
+        "abstained",
+        "answer",
+        "result_ref",
+        "sources"
+      ],
+      "missing": [
+        "data",
+        "error"
+      ],
+      "extra": [
+        "result_ref"
+      ],
+      "impact": "Generated output removes host-required data/error and adds result_ref, causing OUTPUT_CONTRACT and repeated finishes until AGENT_BUDGET. Final model diagnosis suggested a nonexistent final_response flag; that suggestion was not implemented."
+    },
+    "model_timeouts": {
+      "runs": [
+        "3ee4471ca6b3",
+        "1374522f0982"
+      ],
+      "code": "MODEL_TIMEOUT",
+      "request_seconds": 600
+    },
+    "supplier_holdout": {
+      "run": "8ab579f67348",
+      "development": "24/24",
+      "acceptance": "4/5",
+      "delivery": "rejected",
+      "hidden_cases_executed": 0
+    }
+  }
+}
