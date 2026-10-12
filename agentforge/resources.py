@@ -53,13 +53,23 @@ def resource_id(name, content):
     return stem + "-" + hashlib.sha256(content.encode()).hexdigest()[:8]
 
 
-def prepare_resources(documents=None, datasets=None, uploads=None) -> dict:
+def prepare_resources(documents=None, datasets=None, uploads=None, data_contract=None) -> dict:
+    if data_contract is not None and (not isinstance(data_contract, dict) or set(data_contract) != {"format", "datasets"}
+                                      or data_contract["format"] != "agentforge-data-contract-v1" or not isinstance(data_contract["datasets"], dict)):
+        raise ValueError("数据契约格式无效，需要 format 和 datasets 映射。")
     files = list(uploads or [])
     for path in [*(documents or []), *(datasets or [])]:
         source = Path(path).expanduser().resolve()
         if source.stat().st_size > MAX_BYTES:
             raise ValueError("单份资源不能超过 10 MiB。")
-        files.append({"name": source.name, "content": source.read_text(encoding="utf-8-sig")})
+        definition = data_contract.get("datasets", {}).get(source.name, {}) if isinstance(data_contract, dict) else {}
+        options = definition.get("csv", {}) if isinstance(definition, dict) else {}
+        if not isinstance(options, dict):
+            raise ValueError("CSV 接入配置必须是对象。")
+        encoding = options.get("encoding", "utf-8-sig")
+        if encoding not in ("utf-8", "utf-8-sig", "gb18030", "utf-16", "latin-1"):
+            raise ValueError("数据契约中的 CSV 编码不受支持。")
+        files.append({"name": source.name, "content": source.read_text(encoding=encoding)})
     if not files:
         raise ValueError("请提供文档或 CSV 数据，不会自动使用样例资料。")
     if any(not isinstance(f, dict) or not isinstance(f.get("name"), str) or not isinstance(f.get("content"), str) for f in files):
@@ -67,14 +77,31 @@ def prepare_resources(documents=None, datasets=None, uploads=None) -> dict:
     if len(files) > 30 or sum(len(f["content"].encode("utf-8")) for f in files) > MAX_BYTES:
         raise ValueError("最多导入 30 份文件，总大小不能超过 10 MiB。")
     pack = {"documents": [], "datasets": []}
+    # Uploaded contracts are configuration, never documents for QA or model instructions.
+    remaining = []
     for file in files:
+        if Path(file["name"]).suffix.lower() == ".json":
+            value = json.loads(file["content"].lstrip("\ufeff"))
+            if isinstance(value, dict) and value.get("format") == "agentforge-data-contract-v1":
+                if data_contract is not None:
+                    raise ValueError("一次导入只能指定一份数据契约。")
+                data_contract = value
+                continue
+        remaining.append(file)
+    for file in remaining:
         name, content = file["name"], file["content"].lstrip("\ufeff")
         if not isinstance(name, str) or not isinstance(content, str) or not content.strip():
             raise ValueError("文件名和内容必须是非空文本。")
         suffix = Path(name).suffix.lower()
         rid = resource_id(name, content)
         if suffix == ".csv":
-            reader = csv.DictReader(io.StringIO(content))
+            definitions = data_contract.get("datasets", {}) if isinstance(data_contract, dict) else {}
+            definition = definitions.get(rid, definitions.get(name, {})) if isinstance(definitions, dict) else {}
+            options = definition.get("csv", {}) if isinstance(definition, dict) else {}
+            delimiter = options.get("delimiter", ",") if isinstance(options, dict) else ","
+            if not isinstance(delimiter, str) or len(delimiter) != 1 or delimiter in ("\r", "\n", '"', "\x00"):
+                raise ValueError("CSV delimiter 必须是有效单字符。")
+            reader = csv.DictReader(io.StringIO(content), delimiter=delimiter)
             columns = reader.fieldnames
             if not columns or len(columns) > 100 or len(set(columns)) != len(columns) or any(not c for c in columns):
                 raise ValueError("CSV 需要唯一、非空的列名，最多 100 列。")
@@ -106,6 +133,11 @@ def prepare_resources(documents=None, datasets=None, uploads=None) -> dict:
         raise ValueError("资源 ID 必须唯一；请避免重复导入同一文件。")
     if len(pack["documents"]) > 100:
         raise ValueError("知识库最多 100 份文档。")
+    if not pack["documents"] and not pack["datasets"]:
+        raise ValueError("数据契约需要配套的 CSV 资源。")
+    if data_contract is not None:
+        from .data_contract import apply_contract
+        pack = apply_contract(pack, data_contract)
     return pack
 
 
@@ -113,4 +145,6 @@ def catalog(pack, include_content=False):
     return {"documents": [{"id": d["id"], "title": d["title"], "characters": len(d["content"]),
                             **({"content": d["content"][:8000]} if include_content else {})} for d in pack["documents"]],
             "datasets": [{"id": d["id"], "name": d["name"], "columns": d["columns"], "row_count": len(d["rows"]),
-                          "preview": d["rows"][:12]} for d in pack["datasets"]]}
+                          "preview": d["rows"][:12],
+                          **({"data_contract": d["data_contract"], "normalization": d["normalization"]}
+                             if "data_contract" in d else {})} for d in pack["datasets"]]}

@@ -1,0 +1,23 @@
+{
+  "format": "agentforge-data-contract-v1",
+  "datasets": {
+    "sales.csv": {
+      "description": "销售账本；amount 是每条记录的总金额，quantity 是数量。保留原始正负记录。",
+      "csv": {"encoding": "utf-8-sig", "delimiter": ","},
+      "columns": [
+        {"name": "region", "type": "text", "nullable": false, "aliases": ["地区"]},
+        {"name": "product", "type": "text", "nullable": false, "aliases": ["产品"]},
+        {"name": "amount", "type": "decimal", "scale": 2, "nullable": true, "unit": "元", "missing_values": [""], "aliases": ["金额"]},
+        {"name": "quantity", "type": "integer", "nullable": false, "unit": "件", "aliases": ["数量"]}
+      ],
+      "primary_key": [],
+      "dimensions": ["region", "product"],
+      "metrics": [
+        {"id": "revenue", "description": "金额列求和，包含负数调整，跳过空金额；不额外乘以 quantity。", "operation": "sum", "column": "amount", "filters": [], "null_policy": "skip", "unit": "元", "scale": 2},
+        {"id": "units", "description": "全部记录的数量合计。", "operation": "sum", "column": "quantity", "filters": [], "null_policy": "error", "unit": "件", "scale": 0},
+        {"id": "product_count", "description": "非空产品名称的去重数量。", "operation": "count_distinct", "column": "product", "filters": [], "unit": "种", "scale": 0},
+        {"id": "revenue_per_unit", "description": "金额合计除以数量合计；不是逐行单价的算术平均。分母为零时无值。", "formula": {"operation": "divide", "left": "revenue", "right": "units"}, "unit": "元/件", "scale": 4}
+      ]
+    }
+  }
+}

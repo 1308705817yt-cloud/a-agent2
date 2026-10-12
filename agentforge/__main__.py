@@ -48,6 +48,7 @@ def main(argv=None):
     create.add_argument("--request", required=True)
     create.add_argument("--documents", action="append", default=[], help="TXT/MD/文档 JSON，可重复指定")
     create.add_argument("--csv", action="append", default=[], help="CSV 数据文件，可重复指定")
+    create.add_argument("--data-contract", type=Path, help="字段类型、业务指标及兼容数据绑定契约 JSON")
     create.add_argument("--review", action="store_true", help="开发测试失败后等待人工修改方向")
     create.add_argument("--max-repairs", type=int, default=3)
     create.add_argument("--max-seconds", type=int, default=3600, help="构建累计耗时上限，0 表示不限；不限制 token")
@@ -89,6 +90,7 @@ def main(argv=None):
     run.add_argument("run_id")
     run.add_argument("question", nargs="?")
     run.add_argument("--input-json", help="CSV 参数或文档输入 JSON")
+    run.add_argument("--bindings-json", help="显式替换数据快照：{原数据集ID:新CSV路径}；仅兼容模板产物")
     run.add_argument("--model", help="覆盖子 Agent 使用的模型")
     run.add_argument("--timeout", type=int, default=None)
     run.add_argument("--max-seconds", type=int, help="覆盖累计运行耗时，0 表示不限")
@@ -123,9 +125,11 @@ def main(argv=None):
             timeout = timeout or saved["engine"]["timeout"]
         factory = FactoryAgent(args.workspace, model=model, timeout=timeout or 180)
         if args.command == "create":
+            from .resources import read_json
             state = factory.drive(factory.create(args.request, documents=args.documents, datasets=args.csv,
                                                   review=args.review, max_repairs=args.max_repairs, max_seconds=args.max_seconds,
-                                                  run_max_seconds=args.run_max_seconds, adaptive_steps=not args.fixed_steps))
+                                                  run_max_seconds=args.run_max_seconds, adaptive_steps=not args.fixed_steps,
+                                                  data_contract=read_json(args.data_contract) if args.data_contract else None))
             summary(state)
             if state["status"] not in ("completed", "waiting_for_guidance"):
                 parser.exit(1)
@@ -197,7 +201,8 @@ def main(argv=None):
                 from .codex_client import CodexClient
                 engine = factory.load(args.run_id)["engine"]
                 factory.runtime_client_factory = lambda: CodexClient(factory.root, model or engine["model"], timeout or engine["timeout"])
-            record = create_execution(factory, args.run_id, inputs, args.max_seconds)
+            record = create_execution(factory, args.run_id, inputs, args.max_seconds,
+                                      bindings=json.loads(args.bindings_json) if args.bindings_json else None)
             record = execute_record(factory, args.run_id, record["execution_id"])
             print_json(record)
             if record["status"] not in ("completed", "waiting_input"):

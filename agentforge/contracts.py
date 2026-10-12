@@ -2,18 +2,15 @@
 
 from dataclasses import asdict, dataclass
 
+from .csv_contract import OPERATIONS, canonical_parameters, validate_parameters
+
 
 TASK_TYPES = ("document_qa", "csv_analysis")
-OPERATIONS = ("sum", "mean", "count", "min", "max")
 
 
 def canonical_csv_parameters(parameters):
-    """After validation, row count has no value column; never mutate caller data."""
-    from copy import deepcopy
-    result = deepcopy(parameters)
-    if result.get("operation") == "count":
-        result["column"] = None
-    return result
+    """Compatibility entry point for the shared executable CSV contract."""
+    return canonical_parameters(parameters)
 
 
 @dataclass(frozen=True)
@@ -30,24 +27,7 @@ class Requirements:
         if self.task_type == "document_qa" and not resources["documents"]:
             raise ValueError("文档问答需要至少一份文档。")
         if self.task_type == "csv_analysis":
-            datasets = {d["id"]: d for d in resources["datasets"]}
-            dataset = datasets.get(self.defaults.get("dataset_id"))
-            if not dataset:
-                raise ValueError("CSV 需求必须绑定已提供的数据集。")
-            if self.defaults.get("operation") not in OPERATIONS:
-                raise ValueError("CSV 操作必须是 sum、mean、count、min 或 max。")
-            for field in ("column", "group_by"):
-                if self.defaults.get(field) and self.defaults[field] not in dataset["columns"]:
-                    raise ValueError(f"需求中的 {field} 不存在于数据集。")
-            if self.defaults["operation"] != "count" and not self.defaults.get("column"):
-                raise ValueError("数值聚合需要指定列。")
-            from .tool_registry import validate_filters
-            validate_filters(self.defaults.get("filters", []), dataset["columns"])
-            if self.defaults.get("sort_by", "group") not in ("group", "value", "count") or type(self.defaults.get("descending", False)) is not bool:
-                raise ValueError("默认排序参数无效。")
-            limit = self.defaults.get("limit")
-            if limit is not None and (type(limit) is not int or not 1 <= limit <= 1000):
-                raise ValueError("默认结果数量无效。")
+            validate_parameters(self.defaults, resources, allow_dataset=True)
 
     def to_dict(self):
         return asdict(self)

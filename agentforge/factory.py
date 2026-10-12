@@ -27,7 +27,7 @@ class FactoryAgent:
         self.runtime_client_factory = runtime_client_factory
         origin = Path(__file__).parent
         self.runtime_files = {name: (origin / name).read_bytes() for name in (
-            "contracts.py", "resources.py", "tool_registry.py", "program.py", "workflow.py", "testing.py",
+            "contracts.py", "csv_contract.py", "csv_execution.py", "csv_query_path.py", "resource_profiles.py", "data_contract.py", "metric_query.py", "data_binding.py", "sql_query.py", "resources.py", "tool_registry.py", "program.py", "workflow.py", "testing.py",
             "codex_client.py", "adaptive_contracts.py", "custom_tools.py", "adaptive_runtime.py", "adaptive_testing.py", "adaptive_artifacts.py", "trusted_tools.py", "source_validation.py", "evaluation_progress.py")}
         import hashlib
         self.runtime_manifest = {name: hashlib.sha256(data).hexdigest() for name, data in self.runtime_files.items()}
@@ -41,7 +41,7 @@ class FactoryAgent:
         write_json(self.run_dir(state["run_id"]) / "state.json", state)
 
     def create(self, request, documents=None, datasets=None, uploads=None, review=False, max_repairs=3,
-               max_seconds=3600, run_max_seconds=900, adaptive_steps=True):
+               max_seconds=3600, run_max_seconds=900, adaptive_steps=True, data_contract=None):
         if not isinstance(request, str) or not request.strip() or len(request) > 6000:
             raise ValueError("需求必须是 1 至 6000 个字符。")
         if type(max_repairs) is not int or not 0 <= max_repairs <= 20:
@@ -51,7 +51,7 @@ class FactoryAgent:
                 raise ValueError("总耗时应为 0 至 86400 秒；0 表示不限。")
         if type(adaptive_steps) is not bool:
             raise ValueError("adaptive_steps 必须是布尔值。")
-        resources = prepare_resources(documents, datasets, uploads)
+        resources = prepare_resources(documents, datasets, uploads, data_contract=data_contract)
         client = self.planner.client
         state = {"run_id": uuid.uuid4().hex[:12], "schema_version": 4 if getattr(self.planner, "adaptive", False) else 3, "status": "queued",
                  "created_at": time.time(), "phase": "requirements", "request": request,
@@ -141,6 +141,9 @@ class FactoryAgent:
         value = {"tools": spec["tools"], "custom_tools": [{k: v for k, v in t.items() if k != "source"} for t in spec["custom_tools"]]}
         if "trusted_tools" in spec:
             value["trusted_tools"] = spec["trusted_tools"]
+        if "csv_contract_version" in spec.get("execution_policy", {}):
+            from .csv_contract import contract_catalog
+            value["csv_contract"] = contract_catalog()
         return value
 
     @staticmethod
@@ -401,7 +404,8 @@ class FactoryAgent:
             state["spec"] = self.planner.workflow(req, resources).to_dict()
             if state["schema_version"] == 4:
                 policy = state.get("performance", {})
-                state["spec"]["execution_policy"] = {"adaptive_steps": policy.get("adaptive_steps", True),
+                state["spec"]["execution_policy"] = {**state["spec"].get("execution_policy", {}),
+                                                     "adaptive_steps": policy.get("adaptive_steps", True),
                                                      "max_seconds": policy.get("run_max_seconds", 900)}
             if getattr(self.planner, "design_attempts", None):
                 write_json(self.run_dir(state["run_id"]) / "rejected_designs.json", self.planner.design_attempts)
@@ -482,7 +486,10 @@ class FactoryAgent:
             spec = self.planner.redesign(req, self.spec(state["spec"]), self.failures(state), state["diagnosis"],
                 state["human_directions"][-1]["text"] if state["human_directions"] else "", resources)
             from dataclasses import replace
-            spec = replace(spec, execution_policy=self.spec(state["spec"]).execution_policy)
+            previous_policy = self.spec(state["spec"]).execution_policy
+            # Retain operator budgets while accepting the new design's capabilities and routing policy.
+            spec = replace(spec, execution_policy={**spec.execution_policy,
+                **{k: v for k, v in previous_policy.items() if k in ("adaptive_steps", "max_seconds")}})
             revision = state.get("design_repairs", 0) + 1
             existing = [int(p.name[1:]) for p in (self.run_dir(state["run_id"]) / "designs").glob("d*") if p.name[1:].isdigit()]
             path = "designs/d" + str(max([revision - 1, *existing]) + 1)
@@ -620,24 +627,34 @@ class FactoryAgent:
             self.store.release(run_id, owner)
         return self.drive(state)
 
-    def run(self, run_id, inputs, on_event=None, expected_artifact=None, checkpoint=None, reply=None, on_checkpoint=None, max_seconds=None, audit_context=None):
+    def execution_agent(self, state):
+        if state.get("runtime_hash") and state["runtime_hash"] != self.runtime_hash:
+            from .frozen_runtime import frozen_agent
+            return frozen_agent(self, state)
+        return self.agent(state)
+
+    def run(self, run_id, inputs, on_event=None, expected_artifact=None, checkpoint=None, reply=None, on_checkpoint=None, max_seconds=None, audit_context=None, data_binding=None):
         state = self.load(run_id)
         if expected_artifact and state["artifact_hash"] != expected_artifact:
             raise ValueError("Agent 版本变化，请重新运行。")
         if not state["version"]:
             raise ValueError("该任务尚未生成代码。")
-        if state.get("runtime_hash") and state["runtime_hash"] != self.runtime_hash:
-            from .frozen_runtime import frozen_agent
-            agent = frozen_agent(self, state)
-        else:
-            agent = self.agent(state)
+        agent = self.execution_agent(state)
+        if data_binding is not None:
+            if not getattr(agent, "supports_data_binding", False):
+                raise ValueError("历史冻结运行时不支持数据重新绑定。")
+            agent = agent.with_data_binding(data_binding)
         if getattr(agent, "supports_resume", False):
             options = {"max_seconds": max_seconds} if max_seconds is not None and getattr(agent, "supports_time_limit", False) else {}
             if max_seconds is not None and not options:
                 raise ValueError("历史运行时不支持总耗时设置，请升级未完成任务或使用新构建。")
             if audit_context is not None and getattr(agent, "supports_audit", False):
                 options["audit_context"] = audit_context
-            return agent.run(inputs, on_event if on_checkpoint is None else None, checkpoint=checkpoint, reply=reply, on_checkpoint=on_checkpoint, **options)
+            result = agent.run(inputs, on_event if on_checkpoint is None else None, checkpoint=checkpoint, reply=reply, on_checkpoint=on_checkpoint, **options)
+            if data_binding is not None:
+                result["data_binding"] = {"binding_hash": data_binding["binding_hash"], "bindings": data_binding["bindings"],
+                                          "behavior_evaluation": "not_evaluated_on_new_data"}
+            return result
         if checkpoint is not None or reply is not None:
             raise ValueError("历史运行时不支持决策恢复；请创建使用新运行时的 Agent。")
         return agent.run(inputs, on_event) if state["schema_version"] == 4 else agent.run(inputs)

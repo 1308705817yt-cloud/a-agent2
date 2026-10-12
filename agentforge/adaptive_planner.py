@@ -8,6 +8,8 @@ from .resources import catalog
 from .adaptive_runtime import builtin_catalog
 from .program import interpreter_capabilities
 from .source_validation import response_contract, preflight_output_hook
+from .csv_contract import CONTRACT_VERSION, contract_catalog, contract_instructions
+from .data_binding import OUTPUT_SOURCE
 
 
 PARAM = object_schema({"name": text_schema(40), "type": {"type": "string", "enum": list(PARAM_TYPES)},
@@ -22,12 +24,13 @@ TOOL_DEF = object_schema({"id": text_schema(50), "description": STR,
                               "syntax": {"type": "array", "items": text_schema(80), "maxItems": 50}}),
                           "output_schema_json": text_schema(6000), "required": BOOL})
 DESIGN_SCHEMA = object_schema({"name": text_schema(100), "task_type": {"type": "string", "enum": ["document_qa", "csv_analysis"]},
+    "answer_style": {"type": "string", "enum": ["facts", "analysis"]},
     "instructions": text_schema(8000), "planning_hints": {"type": "array", "items": STR, "minItems": 3, "maxItems": 8},
-    "tools": {"type": "array", "items": text_schema(50), "minItems": 2, "maxItems": 8},
-    "custom_tools": {"type": "array", "items": TOOL_DEF, "minItems": 1, "maxItems": 3},
+    "tools": {"type": "array", "items": text_schema(50), "minItems": 1, "maxItems": 8},
+    "custom_tools": {"type": "array", "items": TOOL_DEF, "minItems": 0, "maxItems": 3},
     "max_steps": {"type": "integer", "minimum": 4, "maximum": 12}})
 CUSTOM_SOURCE = object_schema({"id": text_schema(50), "source": text_schema(16000)})
-CODE_SCHEMA = object_schema({"source": text_schema(16000), "custom_sources": {"type": "array", "items": CUSTOM_SOURCE, "minItems": 1, "maxItems": 3}, "explanation": STR})
+CODE_SCHEMA = object_schema({"source": text_schema(16000), "custom_sources": {"type": "array", "items": CUSTOM_SOURCE, "minItems": 0, "maxItems": 3}, "explanation": STR})
 TOOL_CASE = object_schema({"id": text_schema(80), "partition": {"type": "string", "enum": ["development", "acceptance"]},
                            "tool": text_schema(50), "input_json": text_schema(6000),
                            "expected_json": {"anyOf": [text_schema(6000), {"type": "null"}]},
@@ -39,7 +42,7 @@ GOAL_CASE = object_schema({"id": text_schema(80), "partition": {"type": "string"
                            "source_id": {"anyOf": [text_schema(100), {"type": "null"}]},
                            "facts": {"type": "array", "items": STR, "maxItems": 8}, "refusal": BOOL,
                            "purpose": STR, "criterion": STR})
-EXTRA_TESTS = object_schema({"tool_cases": {"type": "array", "items": TOOL_CASE, "minItems": 2, "maxItems": 96},
+EXTRA_TESTS = object_schema({"tool_cases": {"type": "array", "items": TOOL_CASE, "minItems": 0, "maxItems": 96},
                              "goal_cases": {"type": "array", "items": GOAL_CASE, "minItems": 2, "maxItems": 4}})
 TOOL_CODE_RULES = """Generate actual Python source for every declared custom tool with exactly def run(context).
 Implement its described business computation, NOT a stub, hardcoded test answer, or response passthrough.
@@ -102,13 +105,17 @@ class AdaptivePlanner(Planner):
         value = self.client.complete("Understand the agent-building request. Support runtime Codex document QA with semantic understanding, "
             "or CSV data-analysis agents that plan queries and execute generated pure data-processing tools. "
             "Custom tools can calculate business metrics, profiles, data quality, comparisons and transformations from supplied resources. "
+            "Built-in csv.sql supports bounded read-only joins, window functions and multi-column aggregates across supplied CSVs. "
+            "Frozen data_contract metrics use exact decimal calculation, distinct counts and declared ratios/differences via csv.metrics. "
             "Preserve the requested scope; do not invent extra mandatory domain calculations. For document QA, a compact metadata/evidence "
             "tool is meaningful custom work; a bespoke policy-rule parser/calculator is needed only when explicitly requested. "
             "Operator-configured trusted tools may additionally read databases or HTTP JSON services; no arbitrary OS/network actions, ML training, PDFs or unprovided external data. Do not silently drop requirements. "
             "If essential behavior cannot be achieved set supported=false. CSV defaults bind one provided dataset and sum/mean/count/min/max, "
             "columns, optional grouping/filters/sort/limit. Use [] in filters_json. Document defaults use null dataset/operation/column/group/limit, "
-            "[] filters, sort_by=group, descending=false. Include planning, source/numeric evidence and a meaningful custom computation in criteria.",
+            "[] filters, sort_by=group, descending=false. Include source/numeric evidence and requested business behavior in criteria. "
+            "Do not add mandatory custom computation or a data-quality step when the requested behavior is already covered by builtins.",
             {"request": request, "resources": catalog(resources, True), "trusted_tools": self.trusted_catalog(),
+             "csv_contract": contract_catalog(),
              "interpreter_capabilities": interpreter_capabilities()}, REQ_SCHEMA)
         if not value["supported"]:
             raise ValueError("需求超出当前能力：" + value["summary"])
@@ -133,13 +140,20 @@ class AdaptivePlanner(Planner):
         raise ExecutionError("DESIGN_INVALID", "工具设计校验连续失败：" + str(errors[-1]), origin="design", retryable=False)
 
     def design(self, requirements, resources, errors):
-        value = self.client.complete("Design a Codex runtime agent, not a fixed DAG. Choose declared builtins and design 1-3 custom data tools "
-            "with business logic relevant to this request. Do not generate source yet. Tool IDs custom.<snake_case>.",
+        value = self.client.complete("Design an agent using declared capabilities. Reuse builtins first; generate 0-3 custom tools "
+            "only for requested computations not covered by existing capabilities. Ordinary CSV queries need zero custom tools. "
+            "Do not generate source yet. Tool IDs custom.<snake_case>.",
             {"requirements": requirements.to_dict(), "resources": catalog(resources, True), "builtins": builtin_catalog(), "trusted_tools": self.trusted_catalog(),
+             "csv_contract": contract_catalog(),
              "design_repair_evidence": getattr(self, "redesign_evidence", None),
              "interpreter_capabilities": interpreter_capabilities(), "response_contract": response_contract(),
              "previous_validation_errors": errors, "previous_rejected_design": getattr(self, "last_design", None) if errors else None,
-             "rules": "Generate instructions for planning/tool/observation/replanning/finish. At least one custom tool required=true. "
+             "rules": "Generate instructions for requested behavior. Use custom_tools=[] when builtins suffice. "
+                "Choose answer_style=facts for numeric lookups/rankings; analysis only when the user requires interpretation. "
+                "Instructions describe reusable business rules, not hardcoded findings or assumptions from this snapshot. "
+                "Set required=true only for a custom computation essential to the user's requirements. "
+                "Common CSV queries may execute directly from structured inputs or one typed natural-language plan; complex goals retain the loop. "
+                "A deterministic resource-level csv.profile is available and reused automatically for CSV snapshots; never generate a redundant quality tool. "
                 "For EVERY custom tool declare execution_plan.algorithm and list the required helpers and AST node names in "
                 "execution_plan.helpers/syntax. These must exist in interpreter_capabilities. Algorithms must use bounded loops "
                 "within its execution limits. Do not require imports, regex libraries, datetime, key-based sorting or object methods. "
@@ -155,8 +169,8 @@ class AdaptivePlanner(Planner):
                 "well-defined empty-input behavior, or another meaningful varying parameter. Runtime defaults still read authorized resources. "
                 "Document agent uses documents.read/search to let runtime Codex reason over source; prefer a compact, deterministic "
                 "evidence index (IDs, literal excerpts, deduplication or text structure counts). Let Codex interpret policy meaning. "
-                "Generate a domain-specific rule parser only when the request explicitly requires it. CSV agent must include csv.query and a meaningful "
-                "custom calculation such as data-quality profiling, shares or period comparison. Resource IDs are exact provided IDs. "
+                "Generate a domain-specific rule parser only when the request explicitly requires it. CSV agent must include csv.query. "
+                "Shares or period comparison may need custom business logic; ordinary grouping/filtering/aggregation needs none. Resource IDs are exact provided IDs. "
                 "Custom output_schema_json uses type/properties/required/additionalProperties=false/items/anyOf; arrays need items. "
                 "Every schema node MUST declare type (object/array/string/number/integer/boolean/null) or anyOf. "
                 "output_schema_json must be syntactically valid JSON: close properties before adding required/additionalProperties. "
@@ -178,11 +192,17 @@ class AdaptivePlanner(Planner):
                 "Do not declare inferred conflicts or semantic categories unless their deterministic predicates and output values are fully defined. "
                 "Pure tool outputs should be deterministic: numbers, flags, IDs and literal excerpts. Let the runtime model write explanations "
                 "instead of introducing free-form claim/explanation fields whose wording is then compared by unit tests. "
-                "Prefer a small global quality profile; per-group aggregation is already provided by csv.query. "
-                "A focused quality/evidence tool is preferable to a second aggregation engine. Use optional rows for independent tests. "
-                "Use canonical input keys operation,column,group_by,filters,sort_by,descending,limit; dataset_id is the bound resource ID. "
+                "Global quality profiling is already provided by csv.profile; raw aggregation is provided by csv.query. "
+                "For resources with data_contract, field definitions and metrics are authoritative operator-provided rules. "
+                "csv.metrics provides exact decimal aggregations, distinct counts, up to three dimensions and defined metric formulas. "
+                "csv.sql provides bounded joins, multiple aggregates and windows with a declared table catalog; select it only if required. "
+                "Do not rewrite these calculations as custom tools or invent missing business definitions. Ask for ambiguity at runtime. "
+                "Generate only missing business capability. For actual custom tools use optional rows for independent fixtures. "
+                "Use canonical raw input keys operation,column,group_by,filters,sort_by,descending,limit; dataset_id is the bound resource ID. "
+                "Structured business input uses {metric_query:{metric_ids,dimensions,filters,sort_by,descending,limit}}. "
                 "If a configured trusted tool helps the goal, select its exact ID in tools. Never generate or modify its implementation or configuration. "
-                "Custom tools can process its observed result with observation(id). Use 6-8 model steps normally, reserve repair steps for tool errors. Builtins execute only when runtime Codex chooses them."}, DESIGN_SCHEMA)
+                "Custom tools can process its observed result with observation(id). Use 6-8 model steps as a loop budget for complex goals; "
+                "common queries do not need this many model calls. Host-managed fast paths and profiles can execute declared builtins."}, DESIGN_SCHEMA)
         self.last_design = value
         for tool in value["custom_tools"]:
             if "execution_plan" not in tool:
@@ -198,6 +218,19 @@ class AdaptivePlanner(Planner):
         from dataclasses import replace
         spec = replace(spec, trusted_tools=[t for t in getattr(self, "trusted_tools", []) if t["id"] in spec.tools],
                        execution_policy={"adaptive_steps": True, "max_seconds": 900})
+        if requirements.task_type == "csv_analysis":
+            dataset = next(d for d in resources["datasets"] if d["id"] == requirements.defaults["dataset_id"])
+            metric_tools = ["csv.metrics"] if dataset.get("data_contract", {}).get("metrics") else []
+            if "csv.metrics" in spec.tools and not metric_tools:
+                raise ExecutionError("DESIGN_CAPABILITY", "csv.metrics 需要用户提供已定义指标的数据契约。", origin="design", retryable=False)
+            spec = replace(spec, tools=list(dict.fromkeys([*spec.tools, "csv.profile"])),
+                           instructions=spec.instructions + "\n\n" + contract_instructions(),
+                           execution_policy={**spec.execution_policy, "csv_strategy": "auto", "resource_profile": True,
+                                             "csv_contract_version": CONTRACT_VERSION})
+            spec = replace(spec, tools=list(dict.fromkeys([*spec.tools, *metric_tools])))
+            if not spec.custom_tools and not spec.trusted_tools:
+                spec = replace(spec, execution_policy={**spec.execution_policy, "output_template": "observed-v1",
+                                                       "data_binding": "compatible-v1"})
         spec.validate(requirements)
         return spec
 
@@ -245,11 +278,13 @@ class AdaptivePlanner(Planner):
             "For CSV goal include explicit parameters_json and reference_query_json representing its expected primary csv.query; numeric "
             "reference_query_json permits ONLY operation,column,group_by,filters,sort_by,descending,limit. "
             "Do NOT include dataset_id (the oracle binds the frozen dataset), dataset, sort or other keys. "
-            "answers will be calculated by the independent Decimal oracle. Goals should involve the custom tool plus a built-in query. "
+            "answers will be calculated by the independent Decimal oracle. Use custom tools only when declared and relevant. "
+            "If tools is empty, tool_cases MUST be []; goal scenarios still cover the requested behavior. "
             "For document goal use a different paraphrase with facts literally present in exact source_id, or refusal=true for absent facts. "
             "Document reference_query_json={}, parameters_json={}. Both partitions should differ in goal wording. IDs unique across all cases.",
             {"requirements": requirements.to_dict(), "tools": definitions, "resources": catalog(resources, True),
              "interpreter_capabilities": interpreter_capabilities(),
+             "csv_contract": contract_catalog(),
              "previous_validation_errors": errors, "previous_rejected_tests": previous}, EXTRA_TESTS)
         return value
 
@@ -283,11 +318,16 @@ class AdaptivePlanner(Planner):
 
     def code(self, requirements, spec, development, resources, tool_development=None):
         self.code_attempts = []
+        if spec.execution_policy.get("output_template") == "observed-v1":
+            self.validate_sources(requirements, spec, OUTPUT_SOURCE, resources)
+            return {"spec": spec, "source": OUTPUT_SOURCE, "custom_sources": [],
+                    "explanation": "复用 observed-v1 宿主输出模板；数值和口径来自实际工具观察，无需生成重复源码。"}
         errors, previous = [], None
         for attempt in range(3):
             value = self.client.complete(TOOL_CODE_RULES + " Return custom_sources with exactly the declared custom tool IDs, "
-                "one complete source per ID; never put builtin tools or logic.py in custom_sources.",
+                "one complete source per ID; use [] when there are zero custom tools. Never put builtin tools or logic.py in custom_sources.",
                 {"requirements": requirements.to_dict(), "agent": spec.to_dict(),
+                 "csv_contract": contract_catalog(),
                  "expected_custom_ids": [t["id"] for t in spec.custom_tools],
                  "interpreter_capabilities": interpreter_capabilities(), "response_contract": response_contract(),
                  "development_cases": development, "tool_development_cases": tool_development or [], "resources": catalog(resources, True),
@@ -308,6 +348,8 @@ class AdaptivePlanner(Planner):
     def validate_sources(self, requirements, spec, source, resources):
         from .custom_tools import CustomTool
         spec.validate(requirements, built=True)
+        if spec.execution_policy.get("output_template") == "observed-v1" and source != OUTPUT_SOURCE:
+            raise ExecutionError("OUTPUT_CONTRACT", "宿主输出模板不能被生成或修复源码替换。", "logic.py", origin="source", retryable=False)
         for tool in spec.custom_tools:
             CustomTool(tool, resources)
         self.last_preflight = preflight_output_hook(source, requirements, resources)
@@ -329,6 +371,7 @@ class AdaptivePlanner(Planner):
             "choose code for implementation or instruction defects. Business acceptance criteria cannot change. "
             "Do not request design changes merely to evade a failing test.",
             {"requirements": requirements.to_dict(), "agent": spec.to_dict(), "source": source, "failures": failures,
+             "csv_contract": contract_catalog(),
              "response_contract": response_contract(), "interpreter_capabilities": interpreter_capabilities()},
             object_schema({"summary": STR, "repair_scope": {"type": "string", "enum": ["code", "design"]},
                           "failure_points": {"type": "array", "items": object_schema({"location": STR, "cause": STR, "fix": STR}),
@@ -387,7 +430,8 @@ class AdaptivePlanner(Planner):
             "Keep tool IDs, descriptions, parameter/output schemas and required flags frozen; tests, requirements and resources cannot change. "
             "Runtime finish decisions must encode refusal as abstained=true, sources=[], result_ref=null; explain absence in answer. "
             "Fix refusal/selection behavior in agent instructions, never change these flags in logic.py. "
-            "For CSV finish, sources MUST be [] and result_ref must be the observation ID of csv.query. count counts filtered rows including blank cells and returns column=null. "
+            "For CSV finish, sources MUST be []; raw query results reference csv.query, defined metric results reference csv.metrics. count counts filtered rows including blank cells and returns column=null. "
+            "If execution_policy.output_template=observed-v1, preserve the exact input source; repair decision instructions only. "
             "Do not copy a diagnosis suggestion that conflicts with this host response contract. "
             "Use all development evidence to preserve previous passes. Return complete code for all tools, the output hook and updated instructions. "
             "custom_sources contains exactly the declared custom IDs, never builtin tools or logic.py.",
@@ -399,7 +443,12 @@ class AdaptivePlanner(Planner):
             object_schema({**CODE_SCHEMA["properties"], "instructions": text_schema(8000)}))
             try:
                 from dataclasses import replace
-                revised = replace(apply_sources(spec, value), instructions=value["instructions"])
+                instructions = value["instructions"]
+                if requirements.task_type == "csv_analysis":
+                    instructions += "\n\n" + contract_instructions()
+                revised = replace(apply_sources(spec, value), instructions=instructions)
+                if spec.execution_policy.get("output_template") == "observed-v1":
+                    value["source"] = OUTPUT_SOURCE
                 self.validate_sources(requirements, revised, value["source"], resources)
                 return revised, value["source"], value["explanation"]
             except (ValueError, TypeError, KeyError, ExecutionError) as exc:

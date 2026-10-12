@@ -6,10 +6,11 @@ import json
 from .contracts import ExecutionError, error_response
 from .program import Program
 from .workflow import validate_response
+from .csv_contract import contract_catalog
 
 
 def response_contract():
-    return {"hook_context": {"input": "effective user parameters", "result":
+    return {"csv_contract": contract_catalog(), "hook_context": {"input": "effective user parameters", "result":
                 {"answer": "nonempty string", "data": "observed JSON or null", "sources": "[{id,title,quote}]",
                  "abstained": "boolean", "error": "null or {code,message}"}},
             "exact_output_fields": ["answer", "data", "sources", "abstained", "error"],

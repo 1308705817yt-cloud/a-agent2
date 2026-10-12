@@ -8,7 +8,7 @@ from .codex_client import object_schema, text_schema, validate_json, SchemaValid
 from .contracts import ExecutionError
 
 
-BUILTIN_IDS = ("resources.list", "documents.read", "documents.search", "csv.preview", "csv.query")
+BUILTIN_IDS = ("resources.list", "documents.read", "documents.search", "csv.preview", "csv.query", "csv.profile", "csv.metrics", "csv.sql")
 PARAM_TYPES = ("string", "integer", "number", "boolean", "object", "array")
 
 
@@ -24,6 +24,7 @@ class AdaptiveSpec:
     runtime: str = "codex_loop"
     trusted_tools: list[dict] = field(default_factory=list)
     execution_policy: dict = field(default_factory=dict)
+    answer_style: str = "analysis"
 
     def to_dict(self):
         return asdict(self)
@@ -31,18 +32,34 @@ class AdaptiveSpec:
     def validate(self, requirements, built=False):
         if self.runtime != "codex_loop" or self.task_type != requirements.task_type or not self.name or not self.instructions:
             raise ValueError("自适应 Agent 配置与需求不一致。")
+        if self.answer_style not in ("facts", "analysis"):
+            raise ValueError("answer_style 必须是 facts 或 analysis。")
         if type(self.max_steps) is not int or not 3 <= self.max_steps <= 16:
             raise ValueError("Codex 决策预算应为 3 至 16 步。")
         policy = self.execution_policy
-        if not isinstance(policy, dict) or set(policy) - {"adaptive_steps", "max_seconds"}:
+        if not isinstance(policy, dict) or set(policy) - {"adaptive_steps", "max_seconds", "csv_strategy", "resource_profile", "csv_contract_version", "data_binding", "output_template"}:
             raise ValueError("运行策略字段无效。")
         if "adaptive_steps" in policy and type(policy["adaptive_steps"]) is not bool:
             raise ValueError("adaptive_steps 必须是布尔值。")
+        if policy.get("data_binding") not in (None, "compatible-v1") or policy.get("output_template") not in (None, "observed-v1"):
+            raise ValueError("数据绑定或输出模板版本无效。")
+        if policy.get("data_binding") and (self.task_type != "csv_analysis" or self.custom_tools or self.trusted_tools
+                                           or policy.get("output_template") != "observed-v1"):
+            raise ValueError("兼容数据绑定仅用于具有宿主输出模板、无自定义和实时工具的 CSV Agent。")
+        if policy.get("csv_strategy", "loop") not in ("auto", "loop"):
+            raise ValueError("csv_strategy 必须是 auto 或 loop。")
+        if "resource_profile" in policy and type(policy["resource_profile"]) is not bool:
+            raise ValueError("resource_profile 必须是布尔值。")
+        if policy.get("resource_profile", False) and (self.task_type != "csv_analysis" or "csv.profile" not in self.tools):
+            raise ValueError("资源级质量检查需要 CSV 任务及 csv.profile 能力。")
+        from .csv_contract import CONTRACT_VERSION
+        if "csv_contract_version" in policy and policy["csv_contract_version"] != CONTRACT_VERSION:
+            raise ValueError("CSV 契约版本与冻结运行时不一致。")
         seconds = policy.get("max_seconds", 0)
         if type(seconds) not in (int, float) or not 0 <= seconds <= 86400:
             raise ValueError("运行总耗时应为 0 至 86400 秒；0 表示不设总上限。")
-        if not 1 <= len(self.custom_tools) <= 3 or len(self.tools) != len(set(self.tools)):
-            raise ValueError("必须生成 1 至 3 个自定义工具，能力列表不得重复。")
+        if not 0 <= len(self.custom_tools) <= 3 or len(self.tools) != len(set(self.tools)):
+            raise ValueError("允许 0 至 3 个自定义工具，能力列表不得重复。")
         ids = set()
         for tool in self.custom_tools:
             if set(tool) - {"execution_plan", "error_cases"} != {"id", "description", "parameters", "output_schema", "required", "source"}:
@@ -76,8 +93,8 @@ class AdaptiveSpec:
         trusted_ids = {t["id"] for t in self.trusted_tools}
         if any(t not in {*BUILTIN_IDS, *ids, *trusted_ids} for t in self.tools) or not ids <= set(self.tools) or not trusted_ids <= set(self.tools):
             raise ValueError("Agent 选择了未授权工具或遗漏生成的工具。")
-        if not any(t["required"] for t in self.custom_tools):
-            raise ValueError("至少一个自定义工具必须参与任务验收。")
+        if self.task_type == "csv_analysis" and "csv.query" not in self.tools:
+            raise ValueError("CSV Agent 必须具备 csv.query 作为主结果计算能力。")
         return self
 
 

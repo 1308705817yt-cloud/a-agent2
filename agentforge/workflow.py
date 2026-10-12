@@ -7,6 +7,7 @@ import time
 from .contracts import AgentSpec, ExecutionError, error_response
 from .program import Program
 from .tool_registry import TOOLS, execute_tool, validate_aliases
+from .csv_contract import INPUT_KEYS, validate_parameters, validate_result
 
 
 def resolve(value, inputs):
@@ -32,8 +33,7 @@ def validate_spec(spec, requirements, resources):
     if len(spec.tools) != len(set(spec.tools)) or any(t not in TOOLS for t in spec.tools):
         raise ValueError("选择了未注册或重复的工具。")
     nodes = {}
-    input_fields = {"question"} if spec.task_type == "document_qa" else {
-        "operation", "column", "group_by", "filters", "sort_by", "descending", "limit"}
+    input_fields = {"question"} if spec.task_type == "document_qa" else set(INPUT_KEYS)
     def check_refs(value):
         if isinstance(value, dict):
             if "ref" in value and value["ref"][6:] not in input_fields:
@@ -106,6 +106,8 @@ def validate_response(output, resources):
         raise ExecutionError("OUTPUT_CONTRACT", "回答或拒答标记无效。")
     if not isinstance(output["sources"], list):
         raise ExecutionError("OUTPUT_CONTRACT", "来源必须是列表。")
+    if isinstance(output["data"], dict) and {"dataset_id", "operation", "results"} <= set(output["data"]):
+        validate_result(output["data"], resources)
     if (isinstance(output["data"], dict) and output["data"].get("operation") == "count"
             and ("column" not in output["data"] or output["data"]["column"] is not None)):
         raise ExecutionError("OUTPUT_CONTRACT", "count 按筛选后的完整行计数，结果 column 必须为 null。")
@@ -137,22 +139,16 @@ class WorkflowAgent:
             inputs = {"question": inputs}
         if not isinstance(inputs, dict):
             return {**error_response("INVALID_INPUT", "输入必须是 JSON 对象。"), "trace": trace}
-        allowed = {"question"} if self.spec.task_type == "document_qa" else {
-            "operation", "column", "group_by", "filters", "sort_by", "descending", "limit"}
+        allowed = {"question"} if self.spec.task_type == "document_qa" else set(INPUT_KEYS)
         if set(inputs) - allowed:
             return {**error_response("INVALID_INPUT", "输入包含不支持的字段。"), "trace": trace}
         if self.spec.task_type == "csv_analysis":
-            values = {**self.requirements.defaults, **inputs}
-            if (not isinstance(values.get("operation"), str)
-                    or any(v is not None and not isinstance(v, str) for v in (values.get("column"), values.get("group_by")))
-                    or not isinstance(values.get("sort_by", "group"), str)):
-                return {**error_response("INVALID_INPUT", "操作、列名和排序字段必须是文本。"), "trace": trace}
-        effective = {**copy.deepcopy(self.requirements.defaults), **copy.deepcopy(inputs)}
-        if self.spec.task_type == "csv_analysis" and effective.get("operation") == "count":
-            dataset = next(d for d in self.resources["datasets"] if d["id"] == self.requirements.defaults["dataset_id"])
-            if effective.get("column") and effective["column"] not in dataset["columns"]:
-                return {**error_response("UNKNOWN_COLUMN", "分析列不存在。"), "trace": trace}
-            effective["column"] = None
+            try:
+                effective = validate_parameters(inputs, self.resources, self.requirements.defaults)
+            except ExecutionError as exc:
+                return {**error_response(exc.code, str(exc)), "trace": trace}
+        else:
+            effective = {**copy.deepcopy(self.requirements.defaults), **copy.deepcopy(inputs)}
         context = {"input": effective, "result": None}
         nodes = {n["id"]: n for n in self.spec.nodes}
         nid = self.spec.entry

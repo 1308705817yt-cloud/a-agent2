@@ -66,9 +66,9 @@ def export_artifact(root, state, resources, suite, source, runtime_files=None):
     package.mkdir(exist_ok=True)
     package.joinpath("__init__.py").write_text('', encoding="utf-8")
     origin = Path(__file__).resolve().parent
-    names = ("contracts.py", "resources.py", "tool_registry.py", "program.py", "workflow.py", "testing.py")
+    names = ("contracts.py", "csv_contract.py", "data_contract.py", "metric_query.py", "resources.py", "tool_registry.py", "program.py", "workflow.py", "testing.py")
     if adaptive:
-        names += ("codex_client.py", "adaptive_contracts.py", "custom_tools.py", "adaptive_runtime.py", "adaptive_testing.py", "trusted_tools.py", "source_validation.py", "evaluation_progress.py")
+        names += ("csv_execution.py", "csv_query_path.py", "resource_profiles.py", "data_binding.py", "sql_query.py", "codex_client.py", "adaptive_contracts.py", "custom_tools.py", "adaptive_runtime.py", "adaptive_testing.py", "trusted_tools.py", "source_validation.py", "evaluation_progress.py")
     for name in names:
         (package / name).write_bytes(runtime_files[name] if runtime_files else (origin / name).read_bytes())
     for name, value in (("agent.json", state["spec"]), ("requirements.json", state["requirements"]),
@@ -118,7 +118,11 @@ def export_artifact(root, state, resources, suite, source, runtime_files=None):
                       business_suite=state["frozen_hashes"]["test_suite"])
     write_json(target / "manifest.json", {"format_version": 4 if adaptive else 3, "run_id": state["run_id"], "version": state["version"],
                "artifact_hash": state["artifact_hash"], "runtime_hash": state.get("runtime_hash"),
-               "frozen_hashes": frozen, "files": files})
+               "frozen_hashes": frozen, "files": files,
+               "capability_evidence": {
+                   **{name: "not_independently_evaluated" for name in ("csv.metrics", "csv.sql") if name in state["spec"]["tools"]},
+                   **{tool["id"]: "not_independently_evaluated" for tool in state["spec"].get("trusted_tools", [])
+                      if tool["kind"] == "sqlite_query"}}})
     archive = root / "dist" / (state["run_id"] + ".zip")
     with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as bundle:
         for name in [*files, "manifest.json"]:

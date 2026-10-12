@@ -32,12 +32,30 @@ def validate_suite(suite, requirements, resources):
                     raise ValueError("文档测试的事实必须可在指定来源中核对。")
         elif case["expect"] != "csv":
             raise ValueError("CSV 测试的正确答案由独立计算器生成。")
+        if requirements.task_type == "csv_analysis" and "assertion" in case:
+            assertion = case["assertion"]
+            if (not isinstance(assertion, dict) or set(assertion) != {"kind", "error_code"}
+                    or assertion["kind"] not in ("calculation", "rejection")):
+                raise ValueError("CSV 场景断言类型无效。")
+            actual_error = None
+            try:
+                csv_oracle(requirements, resources, case["input"])
+            except OracleError as exc:
+                actual_error = exc.code
+            if assertion["kind"] == "calculation":
+                if assertion["error_code"] is not None or actual_error is not None:
+                    raise ValueError("声明计算成功的场景实际会被拒绝：" + case["id"] + " / " + str(actual_error))
+            elif not isinstance(assertion["error_code"], str) or actual_error != assertion["error_code"]:
+                raise ValueError("声明拒绝的场景与实际错误不一致：" + case["id"])
     for partition in ("development", "acceptance"):
         group = [c for c in cases if c["partition"] == partition]
         if len(group) < 4 or len({json.dumps(c["input"], sort_keys=True) for c in group}) < 4:
             raise ValueError("每个分区至少需要 4 个不同输入。")
         if requirements.task_type == "document_qa" and not {"answer", "refusal"} <= {c["expect"] for c in group}:
             raise ValueError("文档测试每个分区都要覆盖可回答与拒答。")
+        if requirements.task_type == "csv_analysis" and any("assertion" in c for c in group):
+            if sum(c.get("assertion", {}).get("kind") == "calculation" for c in group) < 2:
+                raise ValueError("每个 CSV 分区至少需要两个实际计算场景；拒绝样例不能替代。")
     return suite
 
 

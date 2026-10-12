@@ -42,7 +42,7 @@ def locked(path):
                 fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
 
 
-def create_execution(factory, run_id, inputs, max_seconds=None):
+def create_execution(factory, run_id, inputs, max_seconds=None, bindings=None):
     state = factory.load(run_id)
     if not state["version"]:
         raise ValueError("尚未生成 Agent。")
@@ -52,6 +52,12 @@ def create_execution(factory, run_id, inputs, max_seconds=None):
               "artifact_hash": state["artifact_hash"], "status": "queued", "input": inputs,
               "created_at": time.time(), "updated_at": time.time(), "trace": [], "result": None, "error": None,
               "checkpoint": None, "checkpoint_hash": None, "reply": None, "attempts": [], "max_seconds": max_seconds}
+    if bindings is not None:
+        agent = factory.execution_agent(state)
+        if not getattr(agent, "supports_data_binding", False):
+            raise ValueError("历史产物不支持兼容数据绑定。")
+        # Resolve local paths once. Recovery reuses the saved immutable snapshot.
+        record["data_binding"] = agent.prepare_data_binding(bindings)
     write_json(execution_path(factory, run_id, record["execution_id"]), record)
     return record
 
@@ -81,6 +87,8 @@ def _execute_record(factory, run_id, execution_id, path):
         if record.get("checkpoint") and fingerprint(record["checkpoint"]) != record.get("checkpoint_hash"):
             raise ValueError("执行恢复状态指纹不一致。")
         options = {"max_seconds": record["max_seconds"]} if record.get("max_seconds") is not None else {}
+        if record.get("data_binding") is not None:
+            options["data_binding"] = record["data_binding"]
         result = factory.run(run_id, record["input"], update, record["artifact_hash"],
                              checkpoint=record.get("checkpoint"), reply=record.get("reply"), on_checkpoint=checkpoint, **options)
         result.pop("checkpoint", None)
@@ -117,7 +125,9 @@ def continue_execution(factory, run_id, execution_id, reply=None, max_seconds=No
             if reply.get("parameters"):
                 if state["requirements"]["task_type"] != "csv_analysis":
                     raise ValueError("文档问答只接受文字补充。")
-                agent = factory.agent(state)
+                agent = factory.execution_agent(state)
+                if record.get("data_binding") is not None:
+                    agent = agent.with_data_binding(record["data_binding"])
                 _, params, _ = agent.prepare(record["input"])
                 for old in saved["replies"]:
                     params.update(old.get("parameters", {}))

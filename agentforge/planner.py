@@ -117,12 +117,22 @@ class Planner:
     def tests(self, requirements, resources):
         schema = copy.deepcopy(TEST_SCHEMA)
         schema["properties"]["cases"]["items"]["properties"]["expect"]["enum"] = (["csv"] if requirements.task_type == "csv_analysis" else ["answer", "refusal", "error"])
+        if requirements.task_type == "csv_analysis":
+            item = schema["properties"]["cases"]["items"]
+            item["properties"]["assertion"] = object_schema({
+                "kind": {"type": "string", "enum": ["calculation", "rejection"]},
+                "error_code": nullable(text_schema(80))})
+            item["required"].append("assertion")
         task = ("Independently generate requirement-specific tests BEFORE seeing implementation. At least 4 different inputs "
             "in EACH of development and acceptance; include positive, negative, boundary scenarios linked to acceptance criteria. "
             "Document cases expect answer/refusal/error; positive source_id is exact provided doc ID and facts must be literal substrings of content. "
             "Refusal questions must concern absent information with distinct vocabulary; invalid input uses empty question. "
             "CSV cases expect csv, source_id=null,facts=[]; use varied valid overrides, filters, grouping, count and invalid columns/operation. "
             "Do NOT supply numeric expected answers: a separate Decimal oracle will compute them from the full dataset. "
+            "CSV assertion.kind MUST declare calculation with error_code=null or rejection with the exact expected error code. "
+            "A calculation input that actually errors is rejected before freezing, not converted into a passing negative. "
+            "Each CSV partition needs at least two actual successful calculation inputs. These cases cover raw csv.query only; "
+            "do not imply they validate csv.metrics, multi-table SQL or all natural-language explanations. "
             "input_json must encode an object. CSV input permitted keys operation,column,group_by,filters,sort_by,descending,limit; "
             "filters contain column/operator/value (eq,ne,gt,gte,lt,lte,contains). No question key for CSV. "
             "Case IDs use unique ASCII letters/digits/hyphens/underscores, at most 80 characters; do not use the integrity_ prefix. "
@@ -144,6 +154,15 @@ class Planner:
                             case["id"] = "g-" + case["id"]
                     used.add(case["id"])
                     case["input"] = json.loads(case.pop("input_json"))
+                    if requirements.task_type == "csv_analysis" and "assertion" not in case:
+                        raise ValueError("新 CSV 场景必须声明 calculation/rejection 及对应错误码。")
+                    if requirements.task_type == "csv_analysis":
+                        case["generation_notes"] = {"purpose": case["purpose"], "criterion": case["criterion"]}
+                        # Human-readable assertions are rendered from machine intent, not independently invented.
+                        calculation = case["assertion"].get("kind") == "calculation"
+                        case["purpose"] = "合法 CSV 计算" if calculation else "CSV 输入拒绝边界"
+                        case["criterion"] = ("执行完整查询并与独立 Decimal 结果比较。" if calculation else
+                                             "拒绝输入并返回错误码 " + str(case["assertion"].get("error_code")) + "；不计作计算成功。")
                 validate_suite(value, requirements, resources)
                 return add_integrity_cases(value, requirements, resources)
             except (ValueError, TypeError, KeyError) as exc:

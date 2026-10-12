@@ -152,7 +152,7 @@ def serve(root, host="127.0.0.1", port=8787, model=None, timeout=180):
                 if parts == ["api", "jobs"]:
                     state = factory.create(data.get("request"), uploads=data.get("files"), review=data.get("review", False), max_repairs=data.get("max_repairs", 3),
                                            max_seconds=data.get("max_seconds", 3600), run_max_seconds=data.get("run_max_seconds", 900),
-                                           adaptive_steps=data.get("adaptive_steps", True))
+                                           adaptive_steps=data.get("adaptive_steps", True), data_contract=data.get("data_contract"))
                     pending.put(state["run_id"])
                     self.send(202, {"run_id": state["run_id"]})
                 elif len(parts) == 6 and parts[:2] == ["api", "jobs"] and parts[3] == "executions" and parts[5] == "continue":

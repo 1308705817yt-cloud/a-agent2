@@ -1,0 +1,16 @@
+{
+  "tools": [
+    {
+      "id": "trusted.sales_query",
+      "description": "读取已授权销售库的结构并执行只读分析。先使用 action=schema 核对表和字段，再用具名绑定参数提交 action=query。",
+      "kind": "sqlite_query",
+      "config": {
+        "database": "trusted_data/sales.sqlite",
+        "tables": ["orders", "order_items"],
+        "max_rows": 1000,
+        "timeout": 10,
+        "schema_notes": "示例配置，使用前请填写实际业务口径：订单粒度、关联键与基数、退款和取消状态、金额单位及时区。未定义的指标应澄清。"
+      }
+    }
+  ]
+}

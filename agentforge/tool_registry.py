@@ -5,6 +5,7 @@ import re
 from dataclasses import dataclass
 
 from .contracts import ExecutionError, OPERATIONS, error_response
+from .csv_contract import MAX_RESULTS, SORT_KEYS, validate_filters
 
 
 ABSTENTION = "资料中没有足够证据回答这个问题。"
@@ -57,20 +58,6 @@ def number(value):
     if not math.isfinite(result):
         raise ExecutionError("NON_NUMERIC_COLUMN", "所选列包含非有限数值。")
     return result
-
-
-def validate_filters(filters, columns):
-    if not isinstance(filters, list) or len(filters) > 20:
-        raise ExecutionError("INVALID_INPUT", "筛选条件必须是列表，最多 20 项。")
-    for item in filters:
-        if not isinstance(item, dict) or set(item) != {"column", "operator", "value"}:
-            raise ExecutionError("INVALID_INPUT", "筛选条件需要 column、operator 和 value。")
-        if not isinstance(item["column"], str) or not isinstance(item["operator"], str):
-            raise ExecutionError("INVALID_INPUT", "筛选列和运算符必须是文本。")
-        if item["column"] not in columns:
-            raise ExecutionError("UNKNOWN_COLUMN", "筛选列不存在。")
-        if item["operator"] not in ("eq", "ne", "gt", "gte", "lt", "lte", "contains"):
-            raise ExecutionError("INVALID_INPUT", "筛选运算符不受支持。")
 
 
 def matches_filter(row, item):
@@ -158,7 +145,7 @@ def execute_tool(tool_id, params, context, resources):
         for row in previous["rows"]:
             key = row[group_by] if group_by else None
             groups.setdefault(key, []).append(row)
-        if len(groups) > 1000:
+        if len(groups) > MAX_RESULTS:
             raise ExecutionError("RESULT_LIMIT", "分组数量超过 1000。")
         results = []
         for group, rows in groups.items():
@@ -177,7 +164,7 @@ def execute_tool(tool_id, params, context, resources):
                 "group_by": group_by, "results": sorted(results, key=lambda row: str(row["group"]))}
     if tool_id == "csv.sort":
         by, descending = params.get("sort_by", "group"), params.get("descending", False)
-        if by not in ("group", "value", "count") or type(descending) is not bool:
+        if by not in SORT_KEYS or type(descending) is not bool:
             raise ExecutionError("INVALID_INPUT", "排序字段或方向无效。")
         def key(row):
             value = row[by]
@@ -187,7 +174,7 @@ def execute_tool(tool_id, params, context, resources):
         limit = params.get("limit")
         if limit is None:
             return previous
-        if type(limit) is not int or not 1 <= limit <= 1000:
+        if type(limit) is not int or not 1 <= limit <= MAX_RESULTS:
             raise ExecutionError("INVALID_INPUT", "结果数量应在 1 至 1000 之间。")
         return {**previous, "results": previous["results"][:limit]}
     if tool_id == "csv.format":
