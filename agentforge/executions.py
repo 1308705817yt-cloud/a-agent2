@@ -44,6 +44,8 @@ def locked(path):
 
 def create_execution(factory, run_id, inputs, max_seconds=None, bindings=None):
     state = factory.load(run_id)
+    if state.get("schema_version") == 5 and (state["delivery"]["kind"] != "program" or state["status"] != "completed"):
+        raise ValueError("一次性回答和未完成程序不能重复运行；请创建新任务。")
     if not state["version"]:
         raise ValueError("尚未生成 Agent。")
     if max_seconds is not None and (type(max_seconds) not in (int, float) or not 0 <= max_seconds <= 86400):

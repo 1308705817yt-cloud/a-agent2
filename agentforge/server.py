@@ -102,7 +102,7 @@ def serve(root, host="127.0.0.1", port=8787, model=None, timeout=180):
                     if set(query) - {"limit", "cursor"} or any(len(v) != 1 for v in query.values()):
                         raise ValueError("任务分页参数无效。")
                     page = factory.store.page(int(query.get("limit", ["50"])[0]), query.get("cursor", [None])[0])
-                    jobs = [{k: s.get(k) for k in ("run_id", "request", "status", "phase", "version", "repairs", "created_at", "updated_at", "requirements", "report", "acceptance_report")}
+                    jobs = [{k: s.get(k) for k in ("run_id", "request", "status", "phase", "version", "repairs", "created_at", "updated_at", "requirements", "report", "acceptance_report", "delivery")}
                             for s in page["jobs"]]
                     for job in jobs:
                         for key in ("report", "acceptance_report"):
@@ -125,6 +125,9 @@ def serve(root, host="127.0.0.1", port=8787, model=None, timeout=180):
                         if state["status"] != "completed":
                             raise ValueError("此任务没有通过验收的导出产物。")
                         archive = factory.root / "dist" / (run_id + ".zip")
+                        if state["schema_version"] == 5:
+                            from .delivery_artifacts import verify_bundle
+                            verify_bundle(factory.root / "dist" / run_id, state["artifact_hash"])
                         self.send(200, archive.read_bytes(), "application/zip", run_id + ".zip")
                     elif len(parts) == 4:
                         self.send(200, {**factory.detail(run_id), "resources": catalog(factory.resources(state))})
@@ -152,7 +155,10 @@ def serve(root, host="127.0.0.1", port=8787, model=None, timeout=180):
                 if parts == ["api", "jobs"]:
                     state = factory.create(data.get("request"), uploads=data.get("files"), review=data.get("review", False), max_repairs=data.get("max_repairs", 3),
                                            max_seconds=data.get("max_seconds", 3600), run_max_seconds=data.get("run_max_seconds", 900),
-                                           adaptive_steps=data.get("adaptive_steps", True), data_contract=data.get("data_contract"))
+                                           adaptive_steps=data.get("adaptive_steps", True), data_contract=data.get("data_contract"),
+                                           delivery_mode=data.get("mode", "auto"), reusable=data.get("reusable", False),
+                                           dynamic=data.get("dynamic", False), recipe=data.get("recipe"),
+                                           acceptance_cases=data.get("acceptance_cases"))
                     pending.put(state["run_id"])
                     self.send(202, {"run_id": state["run_id"]})
                 elif len(parts) == 6 and parts[:2] == ["api", "jobs"] and parts[3] == "executions" and parts[5] == "continue":
@@ -180,10 +186,11 @@ def serve(root, host="127.0.0.1", port=8787, model=None, timeout=180):
                         pending.put(run_id)
                         self.send(202, {"run_id": run_id, "status": state["status"]})
                     elif action == "run":
-                        if factory.load(run_id)["schema_version"] == 4:
+                        if factory.load(run_id)["schema_version"] in (4, 5):
                             if runtime_pending.full():
                                 raise ValueError("子 Agent 执行队列已满，请稍后运行。")
-                            record = create_execution(factory, run_id, data.get("input", {}), data.get("max_seconds"))
+                            record = create_execution(factory, run_id, data.get("input", {}), data.get("max_seconds"),
+                                                      bindings=data.get("bindings"))
                             try:
                                 runtime_pending.put_nowait((run_id, record["execution_id"]))
                             except queue.Full:

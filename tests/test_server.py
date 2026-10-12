@@ -98,6 +98,37 @@ class DashboardTests(unittest.TestCase):
             status, _, _ = self.request("POST", "/api/jobs", {"request": "blocked"}, headers)
             self.assertEqual(status, 400)
 
+    def test_program_creation_run_and_download(self):
+        payload = {"request": "sum units", "reusable": True,
+                   "files": [{"name": "data.csv", "content": "region,quantity\nEast,2\nEast,3\n"}],
+                   "recipe": {"format": "agentforge-program-v1", "operation": "csv.query",
+                              "arguments": {"operation": "sum", "column": "quantity", "group_by": None},
+                              "parameters": {}, "defaults": {}}}
+        status, _, content = self.request("POST", "/api/jobs", payload)
+        self.assertEqual(status, 202, content)
+        rid = json.loads(content)["run_id"]
+        for _ in range(100):
+            _, _, content = self.request("GET", "/api/jobs/" + rid)
+            detail = json.loads(content)
+            if detail["status"] not in ("queued", "running"):
+                break
+            time.sleep(0.05)
+        self.assertEqual(detail["status"], "completed", detail)
+        self.assertEqual(detail["delivery"]["kind"], "program")
+        self.assertEqual(detail["delivery_validation"]["scope"], "not_evaluated")
+        status, _, content = self.request("POST", "/api/jobs/" + rid + "/run", {"input": {}})
+        self.assertEqual(status, 202, content)
+        eid = json.loads(content)["execution_id"]
+        for _ in range(100):
+            _, _, content = self.request("GET", "/api/jobs/" + rid + "/executions/" + eid)
+            record = json.loads(content)
+            if record["status"] not in ("queued", "running"):
+                break
+            time.sleep(0.05)
+        self.assertEqual(record["status"], "completed", record)
+        self.assertEqual(record["result"]["data"]["results"][0]["value"], 5)
+        self.assertEqual(self.request("GET", "/api/jobs/" + rid + "/download")[0], 200)
+
     def test_invalid_resources_and_paths(self):
         status, _, _ = self.request("POST", "/api/jobs", {"request": "create", "files": []})
         self.assertEqual(status, 400)

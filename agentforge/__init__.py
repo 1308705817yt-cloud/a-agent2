@@ -1,3 +1,3 @@
-"""AgentForge：由 Codex 驱动的 agent 工厂。"""
+"""AgentForge：交付答案、可复用程序和按需构建的 Agent。"""
 
-__version__ = "0.12.0"
+__version__ = "0.13.0"

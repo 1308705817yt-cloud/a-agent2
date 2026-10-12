@@ -32,6 +32,10 @@ class FactoryAgent:
         import hashlib
         self.runtime_manifest = {name: hashlib.sha256(data).hexdigest() for name, data in self.runtime_files.items()}
         self.runtime_hash = fingerprint(self.runtime_manifest)
+        from .delivery_artifacts import RUNTIME_FILES
+        self.delivery_runtime_files = {name: (origin / name).read_bytes() for name in RUNTIME_FILES}
+        self.delivery_runtime_hash = fingerprint({name: hashlib.sha256(data).hexdigest()
+                                                  for name, data in self.delivery_runtime_files.items()})
 
     def run_dir(self, run_id):
         return self.root / "runs" / valid_id(run_id)
@@ -41,7 +45,14 @@ class FactoryAgent:
         write_json(self.run_dir(state["run_id"]) / "state.json", state)
 
     def create(self, request, documents=None, datasets=None, uploads=None, review=False, max_repairs=3,
-               max_seconds=3600, run_max_seconds=900, adaptive_steps=True, data_contract=None):
+               max_seconds=3600, run_max_seconds=900, adaptive_steps=True, data_contract=None,
+               delivery_mode="agent", reusable=False, dynamic=False, recipe=None, acceptance_cases=None):
+        from .delivery_policy import select_delivery
+        from .program_delivery import validate_cases, validate_recipe
+        decision = select_delivery(delivery_mode, reusable, dynamic, recipe)
+        cases = validate_cases([] if acceptance_cases is None else acceptance_cases)
+        if cases and (decision["kind"] == "agent" or decision["kind"] == "direct" and recipe is None):
+            raise ValueError("此验收格式仅用于固定程序配方；不能静默忽略验收用例。")
         if not isinstance(request, str) or not request.strip() or len(request) > 6000:
             raise ValueError("需求必须是 1 至 6000 个字符。")
         if type(max_repairs) is not int or not 0 <= max_repairs <= 20:
@@ -52,6 +63,8 @@ class FactoryAgent:
         if type(adaptive_steps) is not bool:
             raise ValueError("adaptive_steps 必须是布尔值。")
         resources = prepare_resources(documents, datasets, uploads, data_contract=data_contract)
+        if recipe is not None:
+            recipe = validate_recipe(recipe, resources)
         client = self.planner.client
         state = {"run_id": uuid.uuid4().hex[:12], "schema_version": 4 if getattr(self.planner, "adaptive", False) else 3, "status": "queued",
                  "created_at": time.time(), "phase": "requirements", "request": request,
@@ -65,6 +78,12 @@ class FactoryAgent:
                                  "adaptive_steps": adaptive_steps, "elapsed_ms": 0},
                  "design_repairs": 0, "active_design": None, "pending_design": None,
                  "frozen_hashes": {"resources": fingerprint(resources)}}
+        state["delivery"] = decision
+        if decision["kind"] != "agent":
+            state.update(schema_version=5, phase="deliver_plan")
+            delivery_request = {"request": request, "decision": decision, "recipe": recipe, "acceptance_cases": cases}
+            write_json(self.run_dir(state["run_id"]) / "delivery_request.json", delivery_request)
+            state["frozen_hashes"]["delivery_request"] = fingerprint(delivery_request)
         write_json(self.run_dir(state["run_id"]) / "resources.json", resources)
         if state["schema_version"] == 4:
             from .trusted_tools import load_definitions
@@ -76,7 +95,7 @@ class FactoryAgent:
 
     def load(self, run_id):
         state = self.store.load(run_id)
-        if state.get("schema_version") not in (3, 4):
+        if state.get("schema_version") not in (3, 4, 5):
             raise ValueError("任务版本不支持。")
         self.verify(state)
         return state
@@ -86,6 +105,14 @@ class FactoryAgent:
         for key, expected in state["frozen_hashes"].items():
             if fingerprint(read_json(base / (key + ".json"))) != expected:
                 raise ValueError("冻结的 " + key + " 已被修改，拒绝继续。")
+        if state["schema_version"] == 5:
+            original = read_json(base / "delivery_request.json")
+            if original["request"] != state["request"] or original["decision"] != state["delivery"]:
+                raise ValueError("交付决策与冻结需求不一致。")
+            if state["version"]:
+                from .delivery_artifacts import verify_bundle
+                verify_bundle(base / "delivery", state["artifact_hash"])
+            return state
         if state["requirements"] is not None and fingerprint(state["requirements"]) != state["frozen_hashes"]["requirements"]:
             raise ValueError("存档需求与冻结契约不一致。")
         if state["version"]:
@@ -130,6 +157,9 @@ class FactoryAgent:
         return state
 
     def source(self, state):
+        if state["schema_version"] == 5:
+            source = self.run_dir(state["run_id"]) / "delivery" / "run_program.py"
+            return source.read_text(encoding="utf-8") if source.is_file() else ""
         return (self.run_dir(state["run_id"]) / "versions" / ("v" + str(state["version"])) / "logic.py").read_text(encoding="utf-8")
 
     @staticmethod
@@ -174,7 +204,7 @@ class FactoryAgent:
     def call_metrics(self, run_id):
         records = [read_json(p) for p in (self.run_dir(run_id) / "calls").glob("*.json")]
         state = self.store.load(run_id)
-        available = state.get("runtime_hash") in (None, self.runtime_hash)
+        available = state.get("schema_version") == 5 or state.get("runtime_hash") in (None, self.runtime_hash)
         return {"available": available, "model_calls": len(records), "completed_calls": sum(r["status"] == "completed" for r in records),
                 "failed_calls": sum(r["status"] == "failed" for r in records),
                 "inflight_calls": sum(r["status"] == "inflight" for r in records),
@@ -380,6 +410,12 @@ class FactoryAgent:
             self.store.release(run_id, owner)
 
     def step(self, state):
+        if state["schema_version"] == 5:
+            from .delivery import step_delivery
+            if state.get("delivery_runtime_hash", self.delivery_runtime_hash) != self.delivery_runtime_hash:
+                raise ValueError("程序运行时已更新；请创建新任务重新执行与验收。")
+            state["delivery_runtime_hash"] = self.delivery_runtime_hash
+            return step_delivery(self, state)
         phase = state["phase"]
         resources = self.resources(state)
         req = Requirements(**state["requirements"]) if state["requirements"] else None
@@ -614,6 +650,8 @@ class FactoryAgent:
         self.store.acquire(run_id, owner)
         try:
             state = self.load(run_id)
+            if state["schema_version"] == 5:
+                raise ValueError("程序交付的计算规则与运行时一起冻结；更新请创建新任务并重新验收。")
             if not state["version"] or state["status"] == "completed":
                 raise ValueError("仅升级已生成代码且未完成验收的任务；完成的版本使用其冻结运行时。")
             if state.get("runtime_hash") == self.runtime_hash:
@@ -628,6 +666,11 @@ class FactoryAgent:
         return self.drive(state)
 
     def execution_agent(self, state):
+        if state["schema_version"] == 5:
+            if state["delivery"]["kind"] != "program" or state["status"] != "completed":
+                raise ValueError("一次性回答或未完成的程序不能作为可复用产物运行。")
+            from .delivery_artifacts import frozen_program
+            return frozen_program(self, state)
         if state.get("runtime_hash") and state["runtime_hash"] != self.runtime_hash:
             from .frozen_runtime import frozen_agent
             return frozen_agent(self, state)
@@ -644,6 +687,10 @@ class FactoryAgent:
             if not getattr(agent, "supports_data_binding", False):
                 raise ValueError("历史冻结运行时不支持数据重新绑定。")
             agent = agent.with_data_binding(data_binding)
+        if state["schema_version"] == 5:
+            if checkpoint is not None or reply is not None:
+                raise ValueError("确定性程序不支持模型决策接续。")
+            return agent.run(inputs, max_seconds=max_seconds)
         if getattr(agent, "supports_resume", False):
             options = {"max_seconds": max_seconds} if max_seconds is not None and getattr(agent, "supports_time_limit", False) else {}
             if max_seconds is not None and not options:
@@ -664,6 +711,10 @@ class FactoryAgent:
         state = {**state, "source": self.source(state) if state["version"] else "",
                  "active": self.store.active(run_id)}
         state["changes"] = [read_json(self.run_dir(run_id) / "versions" / ("v" + str(v["version"])) / "change.json") for v in state["versions"]]
+        if state["schema_version"] == 5:
+            for name in ("recipe", "result", "validation"):
+                path = self.run_dir(run_id) / ("delivery_" + name + ".json")
+                state["delivery_" + name] = read_json(path) if path.is_file() else None
         if "test_suite" in state["frozen_hashes"]:
             state["test_suite"] = self.suite(state)
         records = [read_json(p) for p in (self.run_dir(run_id) / "executions").glob("*.json")]

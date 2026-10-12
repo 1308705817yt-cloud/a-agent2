@@ -1,0 +1,52 @@
+[
+  {
+    "id": "east-units",
+    "input": {},
+    "checks": [
+      {
+        "path": [
+          "data",
+          "results",
+          0,
+          "value"
+        ],
+        "equals": 6
+      },
+      {
+        "path": [
+          "data",
+          "results",
+          0,
+          "count"
+        ],
+        "equals": 3
+      }
+    ]
+  },
+  {
+    "id": "west-units",
+    "input": {
+      "region": "West"
+    },
+    "checks": [
+      {
+        "path": [
+          "data",
+          "results",
+          0,
+          "value"
+        ],
+        "equals": 3
+      },
+      {
+        "path": [
+          "data",
+          "results",
+          0,
+          "count"
+        ],
+        "equals": 2
+      }
+    ]
+  }
+]

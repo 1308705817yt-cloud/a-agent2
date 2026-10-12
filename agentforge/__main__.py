@@ -17,6 +17,8 @@ def print_json(value):
 
 def summary(state):
     print("任务：" + state["run_id"] + " · " + state["status"] + " · v" + str(state["version"]))
+    if state.get("delivery"):
+        print("交付：" + state["delivery"]["kind"] + " · " + state["delivery"]["reason"])
     for key in ("report", "acceptance_report"):
         report = state[key]
         if report:
@@ -41,11 +43,16 @@ def main(argv=None):
     for stream in (sys.stdout, sys.stderr):
         if hasattr(stream, "reconfigure"):
             stream.reconfigure(encoding="utf-8")
-    parser = argparse.ArgumentParser(description="AgentForge — Codex 驱动的 Agent 构建、测试与代码修复")
+    parser = argparse.ArgumentParser(description="AgentForge — 按任务交付答案、确定性程序或 Agent")
     parser.add_argument("--workspace", type=Path, default=Path.cwd(), help="任务及产物工作区，默认当前目录")
     sub = parser.add_subparsers(dest="command", required=True)
-    create = sub.add_parser("create", help="从需求和用户资源构建 Agent")
+    create = sub.add_parser("create", aliases=["solve"], help="solve 默认自动选择交付；create 保留显式 Agent 构建")
     create.add_argument("--request", required=True)
+    create.add_argument("--mode", choices=("auto", "direct", "program", "agent"), help="solve 默认 auto；create 默认 agent")
+    create.add_argument("--reusable", action="store_true", help="需要长期复用；auto 优先交付确定性程序")
+    create.add_argument("--dynamic", action="store_true", help="重复使用时仍需理解新意图并动态选择工具")
+    create.add_argument("--recipe", type=Path, help="确定性程序配方 JSON；提供后不调用模型规划")
+    create.add_argument("--acceptance-cases", type=Path, help="独立的程序业务断言 JSON；不发送给模型，失败阻止导出")
     create.add_argument("--documents", action="append", default=[], help="TXT/MD/文档 JSON，可重复指定")
     create.add_argument("--csv", action="append", default=[], help="CSV 数据文件，可重复指定")
     create.add_argument("--data-contract", type=Path, help="字段类型、业务指标及兼容数据绑定契约 JSON")
@@ -86,7 +93,7 @@ def main(argv=None):
     diff = sub.add_parser("diff", help="查看源码与工作流版本差异")
     diff.add_argument("run_id")
     diff.add_argument("--version", type=int)
-    run = sub.add_parser("run", help="运行已生成的 Agent")
+    run = sub.add_parser("run", help="运行已交付的程序或 Agent")
     run.add_argument("run_id")
     run.add_argument("question", nargs="?")
     run.add_argument("--input-json", help="CSV 参数或文档输入 JSON")
@@ -124,13 +131,20 @@ def main(argv=None):
             model = model or saved["engine"]["model"]
             timeout = timeout or saved["engine"]["timeout"]
         factory = FactoryAgent(args.workspace, model=model, timeout=timeout or 180)
-        if args.command == "create":
+        if args.command in ("create", "solve"):
             from .resources import read_json
             state = factory.drive(factory.create(args.request, documents=args.documents, datasets=args.csv,
                                                   review=args.review, max_repairs=args.max_repairs, max_seconds=args.max_seconds,
                                                   run_max_seconds=args.run_max_seconds, adaptive_steps=not args.fixed_steps,
-                                                  data_contract=read_json(args.data_contract) if args.data_contract else None))
+                                                  data_contract=read_json(args.data_contract) if args.data_contract else None,
+                                                  delivery_mode=args.mode or ("auto" if args.command == "solve" else "agent"),
+                                                  reusable=args.reusable, dynamic=args.dynamic,
+                                                  recipe=read_json(args.recipe) if args.recipe else None,
+                                                  acceptance_cases=read_json(args.acceptance_cases) if args.acceptance_cases else None))
             summary(state)
+            if state["schema_version"] == 5 and "delivery_result" in state["frozen_hashes"]:
+                print_json({"result": read_json(factory.run_dir(state["run_id"]) / "delivery_result.json"),
+                            "validation": read_json(factory.run_dir(state["run_id"]) / "delivery_validation.json")})
             if state["status"] not in ("completed", "waiting_for_guidance"):
                 parser.exit(1)
         elif args.command in ("resume", "retry", "recover", "upgrade-runtime"):
@@ -163,6 +177,12 @@ def main(argv=None):
             print_json({"tool": args.tool_id, "result": result, "audit": registry.last_audit})
         elif args.command == "diff":
             state = factory.load(args.run_id)
+            if state["schema_version"] == 5:
+                if args.version not in (None, 1) or not state["version"]:
+                    raise ValueError("交付版本不存在。")
+                print_json({"delivery": state["delivery"], "artifact_hash": state["artifact_hash"],
+                            "recipe": factory.detail(args.run_id).get("delivery_recipe")})
+                return
             version = args.version or state["version"]
             if version not in {v["version"] for v in state["versions"]}:
                 raise ValueError("版本不存在。")

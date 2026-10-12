@@ -1,15 +1,15 @@
 # 架构与执行边界
 
-当前源码增加了共享 CSV 契约、零自定义工具生成、常规查询分流和资源质量档案缓存。详见 [结构调整说明](structural-query-routing.md)。这轮尚未运行测试或真实评测；下文保留各历史版本的设计说明。
+当前源码包含共享 CSV 契约、零自定义工具生成、查询分流、资源档案缓存，以及规范化、指标、SQL 和数据绑定模块。详见 [业务契约说明](agent-quality-contracts.md) 与 [路由说明](structural-query-routing.md)。已完成 [第 1 阶段架构验证](phase1-architecture-validation.md)；真实模型的新架构评测仍待开展。
 
-v0.6 的工厂遵守固定的构建验收顺序；生成的子 Agent 在运行时逐步调用 Codex 做决策。
+工厂遵守固定的构建验收顺序；子 Agent 根据输入和所需能力选择直接计算、单次查询规划或决策循环。
 
 ```mermaid
 flowchart TD
     R[需求与资源快照] --> U[Codex 提取需求契约]
-    U --> W[Agent 指令与自定义工具契约]
+    U --> W[Agent 指令与所需工具契约]
     W --> T[独立生成并冻结测试]
-    T --> C[生成自定义工具源码和输出代码]
+    T --> C[按需生成源码或复用宿主模板]
     C --> B[工具单测及真实 Codex 行为测试]
     B -->|失败| D[基于执行证据诊断]
     D --> H{人工方向可选}
@@ -28,18 +28,18 @@ flowchart TD
 ## 三个执行层
 
 1. **Codex 层**：构建时设计需求、指令、工具、场景、源码和修复；运行时根据已有观察生成计划、选择工具、调整参数并决定完成或请求输入。使用严格 JSON Schema，无离线回退。CLI 返回结构化内容，主机负责执行工具。
-2. **受信工具层**：resources.list、documents.read、documents.search、csv.preview、csv.query 操作授权快照。文档分页读取每次最多 10000 字符，语义理解由运行时 Codex 完成。CSV 基础查询有独立数值 oracle。
-3. **生成代码层**：custom_tools/*.py 实现业务计算，logic.py 整理最终答案；源码通过 AST 解释器运行，不对不可信源码调用 exec/eval。
+2. **受信工具层**：resources.list、documents.read、documents.search、csv.preview、csv.query、csv.profile、csv.metrics、csv.sql 操作授权快照。文档分页读取每次最多 10000 字符，语义理解由运行时 Codex 完成。CSV 基础查询有独立数值 oracle；指标使用冻结业务口径和 Decimal。
+3. **生成代码层**：按需生成的 custom_tools/*.py 实现业务计算，logic.py 整理最终答案；源码通过 AST 解释器运行，不对不可信源码调用 exec/eval。符合条件的零扩展 CSV 产物使用 observed-v1 宿主输出模板。
 
 Python 子集支持变量、列表/字典、下标、条件、有限集合循环、返回、基本算术与比较。辅助函数在 program.py 的 HELPERS 中声明。禁止 import、属性、方法、反射、推导式、while、文件、网络和进程。限制源码长度、AST 数量、解释步数与中间数据大小；资源工具另有文件、行、列及分组数量预算。
 
-自定义工具最多 1–3 个，正常回答要求必需工具成功执行。核对 resources.list 后明确拒答域外文档问题、且不引用来源或数据的路径可免执行业务工具。每个工具有描述、命名参数、输出 Schema 和真实 def run(context) 源码。工具可使用 dataset(id)、document(id)、observation(id) 获取授权资源或先前观察的副本，实现数据质量、占比、对比等纯数据计算。参数和输出定义在源码生成前冻结；代码修复不能改写接口，设计修复可在新版本中重设接口，但不能更改原业务场景。
+自定义工具允许 0–3 个，正常回答要求已声明的必需工具成功执行。核对 resources.list 后明确拒答域外文档问题、且不引用来源或数据的路径可免执行业务工具。每个工具有描述、命名参数、输出 Schema 和真实 def run(context) 源码。工具可使用 dataset(id)、document(id)、observation(id) 获取授权资源或先前观察的副本，实现数据质量、占比、对比等纯数据计算。参数和输出定义在源码生成前冻结；代码修复不能改写接口，设计修复可在新版本中重设接口，但不能更改原业务场景。
 
 自定义工具限制为 200000 解释步、600000 字符数据和 20000 项集合；源码最多 16000 字符、AST 最多 2500 节点。导入成功的大文件仍可能触发计算预算，需要拆分任务或扩展受信能力。输出代码只能修改 answer，不能篡改 data、sources、abstained 和 error。来源和数值校验不能证明所有解释都正确。
 
 ## 运行时决策
 
-子 Agent 循环：
+复杂任务使用以下决策循环；常规 CSV 查询的直接执行和单次规划见 [三种执行路径](../README.md#三种执行路径)。
 
 ```mermaid
 flowchart LR
@@ -55,7 +55,7 @@ flowchart LR
 
 每段决策目标为 3–16 次，通常设计为 6–8 次；启用自适应模式时，有新成功结果可最多延长两次，累计决策上限仍为 max_steps × 3。完成条件明确包含缺失必需工具、合规结果引用和最近校验错误。内置快照工具重复请求复用成功观察；自定义和实时可信工具不缓存。相同工具与参数重复超过两次会收到 TOOL_REPEAT；预算耗尽返回 AGENT_BUDGET，缺少输入返回 NEEDS_INPUT。认证、网络或额度错误返回 MODEL_ERROR，无替代结果。计划与简短理由进入记录，不要求内部思维过程。
 
-响应包含 answer/data/sources/abstained/error、trace、observations、model_calls、elapsed_ms。结构化 CSV 的 data 必须引用按相同输入参数执行的 csv.query 观察；自然语言目标可以做多个查询或自定义计算。文档引用必须在实际读取的片段中出现且能回查原文。主机保留完整工具结果，过大的模型可见观察会截断并标记。
+响应包含 answer/data/sources/abstained/error、trace、observations、model_calls、elapsed_ms。结构化 CSV 基础输入的 data 必须引用按相同参数执行的 csv.query 观察；metric_query 输入则核对对应的 csv.metrics 观察。自然语言目标可使用查询、SQL、已授权可信工具或自定义计算，预览、质量档案和数据库结构不能代替最终计算结果。文档引用必须在实际读取的片段中出现且能回查原文。主机保留完整工具结果，过大的模型可见观察会截断并标记。
 
 ## 验收隔离
 

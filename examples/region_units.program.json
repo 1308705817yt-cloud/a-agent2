@@ -1,0 +1,27 @@
+{
+  "format": "agentforge-program-v1",
+  "operation": "csv.query",
+  "arguments": {
+    "dataset_id": "sales.csv",
+    "operation": "sum",
+    "column": "quantity",
+    "group_by": null,
+    "filters": [
+      {
+        "column": "region",
+        "operator": "eq",
+        "value": {
+          "$param": "region"
+        }
+      }
+    ]
+  },
+  "parameters": {
+    "region": {
+      "type": "string"
+    }
+  },
+  "defaults": {
+    "region": "East"
+  }
+}

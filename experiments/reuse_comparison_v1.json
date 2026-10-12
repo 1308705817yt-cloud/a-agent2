@@ -1,0 +1,147 @@
+{
+  "format": "agentforge-reuse-comparison-v1",
+  "description": "Two independently frozen epochs: compatible new snapshots, then an explicit business-schema migration requiring maintenance. Gold is hand calculated and Decimal-checked before model calls.",
+  "epochs": [
+    {
+      "id": "initial",
+      "column": "quantity",
+      "request": "Reusable fixed computation: sum quantity for rows whose region equals the scalar input parameter named region (default East). quantity is already a row total; include negative adjustments, skip blank numbers, and count all matching rows including blanks. Do not group the output. Use csv.query semantics with sum, column=quantity, group_by=null, no row limit. Preserve this parameter interface for new data. Runtime needs no semantic decisions.",
+      "data_contract": {
+        "format": "agentforge-data-contract-v1",
+        "datasets": {
+          "data.csv": {
+            "description": "quantity is the row total; keep negative adjustments, skip missing quantities.",
+            "columns": [
+              {
+                "name": "region",
+                "type": "text",
+                "nullable": false,
+                "aliases": [
+                  "地区"
+                ]
+              },
+              {
+                "name": "quantity",
+                "type": "integer",
+                "nullable": true,
+                "aliases": [
+                  "数量"
+                ]
+              }
+            ],
+            "primary_key": [],
+            "dimensions": [
+              "region"
+            ],
+            "metrics": []
+          }
+        }
+      },
+      "training_csv": "region,quantity\nEast,2\nWest,3\nEast,-1\nEast,\n",
+      "cases": [
+        {
+          "id": "original-east",
+          "csv": "region,quantity\nEast,2\nWest,3\nEast,-1\nEast,\n",
+          "region": "East",
+          "gold": {
+            "value": 1,
+            "row_count": 3
+          }
+        },
+        {
+          "id": "new-west",
+          "csv": "region,quantity\nEast,10\nWest,12\nWest,-2\n",
+          "region": "West",
+          "gold": {
+            "value": 10,
+            "row_count": 2
+          }
+        },
+        {
+          "id": "reordered-columns",
+          "csv": "quantity,region\n4,East\n6,West\n",
+          "region": "East",
+          "gold": {
+            "value": 4,
+            "row_count": 1
+          }
+        },
+        {
+          "id": "declared-aliases",
+          "csv": "地区,数量\nEast,7\nWest,9\n",
+          "region": "East",
+          "gold": {
+            "value": 7,
+            "row_count": 1
+          }
+        },
+        {
+          "id": "empty-selection",
+          "csv": "region,quantity\nWest,8\n",
+          "region": "East",
+          "gold": {
+            "value": 0,
+            "row_count": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "maintenance",
+      "column": "units",
+      "request": "Reusable fixed computation: sum units for rows whose region equals the scalar input parameter named region (default East). units is already a row total; include negative adjustments, skip blank numbers, and count all matching rows including blanks. Do not group the output. Use csv.query semantics with sum, column=units, group_by=null, no row limit. Preserve this parameter interface for new data. Runtime needs no semantic decisions.",
+      "data_contract": {
+        "format": "agentforge-data-contract-v1",
+        "datasets": {
+          "data.csv": {
+            "description": "quantity is the row total; keep negative adjustments, skip missing quantities.",
+            "columns": [
+              {
+                "name": "region",
+                "type": "text",
+                "nullable": false,
+                "aliases": [
+                  "地区"
+                ]
+              },
+              {
+                "name": "units",
+                "type": "integer",
+                "nullable": true,
+                "aliases": [
+                  "件数"
+                ]
+              }
+            ],
+            "primary_key": [],
+            "dimensions": [
+              "region"
+            ],
+            "metrics": []
+          }
+        }
+      },
+      "training_csv": "region,units\nEast,8\nWest,2\n",
+      "cases": [
+        {
+          "id": "migrated-schema",
+          "csv": "region,units\nEast,9\nEast,-3\nWest,5\n",
+          "region": "East",
+          "gold": {
+            "value": 6,
+            "row_count": 2
+          }
+        },
+        {
+          "id": "migrated-aliases",
+          "csv": "地区,件数\nEast,4\nWest,11\nWest,\n",
+          "region": "West",
+          "gold": {
+            "value": 11,
+            "row_count": 2
+          }
+        }
+      ]
+    }
+  ]
+}

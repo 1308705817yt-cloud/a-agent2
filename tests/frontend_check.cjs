@@ -84,6 +84,20 @@ assert.ok(get('#detail-content').innerHTML.includes('id="repair-limit"'));
 assert.ok(get('#detail-content').innerHTML.includes('id="repair-scope"'));
 assert.ok(get('#detail-content').innerHTML.includes('id="retry"'));
 assert.ok(get('#detail-head').innerHTML.includes('累计耗时 62 秒'));
+for (const kind of ['direct','program']) {
+  context.deliveryFixture={...fixture,schema_version:5,spec:null,requirements:null,delivery:{kind,reason:'<route>'},
+    frozen_hashes:{resources:'hash'},delivery_recipe:{parameters:{region:{type:'string'}}},
+    delivery_result:{answer:'<script>unsafe</script>'},delivery_validation:{scope:'not_evaluated',execution_check:'passed'},
+    call_metrics:{model_calls:0},executions:[]};
+  for(const name of ['overview','workflow','code','tests','versions','try']) {
+    vm.runInContext(`detail=deliveryFixture;tab='${name}';renderDetail();`,context);
+    const html=get('#detail-content').innerHTML;
+    assert.ok(html.length>20);
+    assert.ok(!html.includes('<script>unsafe</script>'));
+    if(name==='tests')assert.ok(html.includes('尚无独立业务验收'));
+    if(name==='try')assert.equal(html.includes('id="trial-run"'),kind==='program');
+  }
+}
 (async()=>{
   await new Promise(resolve=>setImmediate(resolve));
   assert.ok(get('#job-page').textContent.includes('451'));
