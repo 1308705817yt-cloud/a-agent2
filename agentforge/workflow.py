@@ -146,7 +146,21 @@ class WorkflowAgent:
             try:
                 effective = validate_parameters(inputs, self.resources, self.requirements.defaults)
             except ExecutionError as exc:
-                return {**error_response(exc.code, str(exc)), "trace": trace}
+                # Early validation must preserve the legacy output-hook boundary:
+                # generated code may format a rejection, but cannot hide it.
+                previous = error_response(exc.code, str(exc))
+                entry = {"tool": "code.transform", "status": "ok", "phase": "input_rejection"}
+                trace.append(entry)
+                try:
+                    output = self.program.run({"input": {**copy.deepcopy(self.requirements.defaults), **copy.deepcopy(inputs)},
+                                               "result": copy.deepcopy(previous)})
+                    validate_response(output, self.resources)
+                    if output["error"] != previous["error"]:
+                        raise ExecutionError("OUTPUT_CONTRACT", "生成代码不能隐藏工具错误。")
+                except ExecutionError as hook_error:
+                    entry.update(status="error", code=hook_error.code, message=str(hook_error), location=hook_error.location)
+                    output = error_response(hook_error.code, str(hook_error))
+                return {**output, "trace": trace, "elapsed_ms": round((time.perf_counter() - started) * 1000, 2)}
         else:
             effective = {**copy.deepcopy(self.requirements.defaults), **copy.deepcopy(inputs)}
         context = {"input": effective, "result": None}

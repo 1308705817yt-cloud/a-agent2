@@ -76,6 +76,13 @@ def parameters(arguments):
 
 def execute_read(connection, arguments, tables, deadline, max_rows=1000):
     sql, values = parameters(arguments)
+    # SQLite's column-free COUNT(*) read can omit the database name. Only
+    # authorize it when no temp/attached table can shadow an allowed main table.
+    ambiguous_tables = set()
+    for _, schema, _ in connection.execute("PRAGMA database_list"):
+        if schema != "main":
+            ambiguous_tables.update(row[0] for row in connection.execute(
+                "SELECT name FROM " + quote_identifier(schema) + ".sqlite_master WHERE type IN ('table','view')"))
     connection.setlimit(sqlite3.SQLITE_LIMIT_LENGTH, 1024 * 1024)
     connection.setlimit(sqlite3.SQLITE_LIMIT_SQL_LENGTH, 12000)
     connection.setlimit(sqlite3.SQLITE_LIMIT_COLUMN, 100)
@@ -86,7 +93,8 @@ def execute_read(connection, arguments, tables, deadline, max_rows=1000):
     allowed_actions = {sqlite3.SQLITE_SELECT, sqlite3.SQLITE_RECURSIVE}
     def authorize(action, first, second, database, trigger):
         if action == sqlite3.SQLITE_READ:
-            return sqlite3.SQLITE_OK if database == "main" and first in tables else sqlite3.SQLITE_DENY
+            main_read = database == "main" or (database is None and second == "" and first not in ambiguous_tables)
+            return sqlite3.SQLITE_OK if main_read and first in tables else sqlite3.SQLITE_DENY
         if action == sqlite3.SQLITE_FUNCTION:
             return sqlite3.SQLITE_OK if (second or "").lower() in FUNCTIONS else sqlite3.SQLITE_DENY
         return sqlite3.SQLITE_OK if action in allowed_actions else sqlite3.SQLITE_DENY
@@ -139,6 +147,8 @@ def execute_csv_sql(arguments, resources, deadline=None):
     connection = sqlite3.connect(":memory:")
     try:
         for table, dataset in zip(tables, resources["datasets"]):
+            if any("\x00" in c for c in dataset["columns"]):
+                raise ExecutionError("INVALID_ARGUMENTS", "SQLite 列名不能包含 NUL 字符；请先规范化列名。")
             if len({c.lower() for c in dataset["columns"]}) != len(dataset["columns"]):
                 raise ExecutionError("INVALID_ARGUMENTS", "SQLite 列名不区分大小写；请先规范化重复列名。")
             columns = ", ".join(quote_identifier(c) + " TEXT" for c in dataset["columns"])
@@ -155,6 +165,8 @@ def execute_csv_sql(arguments, resources, deadline=None):
         result = execute_read(connection, arguments, {t["table"] for t in tables}, end)
         result["resources"] = [{"dataset_id": d["id"], "resource_hash": fingerprint(d)} for d in resources["datasets"]]
         return result
+    except sqlite3.Error as exc:
+        raise ExecutionError("SQL_RESOURCE", "CSV 无法装载为关系表：" + str(exc)[:400], origin="input", retryable=False) from exc
     finally:
         connection.close()
 

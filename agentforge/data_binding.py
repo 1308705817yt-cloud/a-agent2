@@ -50,7 +50,8 @@ def bound_resources(spec, source, original, binding):
     if not eligible(spec, source):
         raise ValueError("产物不允许更换数据绑定。")
     keys = {"format", "base_resources_hash", "resources", "bindings", "behavior_evaluation", "binding_hash"}
-    if not isinstance(binding, dict) or set(binding) != keys or binding["format"] != FORMAT:
+    if (not isinstance(binding, dict) or set(binding) != keys or binding["format"] != FORMAT
+            or binding["behavior_evaluation"] != "not_evaluated_on_new_data"):
         raise ValueError("数据绑定格式无效。")
     if binding["base_resources_hash"] != fingerprint(original) or binding["binding_hash"] != fingerprint({k: v for k, v in binding.items() if k != "binding_hash"}):
         raise ValueError("数据绑定与原始资源或内容指纹不一致。")
@@ -58,10 +59,16 @@ def bound_resources(spec, source, original, binding):
     if not isinstance(result, dict) or set(result) != set(original) or result["documents"] != original["documents"]:
         raise ValueError("数据绑定不能改变文档资源或资源种类。")
     old = {d["id"]: d for d in original["datasets"]}
-    if not isinstance(result["datasets"], list) or [d["id"] for d in result["datasets"]] != list(old):
+    if (not isinstance(result["datasets"], list)
+            or any(not isinstance(d, dict) or not isinstance(d.get("id"), str) for d in result["datasets"])
+            or [d["id"] for d in result["datasets"]] != list(old)):
         raise ValueError("数据绑定不能增加、删除或重排授权数据集。")
     records = binding["bindings"]
-    if not isinstance(records, list) or not records or len({r["dataset_id"] for r in records}) != len(records):
+    record_keys = {"dataset_id", "source_name", "content_id", "previous_hash", "resource_hash", "contract_hash"}
+    if (not isinstance(records, list) or not records
+            or any(not isinstance(r, dict) or set(r) != record_keys
+                   or any(not isinstance(v, str) or not v for v in r.values()) for r in records)
+            or len({r["dataset_id"] for r in records}) != len(records)):
         raise ValueError("数据绑定审计无效或重复。")
     by_id = {r["dataset_id"]: r for r in records}
     if set(by_id) - set(old):
@@ -73,11 +80,19 @@ def bound_resources(spec, source, original, binding):
                 raise ValueError("数据改变却缺少绑定审计。")
             continue
         if (not previous.get("data_contract") or dataset.get("data_contract") != previous["data_contract"]
-                or dataset["columns"] != previous["columns"]
+                or set(dataset) != set(previous) or dataset.get("columns") != previous["columns"]
+                or record["source_name"] != dataset.get("name")
                 or record["resource_hash"] != fingerprint(dataset)
                 or record["previous_hash"] != fingerprint(previous)
                 or record["contract_hash"] != fingerprint(previous["data_contract"])):
             raise ValueError("新数据必须满足冻结的完整字段与业务契约。")
+        raw_columns = dataset["raw_columns"]
+        if (not isinstance(raw_columns, list) or any(not isinstance(c, str) for c in raw_columns)
+                or len(set(raw_columns)) != len(raw_columns) or set(raw_columns) != set(previous["raw_columns"])
+                or not isinstance(dataset["raw_rows"], list)
+                or any(not isinstance(row, dict) or set(row) != set(dataset["raw_columns"])
+                       or any(not isinstance(v, str) for v in row.values()) for row in dataset["raw_rows"])):
+            raise ValueError("绑定快照必须包含符合源列契约的原始 CSV 行。")
         raw = {"id": record["content_id"], "name": dataset["name"],
                "columns": dataset["raw_columns"], "rows": dataset["raw_rows"]}
         normalized = apply_dataset_contract(raw, previous["data_contract"])

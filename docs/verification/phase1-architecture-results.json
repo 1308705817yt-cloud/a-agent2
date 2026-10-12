@@ -1,0 +1,769 @@
+{
+  "phase": "phase_1_architecture_validation",
+  "timestamp": "2026-10-12T08:47:21.522592+00:00",
+  "environment": {
+    "python": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "sqlite": "3.45.1"
+  },
+  "command": "python -X utf8 -B tests/run_phase1_validation.py --report docs/verification/phase1-architecture-results.json",
+  "scope": "Scripted model responses; real host modules, SQLite, local HTTP, frontend, factory and exported subprocesses. No live Codex calls or model quality claims.",
+  "tests": 319,
+  "old_tests": 243,
+  "new_tests": 76,
+  "elapsed_seconds": 61.827,
+  "successful": true,
+  "failures": [],
+  "errors": [],
+  "skipped": [],
+  "modules": {
+    "test_adaptive": 27,
+    "test_audit_pagination": 12,
+    "test_benchmarking": 9,
+    "test_codex_client": 7,
+    "test_codex_factory": 12,
+    "test_comparison": 8,
+    "test_comparison_continuation": 4,
+    "test_contract_recovery": 24,
+    "test_data_binding": 7,
+    "test_data_contract": 9,
+    "test_delivery_boundaries": 21,
+    "test_error_boundaries": 14,
+    "test_evaluation_conditions": 9,
+    "test_frontend": 1,
+    "test_metric_query": 10,
+    "test_performance": 29,
+    "test_query_routing": 18,
+    "test_resource_profiles": 8,
+    "test_resumption": 11,
+    "test_runtime": 17,
+    "test_server": 13,
+    "test_source_contracts": 18,
+    "test_sql_query": 13,
+    "test_trusted_tools": 7,
+    "test_zero_custom_lifecycle": 11
+  },
+  "routes": [
+    {
+      "case": "test_query_routing.QueryRoutingTests.test_r01_structured_default_aggregation",
+      "input": {},
+      "expected_route": "direct_query",
+      "actual_routes": [
+        "direct_query"
+      ],
+      "model_calls": 0,
+      "successful_tools": [
+        "csv.profile",
+        "csv.query"
+      ],
+      "data": {
+        "dataset_id": "sales-d4dc75e5",
+        "operation": "sum",
+        "column": "amount",
+        "group_by": "region",
+        "results": [
+          {
+            "group": "West",
+            "value": 10.0,
+            "count": 2
+          },
+          {
+            "group": "East",
+            "value": 0.2,
+            "count": 3
+          }
+        ]
+      }
+    },
+    {
+      "case": "test_query_routing.QueryRoutingTests.test_r02_structured_count_includes_blank_amount",
+      "input": {
+        "operation": "count",
+        "group_by": null
+      },
+      "expected_route": "direct_query",
+      "actual_routes": [
+        "direct_query"
+      ],
+      "model_calls": 0,
+      "successful_tools": [
+        "csv.profile",
+        "csv.query"
+      ],
+      "data": {
+        "dataset_id": "sales-d4dc75e5",
+        "operation": "count",
+        "column": null,
+        "group_by": null,
+        "results": [
+          {
+            "group": null,
+            "value": 5,
+            "count": 5
+          }
+        ]
+      }
+    },
+    {
+      "case": "test_query_routing.QueryRoutingTests.test_r03_structured_explicit_negative_filter",
+      "input": {
+        "group_by": null,
+        "filters": [
+          {
+            "column": "amount",
+            "operator": "lt",
+            "value": 0
+          }
+        ]
+      },
+      "expected_route": "direct_query",
+      "actual_routes": [
+        "direct_query"
+      ],
+      "model_calls": 0,
+      "successful_tools": [
+        "csv.profile",
+        "csv.query"
+      ],
+      "data": {
+        "dataset_id": "sales-d4dc75e5",
+        "operation": "sum",
+        "column": "amount",
+        "group_by": null,
+        "results": [
+          {
+            "group": null,
+            "value": -0.1,
+            "count": 1
+          }
+        ]
+      }
+    },
+    {
+      "case": "test_query_routing.QueryRoutingTests.test_r04_structured_business_metric",
+      "input": {
+        "metric_query": {
+          "metric_ids": [
+            "revenue"
+          ]
+        }
+      },
+      "expected_route": "direct_query",
+      "actual_routes": [
+        "direct_query"
+      ],
+      "model_calls": 0,
+      "successful_tools": [
+        "csv.profile",
+        "csv.metrics"
+      ],
+      "data": {
+        "format": "agentforge-metrics-v1",
+        "dataset_id": "sales-d4dc75e5",
+        "resource_hash": "4c44a7d8aebc146f80a5cc81aa8bbc0d5dbcadb79f9feb79df13defd6eda61b0",
+        "contract_hash": "5f3b76eb35e20718b1e43ab2d5ecf4fba8f226cfc9492ecd1081c93986592749",
+        "query": {
+          "dataset_id": "sales-d4dc75e5",
+          "dimensions": [],
+          "filters": [],
+          "sort_by": null,
+          "descending": false,
+          "limit": null,
+          "metric_ids": [
+            "revenue"
+          ]
+        },
+        "metrics": [
+          {
+            "id": "revenue",
+            "description": "已支付金额含负值，空值跳过",
+            "operation": "sum",
+            "column": "amount",
+            "scale": 2,
+            "filters": [
+              {
+                "column": "status",
+                "operator": "eq",
+                "value": "paid"
+              }
+            ]
+          }
+        ],
+        "numeric_encoding": "decimal_string",
+        "rounding": "ROUND_HALF_EVEN",
+        "total_groups": 1,
+        "rows": [
+          {
+            "dimensions": {},
+            "values": {
+              "revenue": "0.20"
+            },
+            "evidence": {
+              "revenue": {
+                "filtered_rows": 4,
+                "non_null_values": 3,
+                "mandatory_filters": [
+                  {
+                    "column": "status",
+                    "operator": "eq",
+                    "value": "paid"
+                  }
+                ],
+                "null_policy": "skip"
+              }
+            }
+          }
+        ],
+        "row_count": 1,
+        "truncated": false
+      }
+    },
+    {
+      "case": "test_query_routing.QueryRoutingTests.test_r05_optional_custom_tool_does_not_disable_direct_metrics",
+      "input": {
+        "metric_query": {
+          "metric_ids": [
+            "per_unit"
+          ]
+        }
+      },
+      "expected_route": "direct_query",
+      "actual_routes": [
+        "direct_query"
+      ],
+      "model_calls": 0,
+      "successful_tools": [
+        "csv.profile",
+        "csv.metrics"
+      ],
+      "data": {
+        "format": "agentforge-metrics-v1",
+        "dataset_id": "sales-d4dc75e5",
+        "resource_hash": "4c44a7d8aebc146f80a5cc81aa8bbc0d5dbcadb79f9feb79df13defd6eda61b0",
+        "contract_hash": "5f3b76eb35e20718b1e43ab2d5ecf4fba8f226cfc9492ecd1081c93986592749",
+        "query": {
+          "dataset_id": "sales-d4dc75e5",
+          "dimensions": [],
+          "filters": [],
+          "sort_by": null,
+          "descending": false,
+          "limit": null,
+          "metric_ids": [
+            "per_unit"
+          ]
+        },
+        "metrics": [
+          {
+            "id": "per_unit",
+            "description": "每件支付金额",
+            "scale": 4,
+            "formula": {
+              "operation": "divide",
+              "left": "revenue",
+              "right": "units"
+            }
+          }
+        ],
+        "numeric_encoding": "decimal_string",
+        "rounding": "ROUND_HALF_EVEN",
+        "total_groups": 1,
+        "rows": [
+          {
+            "dimensions": {},
+            "values": {
+              "per_unit": "0.0286"
+            },
+            "evidence": {
+              "revenue": {
+                "filtered_rows": 4,
+                "non_null_values": 3,
+                "mandatory_filters": [
+                  {
+                    "column": "status",
+                    "operator": "eq",
+                    "value": "paid"
+                  }
+                ],
+                "null_policy": "skip"
+              },
+              "units": {
+                "filtered_rows": 5,
+                "non_null_values": 5,
+                "mandatory_filters": [],
+                "null_policy": "skip"
+              },
+              "per_unit": {
+                "formula": {
+                  "operation": "divide",
+                  "left": "revenue",
+                  "right": "units"
+                },
+                "zero_division": "null"
+              }
+            }
+          }
+        ],
+        "row_count": 1,
+        "truncated": false
+      }
+    },
+    {
+      "case": "test_query_routing.QueryRoutingTests.test_r06_natural_language_top_region",
+      "input": "金额最高的区域，只要第一名",
+      "expected_route": "single_query",
+      "actual_routes": [
+        "single_query"
+      ],
+      "model_calls": 1,
+      "successful_tools": [
+        "csv.profile",
+        "csv.query"
+      ],
+      "data": {
+        "dataset_id": "sales-d4dc75e5",
+        "operation": "sum",
+        "column": "amount",
+        "group_by": "region",
+        "results": [
+          {
+            "group": "West",
+            "value": 10.0,
+            "count": 2
+          }
+        ]
+      }
+    },
+    {
+      "case": "test_query_routing.QueryRoutingTests.test_r07_natural_language_row_count",
+      "input": "共有多少行，包括金额为空的记录",
+      "expected_route": "single_query",
+      "actual_routes": [
+        "single_query"
+      ],
+      "model_calls": 1,
+      "successful_tools": [
+        "csv.profile",
+        "csv.query"
+      ],
+      "data": {
+        "dataset_id": "sales-d4dc75e5",
+        "operation": "count",
+        "column": null,
+        "group_by": null,
+        "results": [
+          {
+            "group": null,
+            "value": 5,
+            "count": 5
+          }
+        ]
+      }
+    },
+    {
+      "case": "test_query_routing.QueryRoutingTests.test_r08_natural_language_distinct_metric",
+      "input": "数据涉及多少个不同区域",
+      "expected_route": "single_query",
+      "actual_routes": [
+        "single_query"
+      ],
+      "model_calls": 1,
+      "successful_tools": [
+        "csv.profile",
+        "csv.metrics"
+      ],
+      "data": {
+        "format": "agentforge-metrics-v1",
+        "dataset_id": "sales-d4dc75e5",
+        "resource_hash": "4c44a7d8aebc146f80a5cc81aa8bbc0d5dbcadb79f9feb79df13defd6eda61b0",
+        "contract_hash": "5f3b76eb35e20718b1e43ab2d5ecf4fba8f226cfc9492ecd1081c93986592749",
+        "query": {
+          "dataset_id": "sales-d4dc75e5",
+          "dimensions": [],
+          "filters": [],
+          "sort_by": null,
+          "descending": false,
+          "limit": null,
+          "metric_ids": [
+            "regions"
+          ]
+        },
+        "metrics": [
+          {
+            "id": "regions",
+            "description": "去重区域",
+            "operation": "count_distinct",
+            "column": "region"
+          }
+        ],
+        "numeric_encoding": "decimal_string",
+        "rounding": "ROUND_HALF_EVEN",
+        "total_groups": 1,
+        "rows": [
+          {
+            "dimensions": {},
+            "values": {
+              "regions": "2"
+            },
+            "evidence": {
+              "regions": {
+                "filtered_rows": 5,
+                "non_null_values": 5,
+                "mandatory_filters": [],
+                "null_policy": "skip"
+              }
+            }
+          }
+        ],
+        "row_count": 1,
+        "truncated": false
+      }
+    },
+    {
+      "case": "test_query_routing.QueryRoutingTests.test_r09_natural_language_preserves_explicit_empty_false_and_null",
+      "input": {
+        "goal": "按指定参数汇总所有金额",
+        "parameters": {
+          "filters": [],
+          "descending": false,
+          "limit": null,
+          "group_by": null
+        }
+      },
+      "expected_route": "single_query",
+      "actual_routes": [
+        "single_query"
+      ],
+      "model_calls": 1,
+      "successful_tools": [
+        "csv.profile",
+        "csv.query"
+      ],
+      "data": {
+        "dataset_id": "sales-d4dc75e5",
+        "operation": "sum",
+        "column": "amount",
+        "group_by": null,
+        "results": [
+          {
+            "group": null,
+            "value": 10.2,
+            "count": 5
+          }
+        ]
+      }
+    },
+    {
+      "case": "test_query_routing.QueryRoutingTests.test_r10_optional_tool_keeps_single_plan_for_typed_date_metric",
+      "input": "1月2日起的已支付金额",
+      "expected_route": "single_query",
+      "actual_routes": [
+        "single_query"
+      ],
+      "model_calls": 1,
+      "successful_tools": [
+        "csv.profile",
+        "csv.metrics"
+      ],
+      "data": {
+        "format": "agentforge-metrics-v1",
+        "dataset_id": "sales-d4dc75e5",
+        "resource_hash": "4c44a7d8aebc146f80a5cc81aa8bbc0d5dbcadb79f9feb79df13defd6eda61b0",
+        "contract_hash": "5f3b76eb35e20718b1e43ab2d5ecf4fba8f226cfc9492ecd1081c93986592749",
+        "query": {
+          "dataset_id": "sales-d4dc75e5",
+          "dimensions": [],
+          "filters": [
+            {
+              "column": "date",
+              "operator": "gte",
+              "value": "2026-01-02"
+            }
+          ],
+          "sort_by": null,
+          "descending": false,
+          "limit": null,
+          "metric_ids": [
+            "revenue"
+          ]
+        },
+        "metrics": [
+          {
+            "id": "revenue",
+            "description": "已支付金额含负值，空值跳过",
+            "operation": "sum",
+            "column": "amount",
+            "scale": 2,
+            "filters": [
+              {
+                "column": "status",
+                "operator": "eq",
+                "value": "paid"
+              }
+            ]
+          }
+        ],
+        "numeric_encoding": "decimal_string",
+        "rounding": "ROUND_HALF_EVEN",
+        "total_groups": 1,
+        "rows": [
+          {
+            "dimensions": {},
+            "values": {
+              "revenue": "0.10"
+            },
+            "evidence": {
+              "revenue": {
+                "filtered_rows": 3,
+                "non_null_values": 2,
+                "mandatory_filters": [
+                  {
+                    "column": "status",
+                    "operator": "eq",
+                    "value": "paid"
+                  }
+                ],
+                "null_policy": "skip"
+              }
+            }
+          }
+        ],
+        "row_count": 1,
+        "truncated": false
+      }
+    },
+    {
+      "case": "test_query_routing.QueryRoutingTests.test_r11_relational_join_and_window_defer_to_loop",
+      "input": "自连接核对订单并给出窗口序号",
+      "expected_route": "adaptive_loop",
+      "actual_routes": [
+        "single_query",
+        "adaptive_loop"
+      ],
+      "model_calls": 3,
+      "successful_tools": [
+        "csv.profile",
+        "csv.sql"
+      ],
+      "data": {
+        "format": "agentforge-sql-v1",
+        "columns": [
+          "id",
+          "region",
+          "position"
+        ],
+        "rows": [
+          [
+            "001",
+            "East",
+            1
+          ],
+          [
+            "002",
+            "East",
+            2
+          ]
+        ],
+        "row_count": 2,
+        "query_hash": "af35c180c7f4ead72e2eebe53883b5604a66d85bf41390adede5564afd94433c",
+        "truncated": false,
+        "numeric_semantics": "sqlite; decimal aggregation may use floating point; use csv.metrics for exact business decimals",
+        "resources": [
+          {
+            "dataset_id": "sales-d4dc75e5",
+            "resource_hash": "4c44a7d8aebc146f80a5cc81aa8bbc0d5dbcadb79f9feb79df13defd6eda61b0"
+          }
+        ]
+      }
+    },
+    {
+      "case": "test_query_routing.QueryRoutingTests.test_r12_live_database_schema_and_query_defer_to_loop",
+      "input": "实时数据库的销售总额是多少",
+      "expected_route": "adaptive_loop",
+      "actual_routes": [
+        "single_query",
+        "adaptive_loop"
+      ],
+      "model_calls": 4,
+      "successful_tools": [
+        "csv.profile",
+        "trusted.sales",
+        "trusted.sales"
+      ],
+      "data": {
+        "format": "agentforge-sql-v1",
+        "columns": [
+          "total"
+        ],
+        "rows": [
+          [
+            12
+          ]
+        ],
+        "row_count": 1,
+        "query_hash": "65152e178f322a6196494910d1ae320cedccb99d5316a0949798561a44a1c4ea",
+        "truncated": false,
+        "numeric_semantics": "sqlite; decimal aggregation may use floating point; use csv.metrics for exact business decimals"
+      }
+    },
+    {
+      "case": "test_query_routing.QueryRoutingTests.test_r13_interpretation_uses_loop_and_labels_unverified_narrative",
+      "input": "解释区域差异，说明证据的局限",
+      "expected_route": "adaptive_loop",
+      "actual_routes": [
+        "single_query",
+        "adaptive_loop"
+      ],
+      "model_calls": 3,
+      "successful_tools": [
+        "csv.profile",
+        "csv.query"
+      ],
+      "data": {
+        "dataset_id": "sales-d4dc75e5",
+        "operation": "sum",
+        "column": "amount",
+        "group_by": "region",
+        "results": [
+          {
+            "group": "West",
+            "value": 10.0,
+            "count": 2
+          },
+          {
+            "group": "East",
+            "value": 0.2,
+            "count": 3
+          }
+        ]
+      }
+    },
+    {
+      "case": "test_query_routing.QueryRoutingTests.test_r14_required_custom_tool_bypasses_planner",
+      "input": "先执行必需质量计算，再汇总区域金额",
+      "expected_route": "adaptive_loop",
+      "actual_routes": [
+        "adaptive_loop"
+      ],
+      "model_calls": 3,
+      "successful_tools": [
+        "csv.profile",
+        "custom.quality",
+        "csv.query"
+      ],
+      "data": {
+        "dataset_id": "sales-d4dc75e5",
+        "operation": "sum",
+        "column": "amount",
+        "group_by": "region",
+        "results": [
+          {
+            "group": "West",
+            "value": 10.0,
+            "count": 2
+          },
+          {
+            "group": "East",
+            "value": 0.2,
+            "count": 3
+          }
+        ]
+      }
+    },
+    {
+      "case": "test_query_routing.QueryRoutingTests.test_r15_plan_conflict_falls_back_and_preserves_user_limit",
+      "input": {
+        "goal": "第一名",
+        "parameters": {
+          "limit": 1
+        }
+      },
+      "expected_route": "adaptive_loop",
+      "actual_routes": [
+        "single_query",
+        "adaptive_loop"
+      ],
+      "model_calls": 3,
+      "successful_tools": [
+        "csv.profile",
+        "csv.query"
+      ],
+      "data": {
+        "dataset_id": "sales-d4dc75e5",
+        "operation": "sum",
+        "column": "amount",
+        "group_by": "region",
+        "results": [
+          {
+            "group": "West",
+            "value": 10.0,
+            "count": 2
+          }
+        ]
+      }
+    }
+  ],
+  "source_hashes": {
+    "agentforge/__init__.py": "47a7949457a094ffec731b7f8b4e5f87de14e416d3170c8ba4b2e3c1fe669337",
+    "agentforge/__main__.py": "b6aef35e6c37bc40a956c55ad389bbc82c1bad0e517a600376cac57f05d539bc",
+    "agentforge/adaptive_artifacts.py": "93642178baaf4177a78af3202e54f5b751a2efeca83199aecbe99c0d9690bc06",
+    "agentforge/adaptive_contracts.py": "c460616e468147f12d4d9bb5317cd8f326e82199dcf12619a4288f313c4b6710",
+    "agentforge/adaptive_planner.py": "bdd4d56966156debf40b4d0446db9bd996c4695dc7bae4b9a50e12dd762c52a5",
+    "agentforge/adaptive_runtime.py": "09407d494d7c3f25550842009b02c83a74efac630565e67fe75eeec1b8e9ceee",
+    "agentforge/adaptive_testing.py": "98c44cad47f0f8af4e851a782d429d82d8b835cca00cbbed5e4aec6a929522d9",
+    "agentforge/artifacts.py": "d32f878fe2b85e70850c2c0a314cedd61261b342529f1433749cb1e1dce9fce3",
+    "agentforge/benchmarking.py": "4c20242aa36e919ff3681160748a08d9ee8c879ac5f1c3e83a9a6c2882e8c597",
+    "agentforge/codex_client.py": "c6fad7b77004a7105b58168cc30d3f9854833d4d7596fd8825df5192c16c7d32",
+    "agentforge/contracts.py": "f0e89d1462913306427b0f9a319eb39d35794f6e9813aa49d985c5d5f4c9d88e",
+    "agentforge/csv_contract.py": "3532b140dd6c6378dcdbdcc5eeb728d6a2f727a270d3cb9dd8eb0f952f4b2ee4",
+    "agentforge/csv_execution.py": "3821129591a2321f984303d4a5002cc0e2c0aacc10d1cadaf3fa39b4520c1ad2",
+    "agentforge/csv_query_path.py": "2bc5589348708ed72f4e06e74e81c5ace0c52678e0c87fa9b3e70a30d08f0410",
+    "agentforge/custom_tools.py": "7f6835d05f5ed726b905baeb62611b6f71051cd09346c3c974bf7c8d3b121620",
+    "agentforge/data_binding.py": "5c31912ac57cd46c777e8d3f9126574f04115b974e072dbb543557edaac364f5",
+    "agentforge/data_contract.py": "68dbe2a20af669590220d812d853900d6f410c1819b82da4743c38a93386aac5",
+    "agentforge/evaluation_progress.py": "79fddc5ebaa05bf21c3b1757b8ce5595a371c8a1daea329033fbf78812ca79e1",
+    "agentforge/executions.py": "d074adee90d2e253f0434fb59d1fb4c04bceed17c42c28e72974af20d6e3f166",
+    "agentforge/factory.py": "121c5cdb0309e769b53371518e6a30ab728077b27395564863fc6526550a2308",
+    "agentforge/frozen_runtime.py": "ad63e505efbf6ef85364041058181157cb4482d3f63b03ca80da22cfaed7f3f6",
+    "agentforge/metric_query.py": "82acd57e3edf28f7f0eaaad6a7f3d4c3037a16f0a835f9535755f53dc1c497a6",
+    "agentforge/planner.py": "00c1d99fac5f04925a4276f04748a2fd01ed1c271046e344b9c4fcf691321355",
+    "agentforge/program.py": "b850c1c07c5cd413895c6fd1638ee73e1161b1f8dfe75609f14347a8a79580f7",
+    "agentforge/resource_profiles.py": "2a2da911ee81988c6df714e49825d95202f0bc704984730f5628d6fdbd3b0437",
+    "agentforge/resources.py": "ff500b39efe0e9dd3835a7dd09572936186221e5ccad2a23f74f35f104455d36",
+    "agentforge/server.py": "11dc7fdf0e5258862ce63355a35b392e8829010fc6c117733acbf1cc3d69f029",
+    "agentforge/source_validation.py": "5547a523ba9aec8e4d4ffaa2a3fc75fbd4004d1ba31d32efdd84dea5985f78d0",
+    "agentforge/sql_query.py": "b9fd534017633b7eba17b1b712f0c93e33d5d105282b116dc9774897f14e5886",
+    "agentforge/storage.py": "08943ddd4075bd5530c73c71cea24e1d5d5e55bea3e25d216e8deeee2f95b6a0",
+    "agentforge/testing.py": "6cc45622e7b41e7cfad8fc3948f42bbe736d36549af18e67b475fe2ccdd56d53",
+    "agentforge/tool_registry.py": "1b981319eb27e339e0837f2e36e8e910c0bcf5872807d04229d7255a9d9224e8",
+    "agentforge/trusted_tools.py": "16f8bf35b910490e95ccd2d794893166f89d3e9740b388c3fcac9d5dc913270d",
+    "agentforge/workflow.py": "361f611dbc783e20c032c2cb1f1d4fbd34700b40f782e382ed5ffe528ecf634e",
+    "tests/architecture_fixtures.py": "abe8b8faab62694285456672dd322f51de7d9742dcedcc6329054f634ff2e100",
+    "tests/compare_delivery_regressions.py": "c768ca45cc63c152740173b615b08ca9deeeb7b6810e297f686bd2a210820476",
+    "tests/run_phase1_validation.py": "c575844622c2aaac94ccc26a52e5627be460844e3eef53234fa15547d4f65db0",
+    "tests/test_adaptive.py": "a586161b2772edbf4addb4a09c2259fade4950002f2a65c88879960777e06eb5",
+    "tests/test_audit_pagination.py": "eb34b352fceccaa23bb2a5469bd03234a37c89440ad5d1472d0b15ca8e73ac57",
+    "tests/test_benchmarking.py": "85c6934abb6921606705347352c7222fea9a1264f9b513b55550872dda598e4a",
+    "tests/test_codex_client.py": "93e720444bfd920b2c21abfe382630d26cd2045cc617838ba6d4c5410ab3d36c",
+    "tests/test_codex_factory.py": "a4475cb2a341fd89e19cc35b5f78eea3bfa9015db2cc6a75f8d4023d2538457e",
+    "tests/test_comparison.py": "74251a5c0ebf7178e7af5bcfa094f50d8c03a158dcde3232e9bc190b0a308a81",
+    "tests/test_comparison_continuation.py": "a9589204960f7f5f4b42989ba2da0f83ef9043502eff0ceccef29f79b3946240",
+    "tests/test_contract_recovery.py": "7d80ab10b6dda4ce3eb2183fd3c11ff3ff2d6b99d6fca21bebaf0311ad66d5ad",
+    "tests/test_data_binding.py": "d481b88a440915add6c4149b86c1939cc04094e23e17cc53a7411da17759e40a",
+    "tests/test_data_contract.py": "7f60aaa468150a6660a6206354faa68ef847d56d34eb76c91cce5344deee7e02",
+    "tests/test_delivery_boundaries.py": "3ad544b64d0e08291541a6e8191b8e4215db52e2929621dcc9b6f6ab2f34ab20",
+    "tests/test_error_boundaries.py": "e85aa92146284fe4b49e75330d4555b461bf0dc88cca95e5a0c6bd3da5ea5285",
+    "tests/test_evaluation_conditions.py": "94d13b7d0786cb08a03d14c4effde6160f3142fdc4ba56eaaabdb24daf2227a7",
+    "tests/test_frontend.py": "426616ff8db8b3ef22e3d25f55440a67582d2ba3d1703524d2ec6fd4bde72fb9",
+    "tests/test_metric_query.py": "daebd9b18a56a2ba01ea09963da8c4108576a4fd4d95c7731cdd36e6f946eea8",
+    "tests/test_performance.py": "3aba041482c463db724bc2e19ad4eaabe087a00d93eb1105d54be3a676e75999",
+    "tests/test_query_routing.py": "584778c68643344ffff3eb2d64dc8db12c924a90fbb8beab8f8a2f5252c0d2d9",
+    "tests/test_resource_profiles.py": "1a2221956d7f44c15e86759941ff42c9e24703c27db492975bb5d0b42879a23c",
+    "tests/test_resumption.py": "a23f24dcc5ec81b290a4d9a5e22709bd205cc1dfd8174e720c77637db62e83fb",
+    "tests/test_runtime.py": "2862af087c82bd0c0cfdffe700ddb0683da91fd535177f41803f7edc218dac12",
+    "tests/test_server.py": "abb9161cb5dbc1fd823b1215690bc329164b40d3e01de93cf911723eacce44e1",
+    "tests/test_source_contracts.py": "72ff4a31bf93eeb2abdb9270277bafae2bfb03450a35f61245ff7277b03730e0",
+    "tests/test_sql_query.py": "2553c34a766e3a9a41da4efbbbfe9c374b2c76c934055977e94701a06e190082",
+    "tests/test_trusted_tools.py": "d2c4ea3f06b12657e8e4198a78c5e531ec62735cc8da7e745d2965d9227044bd",
+    "tests/test_zero_custom_lifecycle.py": "056e11252542c1ad9b85e5845a1e12a7aa2d58555a6be4bb18bc4e1b4f6c71ae"
+  }
+}

@@ -255,6 +255,13 @@ class AdaptiveAgent:
         return {"explicit_parameters": explicit, "default_parameters": copy.deepcopy(self.req.defaults),
                 "parameter_sources": sources}
 
+    def is_csv_computation(self, observation):
+        tid = observation["tool"]
+        computations = {"csv.query", "csv.metrics", "csv.sql", *self.tools.custom, *self.tools.trusted.definitions}
+        definition = self.tools.trusted.definitions.get(tid, {})
+        metadata = definition.get("kind") == "sqlite_query" and observation["arguments"].get("action") == "schema"
+        return tid in computations and not metadata
+
     def finish(self, decision, observations, params, structured, explicit=None):
         if self.req.task_type == "csv_analysis" and decision["sources"]:
             raise ExecutionError("PROVENANCE", "CSV 证据通过观察提供；sources 只接受文档引用，CSV 必须为空。")
@@ -280,9 +287,8 @@ class AdaptiveAgent:
                 raise ExecutionError("RESULT_REFERENCE", "CSV 最终数据必须引用 csv.query 的观察结果。")
             if not structured and explicit and chosen and chosen["tool"] != "csv.query":
                 raise ExecutionError("RESULT_PARAMETERS", "显式 CSV 参数必须由符合参数的主查询验证。")
-            computations = {"csv.query", "csv.metrics", "csv.sql", *self.tools.custom, *self.tools.trusted.definitions}
-            if not decision["abstained"] and (not chosen or chosen["tool"] not in computations):
-                raise ExecutionError("RESULT_REFERENCE", "预览和质量档案不能代替实际计算结果。")
+            if not decision["abstained"] and (not chosen or not self.is_csv_computation(chosen)):
+                raise ExecutionError("RESULT_REFERENCE", "预览、质量档案和数据库结构不能代替实际计算结果。")
             if chosen and chosen["tool"] == "csv.query":
                 actual_params = canonical_csv_parameters({**self.req.defaults, **chosen["arguments"]})
                 expected = params if structured else (explicit or {})
@@ -333,7 +339,7 @@ class AdaptiveAgent:
 
     def completion_requirements(self, observations, params, structured, explicit=None):
         succeeded = [o for o in observations if o["status"] == "ok"]
-        refs = [o["id"] for o in succeeded]
+        refs = [o["id"] for o in succeeded if self.req.task_type != "csv_analysis" or self.is_csv_computation(o)]
         expected = params if structured else (explicit or {})
         keys = QUERY_KEYS if structured else expected.keys()
         primary = []
@@ -472,6 +478,10 @@ class AdaptiveAgent:
                 state["csv_route"] = "plan"
                 emit({"type": "routing", "strategy": "direct_query" if structured else "single_query"})
                 save("ready")
+            elif not common_query and self.req.task_type == "csv_analysis" and state.get("csv_route") is None:
+                state["csv_route"] = "loop"
+                emit({"type": "routing", "strategy": "adaptive_loop", "reason": "执行策略或必需自定义工具要求循环。"})
+                save("ready")
             segment_calls = 0
             segment_limit = self.spec.max_steps
             extensions = 0
@@ -554,6 +564,7 @@ class AdaptiveAgent:
                                 observations.append(record)
                                 emit({"type": "query_plan_rejected", **record})
                                 state["csv_route"] = "loop"
+                                emit({"type": "routing", "strategy": "adaptive_loop", "reason": exc.code})
                                 save("ready")
                                 continue
                             state["pending"] = host_decision("call_tool", query=query, reason=plan["reason"],
@@ -611,8 +622,9 @@ class AdaptiveAgent:
                                   "status": "error", "error": exc.info()}
                         observations.append(record)
                         state["pending"] = None
-                        if common_query:
+                        if common_query and state.get("csv_route") != "loop":
                             state["csv_route"] = "loop"
+                            emit({"type": "routing", "strategy": "adaptive_loop", "reason": exc.code})
                         emit({"step": step, "type": "verification", **record})
                         if not exc.retryable:
                             raise
@@ -662,6 +674,7 @@ class AdaptiveAgent:
                         state["csv_query_ref"] = record["id"]
                     else:
                         state["csv_route"] = "loop"
+                        emit({"type": "routing", "strategy": "adaptive_loop", "reason": record.get("error", {}).get("code", "QUERY_UNAVAILABLE")})
                 if "key" in locals():
                     state["repeats"][key] = state["repeats"].get(key, 0) + 1
                     del key
